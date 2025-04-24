@@ -6,7 +6,7 @@
 /*   By: ilarhrib <ilarhrib@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/21 17:12:38 by ilarhrib          #+#    #+#             */
-/*   Updated: 2025/04/21 18:20:57 by ilarhrib         ###   ########.fr       */
+/*   Updated: 2025/04/22 15:05:11 by ilarhrib         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ void	error(void);
 char	*ft_strjoin(char const *s1, char const *s2);
 size_t	ft_strlen(const char *str);
 char	*find_path(char *cmd, char **envp);
-int	execute(char *argv, char **envp);
+void	execute(char *argv, char **envp);
 void	ft_putstr_fd(char *s, int fd);
 char	*ft_strnstr(const char *hs, const char *n, size_t len);
 size_t	ft_strlcat(char *dst, const char *src, size_t dstsize);

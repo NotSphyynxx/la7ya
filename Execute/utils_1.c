@@ -6,7 +6,7 @@
 /*   By: ilarhrib <ilarhrib@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/21 17:49:55 by ilarhrib          #+#    #+#             */
-/*   Updated: 2025/04/21 18:20:14 by ilarhrib         ###   ########.fr       */
+/*   Updated: 2025/04/22 15:06:02 by ilarhrib         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,25 +47,9 @@ void	error(void)
 	exit(EXIT_FAILURE);
 }
 
-int	execute(char *argv, char **envp)
+void	execute(char *argv, char **envp)
 {
-	char	**cmd;
-	int		i;
-	char	*path;
-
-	i = -1;
-	cmd = ft_split(argv, ' ');
-	path = find_path(cmd[0], envp);
-	if (!path)
-	{
-		while (cmd[++i])
-			free(cmd[i]);
-		free(cmd);
-		error();
-	}
-	if (execve(path, cmd, envp) == -1)
-		error();
-	return 1;
+	
 }
 
 char	*ft_strjoin(char const *s1, char const *s2)
