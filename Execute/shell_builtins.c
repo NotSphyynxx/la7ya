@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   shell_builtins.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ilarhrib <ilarhrib@student.42.fr>          +#+  +:+       +#+        */
+/*   By: sphynx <sphynx@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/23 17:13:25 by ilarhrib          #+#    #+#             */
-/*   Updated: 2025/04/23 17:34:53 by ilarhrib         ###   ########.fr       */
+/*   Updated: 2025/04/27 16:14:39 by sphynx           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,13 +40,54 @@ int shell_echo(char **av)
 	return (0);
 }
 
-
-
-int main(int ac, char **av)
+int	shell_env(char **av,  char **envp)
 {
-	if (ac > 1)
+	char	**env;
+
+	if (av[1])
 	{
-		av++;
-		shell_echo(av);
+		write(STDERR_FILENO, "env: too many arguments\n", 24);
+		return (1);
+	}
+	env = envp;
+	while (*env)
+	{
+		write (STDOUT_FILENO, *env, ft_strlen(*env));
+		write (STDOUT_FILENO, "\n", 1);
+		env++;
+	}
+	return (0);
+}
+
+int	shell_pwd(char **av)
+{
+	char	*cwd;
+
+	(void)av;
+	cwd = getcwd(NULL, 0);
+	if (!cwd)
+	{
+		write(STDERR_FILENO, "pwd: error getting directory\n", 28);
+		return (1);
+	}
+	write(STDOUT_FILENO, cwd, ft_strlen(cwd));
+	write(STDOUT_FILENO, "\n", 1);
+	free(cwd);
+	return (0);
+}
+void	shell_cd(char **args)
+{
+	char	*path;
+
+	if (!args[1])
+	{
+		path = get_env_value("HOME");
+		if (!path || chdir(path) != 0)
+			perror("cd");
+	}
+	else
+	{
+		if (chdir(args[1]) != 0)
+			perror("cd");
 	}
 }

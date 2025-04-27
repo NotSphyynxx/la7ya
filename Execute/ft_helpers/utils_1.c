@@ -3,14 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   utils_1.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ilarhrib <ilarhrib@student.42.fr>          +#+  +:+       +#+        */
+/*   By: sphynx <sphynx@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/21 17:49:55 by ilarhrib          #+#    #+#             */
-/*   Updated: 2025/04/22 15:06:02 by ilarhrib         ###   ########.fr       */
+/*   Updated: 2025/04/27 16:19:22 by sphynx           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "../minishell.h"
 
 char	*find_path(char *cmd, char **envp)
 {
@@ -47,11 +47,6 @@ void	error(void)
 	exit(EXIT_FAILURE);
 }
 
-void	execute(char *argv, char **envp)
-{
-	
-}
-
 char	*ft_strjoin(char const *s1, char const *s2)
 {
 	char	*s3;
@@ -64,4 +59,30 @@ char	*ft_strjoin(char const *s1, char const *s2)
 	ft_strlcpy(s3, s1, ft_strlen(s1) + 1);
 	ft_strlcat(s3, s2, ft_strlen(s1) + ft_strlen(s2) + 1);
 	return (s3);
+}
+
+int	ft_strcmp(char *s1, char *s2)
+{
+	int	i;
+
+	i = 0;
+	while (s1[i] && s2[i] && s1[i] == s2[i])
+	{
+		i++;
+	}
+	return (s1[i] - s2[i]);
+}
+
+int	ft_strncmp(const char *s1, const char *s2, size_t n)
+{
+	size_t	i;
+
+	i = 0;
+	while (i < n && (s1[i] != '\0' || s2[i] != '\0'))
+	{
+		if ((unsigned char)s1[i] != (unsigned char) s2[i])
+			return ((unsigned char) s1[i] - (unsigned char) s2[i]);
+		i++;
+	}
+	return (0);
 }

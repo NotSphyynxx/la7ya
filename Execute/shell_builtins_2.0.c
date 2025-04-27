@@ -1,37 +1,35 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   shell_builtins_2.0.c                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: sphynx <sphynx@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/04/21 17:12:23 by ilarhrib          #+#    #+#             */
-/*   Updated: 2025/04/27 16:16:36 by sphynx           ###   ########.fr       */
+/*   Created: 2025/04/27 18:07:24 by sphynx            #+#    #+#             */
+/*   Updated: 2025/04/27 18:11:07 by sphynx           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int main(int ac, char **av, char **envp)
+int shell_export(char **av, char **envp)
 {
-	char	*readed;
-	char	**input;
-	printf("================ | Welcome to sara9osta |================\n");
-	
-	while (1)
+	char	**env;
+	char	**name;
+	char	**value;
+	int		i;
+
+	i = 1;
+	if (av[1])
 	{
-		readed = readline("minishell$ ");
-		if (!readed)
+		env = *envp;
+		while (*env)
 		{
-			printf("exit\n");
-			exit(0);
+			write(STDOUT_FILENO, *env, ft_strlen(*env));
+			write (STDOUT_FILENO, "\n", 1);
+			env++;
 		}
-		input = ft_split(readed, ' ');
-		if (*readed)
-			add_history(readed);
-        execute(input, envp);
-		// printf("--> %s\n", input);
-		free(input);
+		return (0);
 	}
-	return (0);
+	
 }
