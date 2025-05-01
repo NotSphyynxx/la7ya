@@ -91,3 +91,8 @@ void	shell_cd(char **args)
 			perror("cd");
 	}
 }
+
+void	shell_export(char **av, char **envp)
+{
+	
+}
