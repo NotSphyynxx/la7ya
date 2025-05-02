@@ -35,6 +35,10 @@ size_t	ft_strlcpy(char *dst, const char *src, size_t dstsize);
 int		ft_strcmp(char *s1, char *s2);
 char	*get_env_value(char *key);
 char	***get_env(void);
+char	*ft_strchr(const char *s, int c);
+char	*ft_strdup(const char *s1);
+int		ft_isalnum(int ch);
+char	*ft_substr(char const *novel, unsigned int start, size_t len);
 int		ft_strncmp(const char *s1, const char *s2, size_t n);
 
 //------------Execution------------------
@@ -44,5 +48,6 @@ int		shell_echo(char **av);
 int		shell_env(char **av,  char **envp);
 int		shell_pwd(char **av);
 void	shell_cd(char **args);
+int		shell_export(char **av);
 
 # endif

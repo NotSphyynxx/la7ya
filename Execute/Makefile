@@ -2,7 +2,8 @@ NAME    = minishell
 CC      = cc
 CFLAGS  = -I$(HOME)/.local/include
 LDFLAS	= -L$(HOME)/.local/lib
-SRCS    = main.c ft_helpers/utils_1.c ft_helpers/utils_2.c ft_helpers/ft_split.c ft_helpers/tmp_env.c shell_builtins.c execution.c
+SRCS    = main.c ft_helpers/utils_1.c ft_helpers/utils_2.c ft_helpers/ft_split.c ft_helpers/tmp_env.c shell_builtins.c execution.c \
+		ft_helpers/utils_3.c shell_builtins_2.c
 
 OBJS    = $(SRCS:.c=.o)
 

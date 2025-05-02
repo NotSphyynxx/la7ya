@@ -11,4 +11,6 @@ void	execute(char **input, char **envp)
 		shell_pwd(input);
 	else if (ft_strcmp(input[0], "cd") == 0)
 		shell_cd(input);
+	else if (ft_strcmp(input[0], "export") == 0)
+		shell_export(input);
 }
