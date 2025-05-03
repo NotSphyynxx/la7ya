@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sphynx <sphynx@student.42.fr>              +#+  +:+       +#+        */
+/*   By: ilarhrib <ilarhrib@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/21 17:12:38 by ilarhrib          #+#    #+#             */
-/*   Updated: 2025/04/27 16:19:42 by sphynx           ###   ########.fr       */
+/*   Updated: 2025/05/03 16:54:50 by ilarhrib         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,6 +40,8 @@ char	*ft_strdup(const char *s1);
 int		ft_isalnum(int ch);
 char	*ft_substr(char const *novel, unsigned int start, size_t len);
 int		ft_strncmp(const char *s1, const char *s2, size_t n);
+int		ft_isdigit(int ch);
+int		ft_atoi(const char *str);
 
 //------------Execution------------------
 void	execute(char **input, char **envp);
@@ -49,5 +51,7 @@ int		shell_env(char **av,  char **envp);
 int		shell_pwd(char **av);
 void	shell_cd(char **args);
 int		shell_export(char **av);
+int		shell_unset(char **av);
+int		shell_exit(char **av);
 
 # endif

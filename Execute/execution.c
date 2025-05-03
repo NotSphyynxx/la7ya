@@ -13,4 +13,8 @@ void	execute(char **input, char **envp)
 		shell_cd(input);
 	else if (ft_strcmp(input[0], "export") == 0)
 		shell_export(input);
+	else if (ft_strcmp(input[0], "unset") == 0)
+		shell_unset(input);
+	else if (ft_strcmp(input[0], "exit") == 0)
+		shell_exit(input);
 }

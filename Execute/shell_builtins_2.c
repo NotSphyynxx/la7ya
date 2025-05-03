@@ -16,7 +16,6 @@ int shell_export(char **av) {
         }
         return (0);
     }
-    printf("1\n");
     i = 1;
     while (av[i]) {
         char *eq_pos = ft_strchr(av[i], '=');
@@ -43,12 +42,9 @@ int shell_export(char **av) {
             i++;
             continue;
         }
-        printf("2\n");
         char **env = *get_env();
-        printf("3\n");
         while (env && *env) {
             if (!ft_strncmp(*env, name, ft_strlen(name)) && (*env)[ft_strlen(name)] == '=') {
-                free(*env);
                 *env = ft_strjoin(name, "=");
                 char *new_entry = ft_strjoin(*env, value);
                 free(*env);
