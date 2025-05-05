@@ -6,7 +6,7 @@
 /*   By: ilarhrib <ilarhrib@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/03 16:53:45 by ilarhrib          #+#    #+#             */
-/*   Updated: 2025/05/03 16:54:11 by ilarhrib         ###   ########.fr       */
+/*   Updated: 2025/05/05 17:07:45 by ilarhrib         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,4 +62,23 @@ int	ft_isdigit(int ch)
 	if (ch >= '0' && ch <= '9')
 		return (1);
 	return (0);
+}
+
+void	ft_lstadd_back(t_token **lst, t_token *new)
+{
+	t_token	*crnt;
+
+	if (new == NULL)
+		return ;
+	if (*lst == NULL)
+		*lst = new;
+	else
+	{
+		crnt = *lst;
+		while (crnt->next != NULL)
+		{
+			crnt = crnt->next;
+		}
+		crnt->next = new;
+	}
 }

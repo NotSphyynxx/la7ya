@@ -1,87 +1,20 @@
 
 #include "minishell.h"
 
-static void ft_free_str_array(char **array) {
-    int i = 0;
-
-    if (!array)
-        return;
-
-    while (array[i]) {
-        free(array[i]);
-        i++;
-    }
-
-    free(array);
-}
-
-static char *find_command_path(char *cmd)
+void	cmnd_check(char **input, char **envp, t_exec *exec)
 {
-	char *path_env;
-	char **paths;
-	char *full_path;
-	int i;
-
-	if (ft_strchr(cmd, '/'))
-	{
-		if (access(cmd, X_OK) == 0)
-			return (ft_strdup(cmd));
-		return (NULL);
+	builtin_check(input, envp);
+	if (contains_pipe(input)){
+		execute_piped_commands(input, exec);
 	}
-	path_env = getenv("PATH");
-	if (!path_env)
-		return (NULL);
-	paths = ft_split(path_env, ':');
-	if (!paths)
-		return (NULL);
-	i = 0;
-	while (paths[i])
-	{
-		full_path = ft_strjoin(paths[i], "/");
-		if (!full_path)
-		{
-			ft_free_str_array(paths);
-			return (NULL);
-		}
-		full_path = ft_strjoin(full_path, cmd);
-		if (!full_path)
-		{
-			ft_free_str_array(paths);
-			return (NULL);
-		}
-		if (access(full_path, X_OK) == 0)
-		{
-			ft_free_str_array(paths);
-			return (full_path);
-		}
-		free(full_path);
-		i++;
-	}
-	ft_free_str_array(paths);
-	return (NULL);
-}
-
-void	cmnd_check(char **input, char **envp)
-{
-	if (ft_strcmp(input[0], "echo") == 0)
-		shell_echo(input);
-	else if (ft_strcmp(input[0], "env") == 0)
-		shell_env(input, envp);
-	else if (ft_strcmp(input[0], "pwd") == 0)
-		shell_pwd(input);
-	else if (ft_strcmp(input[0], "cd") == 0)
-		shell_cd(input);
-	else if (ft_strcmp(input[0], "export") == 0)
-		shell_export(input);
-	else if (ft_strcmp(input[0], "unset") == 0)
-		shell_unset(input);
-	else if (ft_strcmp(input[0], "exit") == 0)
-		shell_exit(input);
 	else
-		execute(input);
+	{
+		execute(input, exec);
+		waitpid(exec->chld_pid, NULL, 0);
+	}
 }
 
-void	execute(char	**input)
+void	execute(char	**input, t_exec *exec)
 {
 	pid_t	child_pid;
 	char		*path;
@@ -100,13 +33,85 @@ void	execute(char	**input)
 			write(STDERR_FILENO, "minishell: command not found\n", 29);
 			exit(127);
 		}
+		exec->chld_pid = child_pid;
 		if (execve(path, input, *get_env()) == -1)
 		{
 			perror("execve error");
             exit(1);
 		}
-		else
-			waitpid(child_pid, NULL, 0);
 	}
 }
 
+void execute_piped_commands(char **input, t_exec *exec) {
+    int	fd[2], prev_fd = -1, i = 0;
+	pid_t	child_pid;
+
+	while (input[i])
+	{
+		if (ft_strcmp(input[i], "|") == 0)
+		{
+			input[i] = NULL;
+            if (pipe(fd) == -1) {
+                perror("pipe error");
+				return;
+			}
+			
+			child_pid = fork();
+			if (child_pid == -1) {
+                perror("fork error");
+                return;
+            }
+
+            if (child_pid == 0)
+			{
+                dup2(fd[1], STDOUT_FILENO);
+                close(fd[0]);
+                if (prev_fd != -1)
+				{
+                    dup2(prev_fd, STDIN_FILENO);
+                    close(prev_fd);
+                }
+                execute(split_command(input, 0, i), exec);
+				waitpid(exec->chld_pid, NULL, 0);
+                exit(0); // Child exits after execve
+            }
+			else
+			{
+                close(fd[1]); // Close write end of pipe in parent
+                if (prev_fd != -1) close(prev_fd); // Close previous pipe
+                prev_fd = fd[0]; // Store read end for next process
+            }
+            input += i + 1;
+            i = 0;
+        }
+		else
+		{
+            i++;
+        }
+    }
+    if (*input)
+	{
+        child_pid = fork();
+        if (child_pid == -1)
+		{
+            perror("fork error");
+            return;
+        }
+        if (child_pid == 0)
+		{
+            if (prev_fd != -1)
+			{
+                dup2(prev_fd, STDIN_FILENO);
+                close(prev_fd);
+            }
+            execute(input, exec);
+			waitpid(exec->chld_pid, NULL, 0);
+            exit(0);
+        }
+		else
+		{
+            if (prev_fd != -1) close(prev_fd);
+        }
+    }
+    waitpid(child_pid, NULL, 0);
+}

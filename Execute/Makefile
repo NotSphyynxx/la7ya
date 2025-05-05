@@ -1,21 +1,30 @@
 NAME    = minishell
+
 CC      = cc
+
 CFLAGS  = -I$(HOME)/.local/include
-LDFLAS	= -L$(HOME)/.local/lib
-SRCS    = main.c ft_helpers/utils_1.c ft_helpers/utils_2.c ft_helpers/ft_split.c ft_helpers/tmp_env.c shell_builtins.c execution.c \
-		ft_helpers/utils_3.c shell_builtins_2.c shell_builtins_3.c ft_helpers/utils_4.c
+
+SRCS    = main.c ft_helpers/utils_1.c ft_helpers/utils_2.c ft_helpers/ft_split.c ft_helpers/tmp_env.c \
+		shell_builtins.c execution.c ft_helpers/utils_3.c shell_builtins_2.c shell_builtins_3.c \
+		ft_helpers/utils_4.c ft_helpers/exec_helper.c parss.c new_token.c type.c check_syntax.c expand.c \
+		ft_helpers/pars_helpers.c
 
 OBJS    = $(SRCS:.c=.o)
 
 HEADER = minishell.h
 
+READLINE_COMPILE = -I$(shell brew --prefix readline)/include
+
+READLINE_LINK = -lreadline -L$(shell brew --prefix readline)/lib
+
 all: $(NAME) stock
 
-$(NAME): $(OBJS)
-	$(CC) $(CFLAGS) $(LDFLAS) $(OBJS) -lreadline -lncurses -o $(NAME)
 
-src/%.o: src/%.c $(HEADER)
-	$(CC)  $(CFLAGS) -c $< -o $@ 
+$(NAME): $(OBJS)
+	$(CC) $(CFLAGS) $(LDFLAS) $(READLINE_LINK) $(OBJS) -o $(NAME)
+
+%.o: %.c $(HEADER)
+	$(CC) $(READLINE_COMPILE) $(CFLAGS) -c $< -o $@ 
 
 stock : $(OBJS)
 	mv *.o obj && mv ft_helpers/*.o obj 

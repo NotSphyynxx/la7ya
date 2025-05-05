@@ -17,11 +17,11 @@ int shell_echo(char **av)
 	{
 		while (*av[i])
 		{
-			write (STDOUT_FILENO, av[i], 1);
+			write(STDOUT_FILENO, av[i], 1);
 			av[i]++;
 		}
 		if (av[i + 1])
-			write (STDOUT_FILENO, " ", 1);
+			write(STDOUT_FILENO, " ", 1);
 		i++;
 	}
 	if (new_line)

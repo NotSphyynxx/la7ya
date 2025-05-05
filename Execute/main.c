@@ -6,6 +6,10 @@ int main(int ac, char **av, char **envp)
 	char	**input;
 	printf("================ | Welcome to sara9osta |================\n");
 	*get_env() = envp;
+	t_exec exec;
+
+    signal(SIGINT, sigint_handler);
+    signal(SIGQUIT, SIG_IGN);
 	while (1)
 	{
 		readed = readline("minishell$ ");
@@ -17,8 +21,8 @@ int main(int ac, char **av, char **envp)
 		input = ft_split(readed, ' ');
 		if (*readed)
 			add_history(readed);
-        cmnd_check(input, envp);
-		// printf("--> %s\n", input);
+		parss(input);
+        cmnd_check(input, envp, &exec);
 		free(input);
 	}
 	return (0);
