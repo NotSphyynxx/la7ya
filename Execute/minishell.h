@@ -6,7 +6,7 @@
 /*   By: ilarhrib <ilarhrib@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/21 17:12:38 by ilarhrib          #+#    #+#             */
-/*   Updated: 2025/05/03 16:54:50 by ilarhrib         ###   ########.fr       */
+/*   Updated: 2025/05/03 17:57:52 by ilarhrib         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,8 @@ int		ft_isdigit(int ch);
 int		ft_atoi(const char *str);
 
 //------------Execution------------------
-void	execute(char **input, char **envp);
+void	execute(char **input);
+void	cmnd_check(char **input, char **envp);
 //~~~~~~~~~~~~Builtins~~~~~~~~~~~~~~~~~~~
 int		shell_echo(char **av);
 int		shell_env(char **av,  char **envp);

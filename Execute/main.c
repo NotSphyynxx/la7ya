@@ -17,7 +17,7 @@ int main(int ac, char **av, char **envp)
 		input = ft_split(readed, ' ');
 		if (*readed)
 			add_history(readed);
-        execute(input, envp);
+        cmnd_check(input, envp);
 		// printf("--> %s\n", input);
 		free(input);
 	}
