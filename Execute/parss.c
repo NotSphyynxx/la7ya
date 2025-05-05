@@ -6,7 +6,7 @@
 /*   By: ilarhrib <ilarhrib@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/17 16:49:53 by bael-bad          #+#    #+#             */
-/*   Updated: 2025/05/05 17:48:34 by ilarhrib         ###   ########.fr       */
+/*   Updated: 2025/05/05 18:03:24 by ilarhrib         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,9 +82,9 @@ void parss(char **input)
 		return ;
 	}
 	t_token	*temp = tokens;
-	while (temp)
-	{
-		printf("Token: type=%s, value=%s\n", type_to_string(temp->type), temp->value);
-        temp = temp->next;
-	}
+	// while (temp)
+	// {
+	// 	printf("Token: type=%s, value=%s\n", type_to_string(temp->type), temp->value);
+    //     temp = temp->next;
+	// }
 }
