@@ -6,7 +6,7 @@
 /*   By: bael-bad <bael-bad@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/16 16:53:56 by bael-bad          #+#    #+#             */
-/*   Updated: 2025/05/04 20:46:19 by bael-bad         ###   ########.fr       */
+/*   Updated: 2025/05/05 18:25:35 by bael-bad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,5 +34,6 @@ int main(int ac, char **av, char **env)
     while (1)
     {
         parss(&path);
+        continue;
     }
 }

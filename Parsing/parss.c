@@ -6,7 +6,7 @@
 /*   By: bael-bad <bael-bad@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/17 16:49:53 by bael-bad          #+#    #+#             */
-/*   Updated: 2025/05/05 15:29:46 by bael-bad         ###   ########.fr       */
+/*   Updated: 2025/05/05 18:45:16 by bael-bad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,6 @@ void parss(t_parss *envr)
 	t_token	*tokens;
 	int		i;
 	int		j;
-
 	i = 0;
 	j = 0;
 	tokens = NULL;
@@ -70,5 +69,12 @@ void parss(t_parss *envr)
         temp = temp->next;
 	}
 	t_parss *tmp = envr;
-	expand(tokens->content, tmp->env);
+	while (tokens)
+	{
+		char *tcm = tokens->content;
+		if (tcm[0] == '$')
+			break;
+		tokens = tokens->next;
+	}
+	expand(tokens, tmp->env);
 }
