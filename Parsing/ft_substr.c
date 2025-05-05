@@ -1,38 +1,39 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   ft_substr.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: bael-bad <bael-bad@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/04/16 16:53:56 by bael-bad          #+#    #+#             */
-/*   Updated: 2025/05/04 20:46:19 by bael-bad         ###   ########.fr       */
+/*   Created: 2025/05/04 21:06:32 by bael-bad          #+#    #+#             */
+/*   Updated: 2025/05/04 21:07:16 by bael-bad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "includes/minishell.h"
 
-void sigint_handler(int sig)
+char	*ft_substr(char *s, int start, int len)
 {
-    (void)sig;
-    rl_replace_line("", 0);
-    write(1, "\n", 1);
-    rl_on_new_line();
-    rl_redisplay();
-}
+	int	i;
+	char	*tmp;
+	int	len_s;
 
-
-int main(int ac, char **av, char **env)
-{
-    (void)ac;
-    (void)av;
-    t_parss path;
-    
-    path.env = env;
-    signal(SIGINT, sigint_handler);
-    signal(SIGQUIT, SIG_IGN);
-    while (1)
-    {
-        parss(&path);
-    }
+	if (!s)
+		return (NULL);
+	len_s = ft_strlen(s);
+	if (start >= len_s)
+		return (ft_strdup(""));
+	if (len > len_s - start)
+		len = len_s - start;
+	tmp = malloc((len + 1) * sizeof(char));
+	i = 0;
+	if (!tmp)
+		return (NULL);
+	while (i < len && s[start + i])
+	{
+		tmp[i] = s[start + i];
+		i++;
+	}
+	tmp[i] = '\0';
+	return (tmp);
 }
