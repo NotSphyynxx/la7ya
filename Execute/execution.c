@@ -1,18 +1,28 @@
 
 #include "minishell.h"
 
-void	cmnd_check(char **input, char **envp, t_exec *exec)
+void	cmnd_check(char **input, char **envp, t_exec *exec, t_token *tokens)
 {
-	builtin_check(input, envp);
-	if (contains_pipe(input)){
-		execute_piped_commands(input, exec);
-	}
-	else
-	{
-		execute(input, exec);
-		waitpid(exec->chld_pid, NULL, 0);
-	}
+    if (tokens)
+    {
+        if (contains_pipe_in_tokens(tokens))
+            execute_piped_commands(tokens, exec);
+        else
+        {
+            char **cmd = tokens_to_cmd(tokens, NULL);
+            execute(cmd, exec);
+            waitpid(exec->chld_pid, NULL, 0);
+            ft_free_str_array(cmd);
+        }
+    }
+    else if (input)
+    {
+        builtin_check(input, envp);
+        execute(input, exec);
+        waitpid(exec->chld_pid, NULL, 0);
+    }
 }
+
 
 void	execute(char	**input, t_exec *exec)
 {
@@ -42,76 +52,68 @@ void	execute(char	**input, t_exec *exec)
 	}
 }
 
-void execute_piped_commands(char **input, t_exec *exec) {
-    int	fd[2], prev_fd = -1, i = 0;
-	pid_t	child_pid;
+void execute_piped_commands(t_token *tokens, t_exec *exec)
+{
+    t_token *curr = tokens;
+    t_token *start = tokens;
+    pid_t child_pid;
+    int fd[2];
+    int prev_fd = -1;
 
-	while (input[i])
-	{
-		if (ft_strcmp(input[i], "|") == 0)
-		{
-			input[i] = NULL;
-            if (pipe(fd) == -1) {
-                perror("pipe error");
-				return;
-			}
-			
-			child_pid = fork();
-			if (child_pid == -1) {
-                perror("fork error");
-                return;
-            }
-
+    while (curr)
+    {
+        if (curr->type == PIPE)
+        {
+            pipe(fd);
+            child_pid = fork();
             if (child_pid == 0)
-			{
-                dup2(fd[1], STDOUT_FILENO);
-                close(fd[0]);
+            {
                 if (prev_fd != -1)
-				{
+                {
                     dup2(prev_fd, STDIN_FILENO);
                     close(prev_fd);
                 }
-                execute(split_command(input, 0, i), exec);
-				waitpid(exec->chld_pid, NULL, 0);
-                exit(0); // Child exits after execve
+                dup2(fd[1], STDOUT_FILENO);
+                close(fd[0]);
+                close(fd[1]);
+
+                char **cmd = tokens_to_cmd(start, curr);
+                execute(cmd, exec);
+                waitpid(exec->chld_pid, NULL, 0);
+                ft_free_str_array(cmd);
+                exit(0);
             }
-			else
-			{
-                close(fd[1]); // Close write end of pipe in parent
-                if (prev_fd != -1) close(prev_fd); // Close previous pipe
-                prev_fd = fd[0]; // Store read end for next process
+            else
+            {
+                close(fd[1]);
+                if (prev_fd != -1)
+                    close(prev_fd);
+                prev_fd = fd[0];
             }
-            input += i + 1;
-            i = 0;
+            start = curr->next;
         }
-		else
-		{
-            i++;
-        }
+        curr = curr->next;
     }
-    if (*input)
-	{
-        child_pid = fork();
-        if (child_pid == -1)
-		{
-            perror("fork error");
-            return;
+
+    child_pid = fork();
+    if (child_pid == 0)
+    {
+        if (prev_fd != -1)
+        {
+            dup2(prev_fd, STDIN_FILENO);
+            close(prev_fd);
         }
-        if (child_pid == 0)
-		{
-            if (prev_fd != -1)
-			{
-                dup2(prev_fd, STDIN_FILENO);
-                close(prev_fd);
-            }
-            execute(input, exec);
-			waitpid(exec->chld_pid, NULL, 0);
-            exit(0);
-        }
-		else
-		{
-            if (prev_fd != -1) close(prev_fd);
-        }
+        char **cmd = tokens_to_cmd(start, NULL);
+        execute(cmd, exec);
+        waitpid(exec->chld_pid, NULL, 0);
+        ft_free_str_array(cmd);
+        exit(0);
     }
-    waitpid(child_pid, NULL, 0);
+    else
+    {
+        if (prev_fd != -1)
+            close(prev_fd);
+    }
+
+    while (wait(NULL) > 0); // wait for all children
 }

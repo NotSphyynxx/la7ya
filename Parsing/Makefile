@@ -1,13 +1,13 @@
 #------------------------------Source Files------------------------------------#
 SRC = main.c parss.c lstadd.c ft_split.c ft_strlen.c ft_strcmp.c new_token.c ft_strdup.c \
-		type.c check_syntax.c expand.c
+		type.c check_syntax.c expand.c ft_strncmp.c ft_substr.c ft_strchr.c
 
 #------------------------------Object Files------------------------------------#
 OBJ = $(SRC:.c=.o)
 
 #------------------------------Compiler and Flags------------------------------#
 CC = cc
-CFLAGS = -Wall -Wextra -Werror
+CFLAGS = -Wall -Wextra -Werror #-g -fsanitize=address
 
 #------------------------------Includes and Executables------------------------#
 NAME = minishell

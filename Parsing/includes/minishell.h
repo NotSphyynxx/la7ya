@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bael-bad <bael-bad@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ilarhrib <ilarhrib@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/16 16:56:49 by bael-bad          #+#    #+#             */
-/*   Updated: 2025/04/30 17:07:15 by bael-bad         ###   ########.fr       */
+/*   Updated: 2025/05/05 19:53:08 by ilarhrib         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,12 @@ typedef struct s_token
     struct s_token *next;
 } t_token;
 
-void parss();
+typedef struct s_parss
+{
+    char **env;
+}t_parss;
+
+void parss(t_parss *envr);
 void	ft_lstadd_back(t_token **lst, t_token *new);
 char	*ft_strdup(char *s1);
 char	**ft_split(char *s, char c);
@@ -53,5 +58,9 @@ t_token *new_token(char *valu, t_type type);
 void    add_token(t_token **tokens, t_token *new_tok);
 char    *type_to_string(t_type type);
 int check_syntax(t_token *tokens);
+int	ft_strncmp(char *s1, char *s2, int n);
+void    expand(t_token *tokens, char **env);
+char	*ft_substr(char *s, int start, int len);
+char	*ft_strchr(const char *s, int c);
 
 #endif

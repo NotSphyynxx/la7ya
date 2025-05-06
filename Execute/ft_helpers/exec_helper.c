@@ -6,7 +6,7 @@
 /*   By: ilarhrib <ilarhrib@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/05 15:28:27 by ilarhrib          #+#    #+#             */
-/*   Updated: 2025/05/05 15:54:30 by ilarhrib         ###   ########.fr       */
+/*   Updated: 2025/05/06 17:16:07 by ilarhrib         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,9 @@
 
 void	builtin_check(char **input, char **envp)
 {
-	if (ft_strcmp(input[0], "echo") == 0)
+	if (!input || !(*input))
+		return ;
+	else if (ft_strcmp(input[0], "echo") == 0)
 		shell_echo(input);
 	else if (ft_strcmp(input[0], "env") == 0)
 		shell_env(input, envp);
@@ -91,42 +93,52 @@ char *find_command_path(char *cmd)
 	return (NULL);
 }
 
-char **split_command(char **input, int start, int end)
+char **tokens_to_cmd(t_token *start, t_token *end)
 {
-    char **cmd;
-    int i, count;
+	int count = 0;
+	t_token *temp = start;
+	while (temp != end)
+	{
+    	if (temp->type == WORD)
+			count++;
+    	temp = temp->next;
+	}
 
-    if (end == -1) {
-        count = 0;
-        while (input[start + count])
-            count++;
-    } else {
-        count = end - start;
-    }
+	char **cmd = malloc(sizeof(char *) * (count + 1));
+	temp = start;
+	int i;
 
-    cmd = malloc(sizeof(char *) * (count + 1));
-    if (!cmd)
-        return (NULL);
-
-    i = 0;
-    while (i < count) {
-        cmd[i] = ft_strdup(input[start + i]); // Ensure correct memory allocation
-        i++;
-    }
-    cmd[count] = NULL; // Null terminate
-
-    return (cmd);
+	i = 0;
+	while (temp != end)
+	{
+		if (temp->type == WORD)
+			cmd[i++] = ft_strdup(temp->value);
+		temp = temp->next;
+	}
+	cmd[i] = NULL;
+	return (cmd);
 }
 
-int contains_pipe(char **input)
+int contains_pipe_in_tokens(t_token *tokens)
 {
-    int i = 0;
-
-    while (input[i]) {
-        if (ft_strcmp(input[i], "|") == 0)
-            return (1);
-        i++;
-    }
-
-    return (0);
+	t_token *curr = tokens;
+	while (curr)
+	{
+		if (curr->type == PIPE)
+			return 1;
+		curr = curr->next;
+	}
+	return 0;
 }
+
+int has_redirection(char *line)
+{
+    while (*line)
+    {
+        if (*line == '|' || *line == '<' || *line == '>')
+            return 1;
+        line++;
+    }
+    return 0;
+}
+

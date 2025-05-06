@@ -6,7 +6,7 @@
 /*   By: ilarhrib <ilarhrib@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/21 17:12:38 by ilarhrib          #+#    #+#             */
-/*   Updated: 2025/05/05 17:44:56 by ilarhrib         ###   ########.fr       */
+/*   Updated: 2025/05/06 17:15:48 by ilarhrib         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,34 +21,32 @@
 # include <fcntl.h>
 # include <sys/wait.h>
 # include <signal.h>
+# include <stdbool.h>
 
-typedef enum
-{
+typedef enum e_token_type {
     WORD,
     PIPE,
-    REDIR_IN,
-    REDIR_OUT,
-    REDIR_APPEND,
-    HEREDOC,
-    ENV_VAR,
-    SINGLE_QUOTE1,
-    SINGLE_QUOTE2,
-    DOUBLE_QUOTE1,
-    DOUBLE_QUOTE2
-}t_type;
+    REDIR_IN,    // <
+    REDIR_OUT,   // >
+    REDIR_APPEND, // >>
+    HEREDOC,     // <<
+    ENV_VAR      // $
+} t_token_type;
 
-typedef struct s_token
-{
-    char *value;
-    t_type type;
-    void			*content;
-    struct s_token *next;
+typedef struct s_token {
+    char            *value;
+    t_token_type    type;
+    struct s_token  *next;
 } t_token;
 
 typedef struct	s_exec{
 	pid_t	chld_pid;
 } t_exec;
 
+//``````````````Sphynx``````````````````````//
+t_token *tokenize_input(const char *input);
+void print_tokens(t_token *tokens);
+void free_tokens(t_token *tokens);
 
 //@-------------utils----------------------@//
 char	**ft_split(char const *s, char c);
@@ -73,23 +71,26 @@ int		ft_atoi(const char *str);
 void	ft_lstadd_back(t_token **lst, t_token *new);
 
 //@------------Parsing--------------------@//
-t_token *new_token(char *valu, t_type type);
-void    add_token(t_token **tokens, t_token *new_tok);
-char    *type_to_string(t_type type);
-int		check_syntax(t_token *tokens);
+// t_token *new_token(char *valu, t_type type);
+// void    add_token(t_token **tokens, t_token *new_tok);
+// char    *type_to_string(t_type type);
+// int		check_syntax(t_token *tokens);
 void	sigint_handler(int sig);
-void	parss(char **input);
+// t_token	*parss(char *input, char **envp);
+// void    expand(t_token *tokens, char **env);
+// void    free_tokens(t_token *tokens);
 
 //@------------Execution------------------@//
 void	execute(char **input, t_exec *exec);
-void	cmnd_check(char **input, char **envp, t_exec *exec);
+void	cmnd_check(char **input, char **envp, t_exec *exec, t_token *token);
 void	builtin_check(char **input, char **envp);
-void	execute_piped_commands(char **input, t_exec *exec);
+void    execute_piped_commands(t_token *tokens, t_exec *exec);
 //~~~~~~~~~~~~Exec_helpers~~~~~~~~~~~~~~~
+int     has_redirection(char *input);
 void	ft_free_str_array(char **array);
 char	*find_command_path(char *cmd);
-char	**split_command(char **input, int start, int end);
-int		contains_pipe(char **input);
+int     contains_pipe_in_tokens(t_token *tokens);
+char    **tokens_to_cmd(t_token *start, t_token *end);
 //~~~~~~~~~~~~Builtins~~~~~~~~~~~~~~~~~~~
 int		shell_echo(char **av);
 int		shell_env(char **av,  char **envp);

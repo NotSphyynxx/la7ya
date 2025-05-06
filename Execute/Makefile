@@ -6,8 +6,7 @@ CFLAGS  = -I$(HOME)/.local/include
 
 SRCS    = main.c ft_helpers/utils_1.c ft_helpers/utils_2.c ft_helpers/ft_split.c ft_helpers/tmp_env.c \
 		shell_builtins.c execution.c ft_helpers/utils_3.c shell_builtins_2.c shell_builtins_3.c \
-		ft_helpers/utils_4.c ft_helpers/exec_helper.c parss.c new_token.c type.c check_syntax.c expand.c \
-		ft_helpers/pars_helpers.c
+		ft_helpers/utils_4.c ft_helpers/exec_helper.c sphynx.c ft_helpers/pars_helpers.c \
 
 OBJS    = $(SRCS:.c=.o)
 

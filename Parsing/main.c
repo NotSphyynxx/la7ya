@@ -1,14 +1,3 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: ilarhrib <ilarhrib@student.42.fr>          +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/04/16 16:53:56 by bael-bad          #+#    #+#             */
-/*   Updated: 2025/05/05 17:16:28 by ilarhrib         ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
 
 #include "includes/minishell.h"
 
@@ -26,11 +15,14 @@ int main(int ac, char **av, char **env)
 {
     (void)ac;
     (void)av;
-    (void)env;
+    t_parss path;
+    
+    path.env = env;
     signal(SIGINT, sigint_handler);
     signal(SIGQUIT, SIG_IGN);
     while (1)
     {
-        parss();
+        parss(&path);
+        continue;
     }
 }
