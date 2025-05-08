@@ -6,7 +6,7 @@
 /*   By: ilarhrib <ilarhrib@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/21 17:12:38 by ilarhrib          #+#    #+#             */
-/*   Updated: 2025/05/06 17:15:48 by ilarhrib         ###   ########.fr       */
+/*   Updated: 2025/05/08 16:06:06 by ilarhrib         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,6 +43,11 @@ typedef struct	s_exec{
 	pid_t	chld_pid;
 } t_exec;
 
+typedef struct exec_token {
+    t_token *strt;
+    t_token *crr;
+} e_token;
+
 //``````````````Sphynx``````````````````````//
 t_token *tokenize_input(const char *input);
 void print_tokens(t_token *tokens);
@@ -70,6 +75,7 @@ int		ft_isdigit(int ch);
 int		ft_atoi(const char *str);
 void	ft_lstadd_back(t_token **lst, t_token *new);
 
+
 //@------------Parsing--------------------@//
 // t_token *new_token(char *valu, t_type type);
 // void    add_token(t_token **tokens, t_token *new_tok);
@@ -81,16 +87,20 @@ void	sigint_handler(int sig);
 // void    free_tokens(t_token *tokens);
 
 //@------------Execution------------------@//
-void	execute(char **input, t_exec *exec);
+// void	execute(char	**input, t_exec *exec, t_token *tokens);
+void	execute(char **input, t_exec *exec, t_token *start, t_token *end);
 void	cmnd_check(char **input, char **envp, t_exec *exec, t_token *token);
 void	builtin_check(char **input, char **envp);
 void    execute_piped_commands(t_token *tokens, t_exec *exec);
+// int     handle_redirections(t_token *tokens);
+// int		apply_redirections(t_token *start, t_token *end);
 //~~~~~~~~~~~~Exec_helpers~~~~~~~~~~~~~~~
-int     has_redirection(char *input);
+int		apply_redirections(t_token *start, t_token *end);
 void	ft_free_str_array(char **array);
 char	*find_command_path(char *cmd);
 int     contains_pipe_in_tokens(t_token *tokens);
 char    **tokens_to_cmd(t_token *start, t_token *end);
+void	handle_heredocs(t_token *tokens);
 //~~~~~~~~~~~~Builtins~~~~~~~~~~~~~~~~~~~
 int		shell_echo(char **av);
 int		shell_env(char **av,  char **envp);

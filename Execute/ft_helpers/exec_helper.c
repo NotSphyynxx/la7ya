@@ -6,7 +6,7 @@
 /*   By: ilarhrib <ilarhrib@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/05 15:28:27 by ilarhrib          #+#    #+#             */
-/*   Updated: 2025/05/06 17:16:07 by ilarhrib         ###   ########.fr       */
+/*   Updated: 2025/05/08 16:05:46 by ilarhrib         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,50 +95,33 @@ char *find_command_path(char *cmd)
 
 char **tokens_to_cmd(t_token *start, t_token *end)
 {
-	int count = 0;
-	t_token *temp = start;
-	while (temp != end)
-	{
-    	if (temp->type == WORD)
-			count++;
-    	temp = temp->next;
-	}
+    int count = 0;
+    t_token *temp = start;
 
-	char **cmd = malloc(sizeof(char *) * (count + 1));
-	temp = start;
-	int i;
-
-	i = 0;
-	while (temp != end)
-	{
-		if (temp->type == WORD)
-			cmd[i++] = ft_strdup(temp->value);
-		temp = temp->next;
-	}
-	cmd[i] = NULL;
-	return (cmd);
-}
-
-int contains_pipe_in_tokens(t_token *tokens)
-{
-	t_token *curr = tokens;
-	while (curr)
-	{
-		if (curr->type == PIPE)
-			return 1;
-		curr = curr->next;
-	}
-	return 0;
-}
-
-int has_redirection(char *line)
-{
-    while (*line)
+    while (temp != end)
     {
-        if (*line == '|' || *line == '<' || *line == '>')
-            return 1;
-        line++;
+        if (temp->type == WORD)
+            count++;
+        // skip redirection and its target
+        if (temp->type == REDIR_OUT || temp->type == REDIR_APPEND ||
+            temp->type == REDIR_IN || temp->type == HEREDOC)
+            temp = temp->next;  // skip target token
+        temp = temp->next;
     }
-    return 0;
-}
 
+    char **cmd = malloc(sizeof(char *) * (count + 1));
+    temp = start;
+    int i = 0;
+
+    while (temp != end)
+    {
+        if (temp->type == WORD)
+            cmd[i++] = ft_strdup(temp->value);
+        if (temp->type == REDIR_OUT || temp->type == REDIR_APPEND ||
+            temp->type == REDIR_IN || temp->type == HEREDOC)
+            temp = temp->next;
+        temp = temp->next;
+    }
+    cmd[i] = NULL;
+    return (cmd);
+}
