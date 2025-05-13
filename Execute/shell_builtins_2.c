@@ -1,9 +1,8 @@
 #include "minishell.h"
 
-static	void	add_to_env(char **envp, char *str)
+static	void	add_to_env(char **env, char *str)
 {
 	int i;
-	char **env;
 
     i = 0;
     while(env && env[i])
@@ -112,6 +111,13 @@ int shell_export(char **av) {
 				printf("%s\n", name);
 				add_to_env(*get_env(), name);
 			}
+			env = *get_env();
+			while (env && *env) {
+            write(STDOUT_FILENO, "declare -x ", 12);
+            write(STDOUT_FILENO, *env, ft_strlen(*env));
+            write(STDOUT_FILENO, "\n", 1);
+            env++;
+        }
         }
         free(name);
         free(value);
