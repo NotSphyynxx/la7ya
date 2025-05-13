@@ -6,7 +6,7 @@
 /*   By: ilarhrib <ilarhrib@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/08 16:05:20 by ilarhrib          #+#    #+#             */
-/*   Updated: 2025/05/08 16:05:50 by ilarhrib         ###   ########.fr       */
+/*   Updated: 2025/05/13 16:03:24 by ilarhrib         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,15 +66,4 @@ int contains_pipe_in_tokens(t_token *tokens)
 		curr = curr->next;
 	}
 	return 0;
-}
-
-int has_redirection(char *line)
-{
-    while (*line)
-    {
-        if (*line == '|' || *line == '<' || *line == '>')
-            return 1;
-        line++;
-    }
-    return 0;
 }

@@ -1,3 +1,14 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   execution.c                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: ilarhrib <ilarhrib@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/05/08 17:24:48 by ilarhrib          #+#    #+#             */
+/*   Updated: 2025/05/13 17:45:18 by ilarhrib         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
 #include "minishell.h"
 
@@ -5,17 +16,19 @@ void cmnd_check(char **input, char **envp, t_exec *exec, t_token *tokens)
 {
     if (tokens)
     {
-        handle_heredocs(tokens);
         if (contains_pipe_in_tokens(tokens))
         {
             execute_piped_commands(tokens, exec);
         }
         else
         {
-            builtin_check(input, envp);
             char **cmd = tokens_to_cmd(tokens, NULL);
-            execute(cmd, exec, tokens, NULL);
-            waitpid(exec->chld_pid, NULL, 0);
+            if (!builtin_check(input, envp))
+            {
+                printf("1.5\n");
+                execute(cmd, exec, tokens, NULL);
+                waitpid(exec->chld_pid, NULL, 0);
+            }
             ft_free_str_array(cmd);
         }
     }
@@ -27,14 +40,11 @@ void cmnd_check(char **input, char **envp, t_exec *exec, t_token *tokens)
     }
 }
 
-
-
 // ✅ execute: fork, apply redirections for this command, execve
 void execute(char **input, t_exec *exec, t_token *start, t_token *end)
 {
     pid_t child_pid;
     char *path;
-
     child_pid = fork();
     if (child_pid == -1)
     {
@@ -45,6 +55,10 @@ void execute(char **input, t_exec *exec, t_token *start, t_token *end)
     {
         if (apply_redirections(start, end) == -1)
             exit(1);
+        if(builtin_check(input, *get_env()))
+        {
+            exit(1);
+        }
         path = find_command_path(input[0]);
         if (!path)
         {

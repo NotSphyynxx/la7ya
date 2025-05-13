@@ -5,7 +5,9 @@ int shell_echo(char **av)
 {
 	int	i;
 	int	new_line;
+	char	**str;
 
+	str = av;
 	i = 1;
 	new_line = 1;
 	if (av[1] && av[1][0] == '-' && av[1][1] == 'n' && av[1][2] == '\0')
@@ -15,10 +17,11 @@ int shell_echo(char **av)
 	}
 	while (av[i])
 	{
-		while (*av[i])
+		char *p = av[i];
+		while (*p)
 		{
-			write(STDOUT_FILENO, av[i], 1);
-			av[i]++;
+			write(STDOUT_FILENO, p, 1);
+			p++;
 		}
 		if (av[i + 1])
 			write(STDOUT_FILENO, " ", 1);
@@ -39,6 +42,15 @@ int	shell_env(char **av,  char **envp)
 		return (1);
 	}
 	env = envp;
+	if (*env == NULL)
+	{
+		char *cd = getcwd(NULL, 0);
+		write(STDOUT_FILENO, cd, ft_strlen(cd));
+		write(STDOUT_FILENO, "\n", 1);
+		write(STDOUT_FILENO, "SHLVL=1\n", 8);
+		write(STDOUT_FILENO, "_=/usr/bin/env\n", 15);
+
+	}
 	while (*env)
 	{
 		write (STDOUT_FILENO, *env, ft_strlen(*env));
@@ -56,7 +68,7 @@ int	shell_pwd(char **av)
 	cwd = getcwd(NULL, 0);
 	if (!cwd)
 	{
-		write(STDERR_FILENO, "pwd: error getting directory\n", 28);
+		write(STDERR_FILENO, "pwd: error getting directory\n", 29);
 		return (1);
 	}
 	write(STDOUT_FILENO, cwd, ft_strlen(cwd));

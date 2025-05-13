@@ -1,6 +1,6 @@
 NAME    = minishell
 
-CC      = cc
+CC      = cc #-g -fsanitize=address
 
 CFLAGS  = -I$(HOME)/.local/include
 

@@ -9,7 +9,7 @@ int main(int ac, char **av, char **envp)
     (void)ac;
     (void)av;
 
-    printf("================ | Welcome to sara9osta |================\n");
+    printf("================ | Welcome to sara9osta | ================\n");
     *get_env() = envp;
 
     // Signals
@@ -24,25 +24,30 @@ int main(int ac, char **av, char **envp)
             printf("exit\n");
             exit(0);
         }
-
         if (*readed)
             add_history(readed);
         tokens = tokenize_input(readed);
-        if (tokens)
+        if (tokens && is_simple_builtin_tokens(tokens))
         {
-            cmnd_check(NULL, envp, &exec, tokens);
+            char **input = tokens_to_cmd_without_redirs(tokens);
+            if (input && input[0])
+                builtin_check(input, *get_env());
+            ft_free_str_array(input);
+            free_tokens(tokens);
+        }
+        else if (tokens)
+        {
+            cmnd_check(NULL, *get_env(), &exec, tokens);
             free_tokens(tokens);
         }
         else
         {
-            // fallback for simple split-based commands (no pipes/redirs)
             char **input = ft_split(readed, ' ');
             if (input && input[0])
-                cmnd_check(input, envp, &exec, NULL);
+                cmnd_check(input, *get_env(), &exec, NULL);
             ft_free_str_array(input);
         }
         free(readed);
     }
-
     return (0);
 }

@@ -6,7 +6,7 @@
 /*   By: ilarhrib <ilarhrib@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/06 16:15:50 by ilarhrib          #+#    #+#             */
-/*   Updated: 2025/05/06 16:29:11 by ilarhrib         ###   ########.fr       */
+/*   Updated: 2025/05/13 17:47:09 by ilarhrib         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -122,4 +122,133 @@ void free_tokens(t_token *tokens) {
         free(tokens);
         tokens = next;
     }
+}
+
+void collect_redirections(t_token *tokens, t_redir **in, t_redir **out) {
+    t_token *curr = tokens;
+    while (curr) {
+        if (curr->type == REDIR_IN || curr->type == HEREDOC) {
+            t_redir *new = malloc(sizeof(t_redir));
+            new->filename = curr->next ? strdup(curr->next->value) : NULL;
+            new->type = curr->type;
+            new->next = *in;
+            *in = new;
+            curr = curr->next; // Skip filename token
+        }
+        else if (curr->type == REDIR_OUT || curr->type == REDIR_APPEND) {
+            t_redir *new = malloc(sizeof(t_redir));
+            new->filename = curr->next ? strdup(curr->next->value) : NULL;
+            new->type = curr->type;
+            new->next = *out;
+            *out = new;
+            curr = curr->next; // Skip filename token
+        }
+        curr = curr->next;
+    }
+}
+
+void setup_redirections(t_redir *in, t_redir *out) {
+    // Handle input redirections (last one wins)
+    while (in) {
+        int fd = open(in->filename, O_RDONLY);
+        if (fd == -1) {
+            perror("open");
+            exit(EXIT_FAILURE);
+        }
+        dup2(fd, STDIN_FILENO);
+        close(fd);
+        in = in->next;
+    }
+
+    // Handle output redirections (process in reverse order)
+    t_redir *last_out = NULL;
+    t_redir *tmp = out;
+    while (tmp) {
+        last_out = tmp;  // Find the last one
+        tmp = tmp->next;
+    }
+
+    if (last_out) {
+        int flags = O_WRONLY | O_CREAT;
+        if (last_out->type == REDIR_APPEND)
+            flags |= O_APPEND;
+        else
+            flags |= O_TRUNC;
+
+        int fd = open(last_out->filename, flags, 0644);
+        if (fd == -1) {
+            perror("open");
+            exit(EXIT_FAILURE);
+        }
+        dup2(fd, STDOUT_FILENO);
+        close(fd);
+    }
+}
+
+void free_redirections(t_redir *list) {
+    while (list) {
+        t_redir *next = list->next;
+        free(list->filename);
+        free(list);
+        list = next;
+    }
+}
+
+bool is_simple_builtin_tokens(t_token *tokens)
+{
+    if (!tokens || tokens->type != WORD)
+        return false;
+
+    if (ft_strcmp(tokens->value, "echo") == 0 ||
+        ft_strcmp(tokens->value, "pwd") == 0 ||
+        ft_strcmp(tokens->value, "exit") == 0 ||
+        ft_strcmp(tokens->value, "cd") == 0 ||
+        ft_strcmp(tokens->value, "export") == 0 ||
+        ft_strcmp(tokens->value, "unset") == 0)
+        return true;
+
+    return false;
+}
+
+
+bool contains_redirection(t_token *tokens)
+{
+    while (tokens)
+    {
+        if (tokens->type == REDIR_IN ||
+            tokens->type == REDIR_OUT ||
+            tokens->type == REDIR_APPEND ||
+            tokens->type == HEREDOC)
+            return (true);
+        tokens = tokens->next;
+    }
+    return (false);
+}
+
+char **tokens_to_cmd_without_redirs(t_token *tokens)
+{
+    int count = 0;
+    t_token *tmp = tokens;
+
+    while (tmp)
+    {
+        if (tmp->type == WORD)
+            count++;
+        tmp = tmp->next;
+    }
+
+    char **cmd = malloc(sizeof(char *) * (count + 1));
+    if (!cmd)
+        return NULL;
+
+    int i = 0;
+    tmp = tokens;
+    while (tmp)
+    {
+        if (tmp->type == WORD)
+            cmd[i++] = ft_strdup(tmp->value);
+        tmp = tmp->next;
+    }
+    cmd[i] = NULL;
+    return cmd;
 }
