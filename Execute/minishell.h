@@ -6,7 +6,7 @@
 /*   By: ilarhrib <ilarhrib@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/21 17:12:38 by ilarhrib          #+#    #+#             */
-/*   Updated: 2025/05/13 16:04:53 by ilarhrib         ###   ########.fr       */
+/*   Updated: 2025/05/14 16:56:54 by ilarhrib         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,6 +54,13 @@ typedef struct s_redir {
     struct s_redir *next;
 } t_redir;
 
+typedef struct s_exp {
+    char *key;
+    char *value;
+    struct s_exp *next;
+}   t_exp;
+
+
 //``````````````Sphynx``````````````````````//
 t_token *tokenize_input(const char *input);
 void print_tokens(t_token *tokens);
@@ -66,7 +73,6 @@ bool is_simple_builtin_tokens(t_token *tokens);
 //@-------------utils----------------------@//
 char	**ft_split(char const *s, char c);
 void	error(void);
-char    **realloc_env(char **old_env, char *new_entry);
 char	*ft_strjoin(char const *s1, char const *s2);
 size_t	ft_strlen(const char *str);
 char	*find_path(char *cmd, char **envp);
@@ -85,7 +91,6 @@ int		ft_strncmp(const char *s1, const char *s2, size_t n);
 int		ft_isdigit(int ch);
 int		ft_atoi(const char *str);
 void	ft_lstadd_back(t_token **lst, t_token *new);
-char	**realloc_env(char **env, char *str);
 
 
 //@------------Parsing--------------------@//
@@ -114,7 +119,16 @@ char	*find_command_path(char *cmd);
 int     contains_pipe_in_tokens(t_token *tokens);
 char    **tokens_to_cmd(t_token *start, t_token *end);
 void	handle_heredocs(t_token *tokens);
-void handle__redirection(t_token *tokens, char **envp);
+t_exp	*split_env_to_exp(char *env_entry);
+void	printf_export_list(void);
+t_exp	**get_exp_list(void);
+t_exp	*new_exp_node(char *key, char *value);
+int     ft_isalpha(int ch);
+t_exp	*find_exp(t_exp *list, char *key);
+void	add_exp_back(t_exp **lst, t_exp *new);
+int     check_valid_key(char *key);
+void	export_variable(char *av);
+void	init_export_list(void);
 //~~~~~~~~~~~~Builtins~~~~~~~~~~~~~~~~~~~
 int		shell_echo(char **av);
 int		shell_env(char **av,  char **envp);

@@ -6,7 +6,7 @@
 /*   By: ilarhrib <ilarhrib@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/08 17:24:48 by ilarhrib          #+#    #+#             */
-/*   Updated: 2025/05/13 17:45:18 by ilarhrib         ###   ########.fr       */
+/*   Updated: 2025/05/14 14:42:42 by ilarhrib         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,6 @@ void cmnd_check(char **input, char **envp, t_exec *exec, t_token *tokens)
     }
 }
 
-// ✅ execute: fork, apply redirections for this command, execve
 void execute(char **input, t_exec *exec, t_token *start, t_token *end)
 {
     pid_t child_pid;

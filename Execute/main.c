@@ -11,6 +11,7 @@ int main(int ac, char **av, char **envp)
 
     printf("================ | Welcome to sara9osta | ================\n");
     *get_env() = envp;
+	init_export_list();
 
     // Signals
     signal(SIGINT, sigint_handler);
@@ -31,7 +32,9 @@ int main(int ac, char **av, char **envp)
         {
             char **input = tokens_to_cmd_without_redirs(tokens);
             if (input && input[0])
+            {
                 builtin_check(input, *get_env());
+            }
             ft_free_str_array(input);
             free_tokens(tokens);
         }

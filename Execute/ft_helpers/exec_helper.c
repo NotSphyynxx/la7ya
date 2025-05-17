@@ -6,7 +6,7 @@
 /*   By: ilarhrib <ilarhrib@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/05 15:28:27 by ilarhrib          #+#    #+#             */
-/*   Updated: 2025/05/13 17:47:53 by ilarhrib         ###   ########.fr       */
+/*   Updated: 2025/05/14 16:25:52 by ilarhrib         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,6 @@
 
 int builtin_check(char **input, char **envp)
 {
-    printf("here2\n");
     if (!input || !(*input))
         return (0);
     else if (ft_strcmp(input[0], "echo") == 0)
@@ -128,5 +127,11 @@ char **tokens_to_cmd(t_token *start, t_token *end)
     return (cmd);
 }
 
-
-
+int	ft_isalpha(int ch)
+{
+	if ((ch >= 'A' && ch <= 'Z') || (ch >= 'a' && ch <= 'z'))
+	{
+		return (1);
+	}
+	return (0);
+}

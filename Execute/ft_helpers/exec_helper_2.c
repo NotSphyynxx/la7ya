@@ -6,7 +6,7 @@
 /*   By: ilarhrib <ilarhrib@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/08 16:05:20 by ilarhrib          #+#    #+#             */
-/*   Updated: 2025/05/13 16:03:24 by ilarhrib         ###   ########.fr       */
+/*   Updated: 2025/05/14 17:08:25 by ilarhrib         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,4 +66,37 @@ int contains_pipe_in_tokens(t_token *tokens)
 		curr = curr->next;
 	}
 	return 0;
+}
+
+void	printf_export_list(void)
+{
+	t_exp *env;
+
+	env = *get_exp_list();
+	while(env)
+	{
+		write(1, "declare -x ", 11);
+		write(1, env->key, ft_strlen(env->key));
+		if (env->value)
+		{
+			write(1, "=\"", 2);
+			write(1, env->value, ft_strlen(env->value));
+			write(1, "\"", 1);
+		}
+		write(1, "\n", 1);
+		env = env->next;
+	}
+}
+
+t_exp	*new_exp_node(char *key, char *value)
+{
+	t_exp	*node;
+
+	node = malloc(sizeof(t_exp));
+	if (!node)
+		return (NULL);
+    node->key = key;
+    node->value = value;
+	node->next = NULL;
+	return (node);
 }
