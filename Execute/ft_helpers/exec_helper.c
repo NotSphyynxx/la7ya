@@ -96,33 +96,38 @@ char **tokens_to_cmd(t_token *start, t_token *end)
     int count = 0;
     t_token *temp = start;
 
-    // Count number of WORD tokens
-    while (temp != end)
+    // Count number of WORD tokens (skip redirections)
+    while (temp != end && temp)
     {
         if (temp->type == WORD)
             count++;
-        temp = temp->next;
-    }
-
-    // Allocate command array
-    char **cmd = malloc(sizeof(char *) * (count + 1));
-    if (!cmd)
-        return (NULL);
-
-    temp = start;
-    int i = 0;
-
-    // Add words into cmd array
-    while (temp != end)
-    {
-        if (temp->type == WORD)
-            cmd[i++] = ft_strdup(temp->value);
         else if (temp->type == REDIR_OUT || temp->type == REDIR_APPEND ||
                  temp->type == REDIR_IN || temp->type == HEREDOC)
             temp = temp->next;  // skip the next token (target)
         temp = temp->next;
     }
 
+    // Allocate command array
+    char **cmd = malloc(sizeof(char *) * (count + 1));
+    if (!cmd)
+        return NULL;
+
+    temp = start;
+    int i = 0;
+
+    // Add words into cmd array (skip redirections)
+    while (temp != end && temp)
+    {
+        if (temp->type == WORD) {
+            cmd[i++] = ft_strdup(temp->value); // Use the expanded value
+        }
+        else if (temp->type == REDIR_OUT || temp->type == REDIR_APPEND ||
+                 temp->type == REDIR_IN || temp->type == HEREDOC) {
+            temp = temp->next;  // skip the next token (target)
+        }
+        temp = temp->next;
+    }
+
     cmd[i] = NULL;
-    return (cmd);
+    return cmd;
 }

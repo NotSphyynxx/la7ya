@@ -85,7 +85,6 @@ void execute_piped_commands(t_token *tokens, t_exec *exec)
                 close(fd[1]);
                 if (prev_fd != -1)
                     close(prev_fd);
-                printf("about to execute 1\n");
                 char **cmd = tokens_to_cmd(start, curr);
                 execute(cmd, exec, start, curr);
                 ft_free_str_array(cmd);

@@ -12,6 +12,25 @@
 
 #include "minishell.h"
 
+t_token *parss(char *input, char **envp) {
+    t_token *tokens = tokenize_input(input);
+    if (!tokens) return NULL;
+    
+    // First pass: identify standalone variables as WORD tokens
+    t_token *current = tokens;
+    while (current) {
+        if (current->value[0] == '$' && current->type != ENV_VAR) {
+            current->type = WORD; // Treat as word to be expanded
+        }
+        current = current->next;
+    }
+    
+    // Expand environment variables
+    expand_tokens(tokens, envp);
+    
+    return tokens;
+}
+
 static bool is_quote(char c) {
     return c == '\'' || c == '"';
 }
@@ -115,14 +134,6 @@ void print_tokens(t_token *tokens) {
     }
 }
 
-void free_tokens(t_token *tokens) {
-    while (tokens) {
-        t_token *next = tokens->next;
-        free(tokens->value);
-        free(tokens);
-        tokens = next;
-    }
-}
 
 void collect_redirections(t_token *tokens, t_redir **in, t_redir **out) {
     t_token *curr = tokens;
@@ -251,4 +262,134 @@ char **tokens_to_cmd_without_redirs(t_token *tokens)
     }
     cmd[i] = NULL;
     return cmd;
+}
+
+// Main expansion function for tokens
+// Helper function to expand a single environment variable
+void expand_env_var(t_token *token, char **envp) {
+    if (!token || token->type != WORD || !strchr(token->value, '$'))
+        return;
+
+    char *result = malloc(1);
+    result[0] = '\0';
+    char *ptr = token->value;
+
+    while (*ptr) {
+        if (*ptr == '$' && (ptr == token->value || ptr[-1] != '\\')) {
+            ptr++; // Skip $
+            char var_name[256];
+            int i = 0;
+            
+            // Handle special case $?
+            if (*ptr == '?') {
+                char *exit_status = ft_itoa(g_exit_status);
+                char *new_result = ft_strjoin(result, exit_status);
+                free(result);
+                free(exit_status);
+                result = new_result;
+                ptr++;
+                continue;
+            }
+            
+            // Extract variable name
+            while (*ptr && (ft_isalnum(*ptr) || *ptr == '_')) {
+                var_name[i++] = *ptr++;
+            }
+            var_name[i] = '\0';
+            
+            // Find in environment
+            char *var_value = NULL;
+            for (int j = 0; envp[j]; j++) {
+                if (ft_strncmp(envp[j], var_name, i) == 0 && envp[j][i] == '=') {
+                    var_value = envp[j] + i + 1;
+                    break;
+                }
+            }
+            
+            if (var_value) {
+                char *new_result = ft_strjoin(result, var_value);
+                free(result);
+                result = new_result;
+            }
+        } else {
+            // Append regular character
+            char ch[2] = {*ptr++, '\0'};
+            char *new_result = ft_strjoin(result, ch);
+            free(result);
+            result = new_result;
+        }
+    }
+
+    // Replace the token's value with expanded version
+    free(token->value);
+    token->value = result;
+}
+
+void expand_tokens(t_token *tokens, char **envp) {
+    t_token *current = tokens;
+    
+    while (current) {
+        expand_env_var(current, envp);
+        current = current->next;
+    }
+}
+
+void free_token(t_token *token) {
+    if (!token) return;
+    free(token->value);
+    free(token);
+}
+
+void free_tokens(t_token *tokens) {
+    t_token *current = tokens;
+    t_token *next;
+    
+    while (current) {
+        next = current->next;
+        free_token(current);
+        current = next;
+    }
+}
+
+#include <stdlib.h>
+
+static int	ft_numlen(int n)
+{
+	int	len;
+
+	len = 1;
+	while (n / 10)
+	{
+		len++;
+		n /= 10;
+	}
+	return (len);
+}
+
+char	*ft_itoa(int n)
+{
+	char			*str;
+	int				len;
+	unsigned int	nb;
+
+	len = ft_numlen(n);
+	if (n < 0)
+	{
+		nb = -n;
+		len++; // for the minus sign
+	}
+	else
+		nb = n;
+	str = (char *)malloc(sizeof(char) * (len + 1));
+	if (!str)
+		return (NULL);
+	str[len] = '\0';
+	while (len--)
+	{
+		str[len] = (nb % 10) + '0';
+		nb /= 10;
+	}
+	if (n < 0)
+		str[0] = '-';
+	return (str);
 }

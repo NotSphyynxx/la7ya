@@ -22,6 +22,7 @@
 # include <sys/wait.h>
 # include <signal.h>
 # include <stdbool.h>
+extern int g_exit_status;
 
 typedef enum e_token_type {
 	WORD,
@@ -34,9 +35,9 @@ typedef enum e_token_type {
 } t_token_type;
 
 typedef struct s_token {
-	char            *value;
-	t_token_type    type;
-	struct s_token  *next;
+    char			*value;          // Original token value
+    t_token_type	type;
+    struct s_token	*next;
 } t_token;
 
 typedef struct	s_exec{
@@ -44,8 +45,8 @@ typedef struct	s_exec{
 } t_exec;
 
 typedef struct exec_token {
-	t_token *strt;
-	t_token *crr;
+	t_token	*strt;
+	t_token	*crr;
 } e_token;
 
 typedef struct s_redir {
@@ -69,6 +70,12 @@ bool is_simple_builtin(const char *input);
 bool    contains_redirection(t_token *tokens);
 char **tokens_to_cmd_without_redirs(t_token *tokens);
 bool is_simple_builtin_tokens(t_token *tokens);
+void expand_token_value(t_token *token, char **envp);
+t_token *parss(char *input, char **envp);
+void expand_tokens(t_token *tokens, char **envp);
+void free_token(t_token *token);
+void free_tokens(t_token *tokens);
+char	*ft_itoa(int n);
 
 //@-------------utils----------------------@//
 char	**ft_split(char const *s, char c);

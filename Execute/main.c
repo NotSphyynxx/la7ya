@@ -27,7 +27,14 @@ int main(int ac, char **av, char **envp)
         }
         if (*readed)
             add_history(readed);
-        tokens = tokenize_input(readed);
+        printf("before expanding--> %s\n", readed);
+        tokens = parss(readed, *get_env());
+        while (tokens)
+        {
+            printf("expanded--> %s\n", tokens->value);
+            tokens = tokens->next;
+        }
+        return (0);
         char **input = tokens_to_cmd(tokens, NULL);
         if (tokens || input)
         {
