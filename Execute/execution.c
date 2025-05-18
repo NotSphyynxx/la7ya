@@ -16,59 +16,47 @@ void cmnd_check(char **input, char **envp, t_exec *exec, t_token *tokens)
 {
     if (tokens)
     {
+        handle_heredocs(tokens);
         if (contains_pipe_in_tokens(tokens))
         {
+            printf("contains pipe.....\n");
             execute_piped_commands(tokens, exec);
         }
         else
         {
-            char **cmd = tokens_to_cmd(tokens, NULL);
             if (!builtin_check(input, envp))
             {
-                printf("1.5\n");
-                execute(cmd, exec, tokens, NULL);
-                waitpid(exec->chld_pid, NULL, 0);
+                printf("no contains pipe.....\n");
+                executor_simple_command(tokens, exec);
             }
-            ft_free_str_array(cmd);
         }
-    }
-    else if (input)
-    {
-        builtin_check(input, envp);
-        execute(input, exec, NULL, NULL);
-        waitpid(exec->chld_pid, NULL, 0);
     }
 }
 
 void execute(char **input, t_exec *exec, t_token *start, t_token *end)
 {
-    pid_t child_pid;
     char *path;
-    child_pid = fork();
-    if (child_pid == -1)
-    {
-        perror("fork error");
-        return ;
-    }
-    if (child_pid == 0)
-    {
-        if (apply_redirections(start, end) == -1)
-            exit(1);
-        if(builtin_check(input, *get_env()))
-        {
-            exit(1);
-        }
-        path = find_command_path(input[0]);
-        if (!path)
-        {
-            write(STDERR_FILENO, "minishell: command not found\n", 29);
-            exit(127);
-        }
-        exec->chld_pid = child_pid;
-        execve(path, input, *get_env());
-        perror("execve error");
+
+    if (apply_redirections(start, end) == -1)
         exit(1);
+
+    if (builtin_check(input, *get_env()))
+    {
+        printf("used a builtin\n");
+        exit(0);
     }
+
+    path = find_command_path(input[0]);
+    if (!path)
+    {
+        write(STDERR_FILENO, "minishell: command not found\n", 29);
+        exit(127);
+    }
+
+    printf("about to execve: %s\n", path);
+    execve(path, input, *get_env());
+    perror("execve failed");
+    exit(126);
 }
 
 
@@ -89,6 +77,7 @@ void execute_piped_commands(t_token *tokens, t_exec *exec)
             child_pid = fork();
             if (child_pid == 0)
             {
+                printf("here in child == 0\n");
                 if (prev_fd != -1)
                     dup2(prev_fd, STDIN_FILENO);
                 dup2(fd[1], STDOUT_FILENO);
@@ -96,9 +85,9 @@ void execute_piped_commands(t_token *tokens, t_exec *exec)
                 close(fd[1]);
                 if (prev_fd != -1)
                     close(prev_fd);
+                printf("about to execute 1\n");
                 char **cmd = tokens_to_cmd(start, curr);
                 execute(cmd, exec, start, curr);
-                waitpid(exec->chld_pid, NULL, 0);
                 ft_free_str_array(cmd);
                 exit(0);
             }
@@ -120,8 +109,8 @@ void execute_piped_commands(t_token *tokens, t_exec *exec)
         if (prev_fd != -1)
             close(prev_fd);
         char **cmd = tokens_to_cmd(start, NULL);
+        printf("about to execute 2\n");
         execute(cmd, exec, start, NULL);
-        waitpid(exec->chld_pid, NULL, 0);
         ft_free_str_array(cmd);
         exit(0);
     }
@@ -162,10 +151,53 @@ int apply_redirections(t_token *start, t_token *end)
             fd = open(curr->next->value, O_RDONLY);
             if (fd < 0)
                 return (perror("open <"), -1);
+            // If it's the heredoc temp file, delete it now
+            if (ft_strcmp(curr->next->value, "/tmp/.heredoc_tmp") == 0)
+                unlink(curr->next->value);
+
             dup2(fd, STDIN_FILENO);
             close(fd);
         }
         curr = curr->next;
     }
     return (0);
+}
+
+void executor_simple_command(t_token *tokens, t_exec *exec)
+{
+    pid_t pid;
+    char **cmd;
+    char *path;
+
+    pid = fork();
+    if (pid == -1)
+    {
+        perror("fork error");
+        return ;
+    }
+    if (pid == 0)
+    {
+        if (apply_redirections(tokens, NULL) == -1)
+            return ;
+        cmd = tokens_to_cmd(tokens, NULL);
+        if (builtin_check(cmd, *get_env()))
+        {
+            ft_free_str_array(cmd);
+            exit(0);
+        }
+        path = find_command_path(cmd[0]);
+        if (!path)
+        {
+            write(2, "minishell: command not found\n", 29);
+            ft_free_str_array(cmd);
+            exit(127);
+        }
+        printf("executing cmnd in this path -> %s\n", path);
+        execve(path, cmd, *get_env());
+        printf("1\n");
+        perror("execve failed");
+        ft_free_str_array(cmd);
+        exit(1);
+    }
+    waitpid(pid, NULL, 0);
 }

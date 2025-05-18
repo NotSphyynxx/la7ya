@@ -24,19 +24,19 @@
 # include <stdbool.h>
 
 typedef enum e_token_type {
-    WORD,
-    PIPE,
-    REDIR_IN,    // <
-    REDIR_OUT,   // >
-    REDIR_APPEND, // >>
-    HEREDOC,     // <<
-    ENV_VAR      // $
+	WORD,
+	PIPE,
+	REDIR_IN,    // <
+	REDIR_OUT,   // >
+	REDIR_APPEND, // >>
+	HEREDOC,     // <<
+	ENV_VAR      // $
 } t_token_type;
 
 typedef struct s_token {
-    char            *value;
-    t_token_type    type;
-    struct s_token  *next;
+	char            *value;
+	t_token_type    type;
+	struct s_token  *next;
 } t_token;
 
 typedef struct	s_exec{
@@ -44,20 +44,20 @@ typedef struct	s_exec{
 } t_exec;
 
 typedef struct exec_token {
-    t_token *strt;
-    t_token *crr;
+	t_token *strt;
+	t_token *crr;
 } e_token;
 
 typedef struct s_redir {
-    char *filename;
-    int type;  // REDIR_OUT, REDIR_APPEND, etc.
-    struct s_redir *next;
+	char *filename;
+	int type;  // REDIR_OUT, REDIR_APPEND, etc.
+	struct s_redir *next;
 } t_redir;
 
 typedef struct s_exp {
-    char *key;
-    char *value;
-    struct s_exp *next;
+	char *key;
+	char *value;
+	struct s_exp *next;
 }   t_exp;
 
 
@@ -108,7 +108,8 @@ void	sigint_handler(int sig);
 void	execute(char **input, t_exec *exec, t_token *start, t_token *end);
 void	cmnd_check(char **input, char **envp, t_exec *exec, t_token *token);
 int		builtin_check(char **input, char **envp);
-void    execute_piped_commands(t_token *tokens, t_exec *exec);
+void	execute_piped_commands(t_token *tokens, t_exec *exec);
+void	executor_simple_command(t_token *tokens, t_exec *exec);
 // int     handle_redirections(t_token *tokens);
 // int		apply_redirections(t_token *start, t_token *end);
 
@@ -129,6 +130,9 @@ void	add_exp_back(t_exp **lst, t_exp *new);
 int     check_valid_key(char *key);
 void	export_variable(char *av);
 void	init_export_list(void);
+void	add_to_env(char *av, char *name, char *value);
+int		adjust_env(char *var, char *name);
+int		realloc_env(char *var);
 //~~~~~~~~~~~~Builtins~~~~~~~~~~~~~~~~~~~
 int		shell_echo(char **av);
 int		shell_env(char **av,  char **envp);

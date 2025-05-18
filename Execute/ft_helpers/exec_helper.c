@@ -126,12 +126,3 @@ char **tokens_to_cmd(t_token *start, t_token *end)
     cmd[i] = NULL;
     return (cmd);
 }
-
-int	ft_isalpha(int ch)
-{
-	if ((ch >= 'A' && ch <= 'Z') || (ch >= 'a' && ch <= 'z'))
-	{
-		return (1);
-	}
-	return (0);
-}

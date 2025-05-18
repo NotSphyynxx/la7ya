@@ -32,10 +32,12 @@ void	export_variable(char *av)
 		if (existing->value)
 			free(existing->value);
 		existing->value = value;
+		add_to_env(av, key, value);
 	}
 	else
 	{
 		add_exp_back(get_exp_list(), new_exp_node(key, value));
+		add_to_env(av, key, value);
 		return ;
 	}
 	if (!existing)
