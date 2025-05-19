@@ -15,18 +15,18 @@ OBJS    = $(SRCS:.c=.o)
 
 HEADER = minishell.h
 
-# READLINE_COMPILE = -I$(shell brew --prefix readline)/include
+READLINE_COMPILE = -I$(shell brew --prefix readline)/include
 
-# READLINE_LINK = -lreadline -L$(shell brew --prefix readline)/lib
+READLINE_LINK = -lreadline -L$(shell brew --prefix readline)/lib
 
 all: $(NAME) stock
 
 
 $(NAME): $(OBJS)
-	$(CC) $(CFLAGS) $(OBJS) -lreadline -o $(NAME)
+	$(CC) $(CFLAGS) $(OBJS) $(READLINE_LINK) -o $(NAME)
 
 %.o: %.c $(HEADER)
-	$(CC) $(CFLAGS) -c $< -o $@ 
+	$(CC) $(CFLAGS) $(READLINE_COMPILE) -c $< -o $@ 
 
 stock : $(OBJS)
 	mv *.o obj && mv ft_helpers/*.o obj 

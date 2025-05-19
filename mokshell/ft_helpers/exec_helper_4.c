@@ -33,9 +33,7 @@ void	add_to_env(char *av, char *name, char *value)
 			free(var);
 	}
 	else
-	{
 		free(var);
-	}
 }
 
 int	adjust_env(char *var, char *name)
@@ -101,10 +99,6 @@ int	exist_check(char *env, char *name)
 	{
 		perror("malloc");
 		return (0);
-	}
-	for(int i = 0; mot[i]; i++)
-	{
-		printf("mot[%d] = %s\n", i, mot[i]);
 	}
 	if (ft_strcmp(mot[0], name) == 0)
 	{

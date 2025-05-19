@@ -6,7 +6,7 @@
 /*   By: ilarhrib <ilarhrib@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/21 17:12:38 by ilarhrib          #+#    #+#             */
-/*   Updated: 2025/05/14 16:56:54 by ilarhrib         ###   ########.fr       */
+/*   Updated: 2025/05/19 15:41:13 by ilarhrib         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,10 @@ typedef enum
 typedef struct s_token
 {
     char *value;
+    int    was_double;
+    int    was_single;
     t_type type;
+    char            *content;
     struct s_token *next;
 } t_token;
 
@@ -109,6 +112,7 @@ int		ft_strncmp(const char *s1, const char *s2, size_t n);
 int		ft_isdigit(int ch);
 int		ft_atoi(const char *str);
 void	ft_lstadd_back(t_token **lst, t_token *new);
+int    ft_isspace(char c);
 
 
 //@------------Parsing--------------------@//

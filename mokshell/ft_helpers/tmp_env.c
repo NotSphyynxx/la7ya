@@ -44,7 +44,7 @@ char	**init_env(char **envp)
 	i = 0;
 	while (envp[i])
 	{
-		new_env[i] = envp[i];
+		new_env[i] = ft_strdup(envp[i]);
 		i++;
 	}
 	new_env[i] = NULL;
