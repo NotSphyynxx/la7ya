@@ -6,17 +6,13 @@ t_token *parss(char *line, t_parss *envr)
 {
     t_token *tokens = NULL;
     int i = 0;
-
     while (line[i])
     {
-        // Skip spaces
         if (ft_isspace(line[i]))
         {
             i++;
             continue;
         }
-
-        // Handle PIPE
         if (line[i] == '|')
         {
             if (line[i + 1] == '|') {
@@ -26,7 +22,6 @@ t_token *parss(char *line, t_parss *envr)
             add_token(&tokens, new_token(ft_strdup("|"), PIPE));
             i++;
         }
-        // Handle Redirections
         else if (line[i] == '>' || line[i] == '<')
         {
             if (line[i] == '>' && line[i + 1] == '>' && line[i + 2] == '>')
@@ -56,7 +51,6 @@ t_token *parss(char *line, t_parss *envr)
                 i++;
             }
         }
-        // Handle Quoted Strings
         else if (line[i] == '\'' || line[i] == '"')
         {
             char quote = line[i++];
@@ -70,11 +64,11 @@ t_token *parss(char *line, t_parss *envr)
             }
             char *quoted = ft_substr(line, start, i - start);
             add_token(&tokens, new_token(quoted, WORD));
+			tokens->was_single = 0;
             if (quote == '\'')
                 tokens->was_single = 1;
             else
                 tokens->was_double = 1;
-			printf("the value == %s || the single count %d\n", tokens->value, tokens->was_single);
             i++; // Skip closing quote
         }
         else
@@ -92,24 +86,6 @@ t_token *parss(char *line, t_parss *envr)
         printf("Invalid syntax.\n");
         return NULL;
     }
-
-    // Debug print tokens
-    // t_token *tmp = tokens;
-    // while (tmp)
-    // {
-    //     printf("Token: type=%s, value=%s\n was_single = %d, was_double = %d\n", type_to_string(tmp->type), tmp->value, tokens->was_single, tokens->was_double);
-    //     tmp = tmp->next;
-    // }
-    // printf("%s\n", tmp->value);
-
-    // Handle expansion here if needed
-	t_token *tmpp = tokens;
-	while (tmpp)
-	{
-		printf("before expand--> %s\n", tmpp->value);
-		tmpp = tmpp->next;
-	}
-	printf("%d\n", tokens->was_single);
     expand(tokens, envr->env);
 	return (tokens);
 }

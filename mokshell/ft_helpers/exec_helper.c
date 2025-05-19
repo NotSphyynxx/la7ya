@@ -6,7 +6,7 @@
 /*   By: ilarhrib <ilarhrib@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/05 15:28:27 by ilarhrib          #+#    #+#             */
-/*   Updated: 2025/05/14 16:25:52 by ilarhrib         ###   ########.fr       */
+/*   Updated: 2025/05/19 16:51:06 by ilarhrib         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -130,4 +130,25 @@ char **tokens_to_cmd(t_token *start, t_token *end)
 
     cmd[i] = NULL;
     return cmd;
+}
+
+char    *ft_strndup(const char *s, size_t n)
+{
+    char    *dup;
+    size_t  i;
+
+    i = 0;
+    while (s[i] && i < n)
+        i++;
+    dup = (char *)malloc(sizeof(char) * (i + 1));
+    if (!dup)
+        return (NULL);
+    i = 0;
+    while (s[i] && i < n)
+    {
+        dup[i] = s[i];
+        i++;
+    }
+    dup[i] = '\0';
+    return (dup);
 }

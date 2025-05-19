@@ -17,7 +17,7 @@ int main(int ac, char **av, char **envp)
     // Signals
     signal(SIGINT, sigint_handler);
     signal(SIGQUIT, SIG_IGN);
-    
+
     while (1)
     {
         path.env = *get_env();
@@ -31,6 +31,7 @@ int main(int ac, char **av, char **envp)
             add_history(readed);
         tokens = parss(readed, &path);
         char **input = tokens_to_cmd(tokens, NULL);
+        char **i = input;
         if (tokens || input)
         {
             cmnd_check(input, *get_env(), &exec, tokens);

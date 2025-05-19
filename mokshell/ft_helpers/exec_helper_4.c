@@ -50,6 +50,7 @@ int	adjust_env(char *var, char *name)
 		{
 			free(env[i]);
 			env[i] = ft_strdup(var);
+			return (1);
 		}
 		i++;
 	}
@@ -80,7 +81,7 @@ int	realloc_env(char *var)
 	i = 0;
 	while (env[i])
 	{
-		new_env[i] = env[i];
+		new_env[i] = ft_strdup(env[i]);
 		i++;
 	}
 	new_env[i++] = ft_strdup(var);

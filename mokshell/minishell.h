@@ -6,7 +6,7 @@
 /*   By: ilarhrib <ilarhrib@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/21 17:12:38 by ilarhrib          #+#    #+#             */
-/*   Updated: 2025/05/19 15:41:13 by ilarhrib         ###   ########.fr       */
+/*   Updated: 2025/05/19 19:31:59 by ilarhrib         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,12 +41,11 @@ typedef enum
 
 typedef struct s_token
 {
-    char *value;
-    int    was_double;
-    int    was_single;
-    t_type type;
-    char            *content;
-    struct s_token *next;
+    char			*value;
+    int				was_double;
+    int				was_single;
+    t_type			type;
+    struct s_token	*next;
 } t_token;
 
 typedef struct s_parss
@@ -102,7 +101,8 @@ char	*ft_strnstr(const char *hs, const char *n, size_t len);
 size_t	ft_strlcat(char *dst, const char *src, size_t dstsize);
 size_t	ft_strlcpy(char *dst, const char *src, size_t dstsize);
 int		ft_strcmp(char *s1, char *s2);
-char	*get_env_value(char *key);
+char *get_env_value(char *key);
+char *get_env2_value(const char *name, char **env);
 char	***get_env(void);
 char	*ft_strchr(const char *s, int c);
 char	*ft_strdup(const char *s1);
@@ -112,8 +112,10 @@ int		ft_strncmp(const char *s1, const char *s2, size_t n);
 int		ft_isdigit(int ch);
 int		ft_atoi(const char *str);
 void	ft_lstadd_back(t_token **lst, t_token *new);
-int    ft_isspace(char c);
-
+int     ft_isspace(char c);
+char    *ft_strcpy(char *dest, const char *src);
+char    *ft_strcat(char *dest, const char *src);
+char    *ft_strndup(const char *s, size_t n);
 
 //@------------Parsing--------------------@//
 void	sigint_handler(int sig);
@@ -126,6 +128,7 @@ char    *type_to_string(t_type type);
 int check_syntax(t_token *tokens);
 void    expand(t_token *tokens, char **env);
 void	free_tokens(t_token *tokens);
+char *expand_variable(char *line, char **env);
 
 //@------------Execution------------------@//
 // void	execute(char	**input, t_exec *exec, t_token *tokens);
