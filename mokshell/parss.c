@@ -49,7 +49,7 @@ t_token	*parss(char *line ,t_parss *envr)
 	t_token	*temp = tokens;
 	while (temp)
 	{
-		printf("Token: type=%s, value=%s\n", type_to_string(temp->type), temp->value);
+		// printf("Token: type=%s, value=%s\n", type_to_string(temp->type), temp->value);
         temp = temp->next;
 	}
 	t_parss *tmp = envr;
@@ -61,7 +61,5 @@ t_token	*parss(char *line ,t_parss *envr)
 			expand(temp, tmp->env);
 		temp = temp->next;
 	}
-	if (!tokens)
-		printf("ana hmar\n");
 	return (tokens);
 }

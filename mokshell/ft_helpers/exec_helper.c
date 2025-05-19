@@ -93,13 +93,6 @@ char *find_command_path(char *cmd)
 
 char **tokens_to_cmd(t_token *start, t_token *end)
 {
-     t_token *tmpp = start;
-	while (tmpp)
-	{
-		printf("skinny--> %s\n", tmpp->value);
-        printf("skinnytype--> %d\n", tmpp->type);
-		tmpp = tmpp->next;
-	}
     int count = 0;
     t_token *temp = start;
 

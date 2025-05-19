@@ -29,12 +29,10 @@ int main(int ac, char **av, char **envp)
         }
         if (*readed)
             add_history(readed);
-        printf("before expanding--> %s\n", readed);
         tokens = parss(readed, &path);
         t_token *tmp = tokens;
         while (tmp)
         {
-            printf("expanded1--> %s\n", tmp->value);
             tmp = tmp->next;
         }
         // return (0);

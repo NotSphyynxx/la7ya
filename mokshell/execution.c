@@ -19,14 +19,12 @@ void cmnd_check(char **input, char **envp, t_exec *exec, t_token *tokens)
         handle_heredocs(tokens);
         if (contains_pipe_in_tokens(tokens))
         {
-            printf("contains pipe.....\n");
             execute_piped_commands(tokens, exec);
         }
         else
         {
             if (!builtin_check(input, envp))
             {
-                printf("no contains pipe.....\n");
                 executor_simple_command(tokens, exec);
             }
         }
@@ -53,7 +51,7 @@ void execute(char **input, t_exec *exec, t_token *start, t_token *end)
         exit(127);
     }
 
-    printf("about to execve: %s\n", path);
+    // printf("about to execve: %s\n", path);
     execve(path, input, *get_env());
     perror("execve failed");
     exit(126);
@@ -77,7 +75,7 @@ void execute_piped_commands(t_token *tokens, t_exec *exec)
             child_pid = fork();
             if (child_pid == 0)
             {
-                printf("here in child == 0\n");
+                // printf("here in child == 0\n");
                 if (prev_fd != -1)
                     dup2(prev_fd, STDIN_FILENO);
                 dup2(fd[1], STDOUT_FILENO);
@@ -108,7 +106,6 @@ void execute_piped_commands(t_token *tokens, t_exec *exec)
         if (prev_fd != -1)
             close(prev_fd);
         char **cmd = tokens_to_cmd(start, NULL);
-        printf("about to execute 2\n");
         execute(cmd, exec, start, NULL);
         ft_free_str_array(cmd);
         exit(0);
@@ -191,9 +188,7 @@ void executor_simple_command(t_token *tokens, t_exec *exec)
             ft_free_str_array(cmd);
             exit(127);
         }
-        printf("executing cmnd in this path -> %s\n", path);
         execve(path, cmd, *get_env());
-        printf("1\n");
         perror("execve failed");
         ft_free_str_array(cmd);
         exit(1);

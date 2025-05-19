@@ -6,7 +6,6 @@ void expand(t_token *tokens, char **env)
     if (!tokens || !tokens->value)
         return;
     char *envar = (char *)tokens->value;
-    printf("the value -> %s\n", envar);
     t_token *curr = tokens;
     int i = 0;
     if (envar[0] == '$')
@@ -27,7 +26,6 @@ void expand(t_token *tokens, char **env)
                     free(tokens->value);
                     tokens->value = ft_substr(env[i], var_len + 1,
                                                 ft_strlen(env[i]) - var_len - 1);
-                    printf("kk==%s\n", tokens->value);
                     break;
                 }
             }
