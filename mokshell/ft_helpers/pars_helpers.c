@@ -20,3 +20,18 @@ void sigint_handler(int sig)
     rl_on_new_line();
     rl_redisplay();
 }
+
+void free_tokens(t_token *tokens)
+{
+    t_token *tmp;
+
+    while (tokens)
+    {
+        tmp = tokens->next;
+        if (tokens->value)
+            free(tokens->value);
+        free(tokens);
+        tokens = tmp;
+    }
+}
+

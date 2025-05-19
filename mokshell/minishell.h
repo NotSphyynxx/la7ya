@@ -153,6 +153,8 @@ void	init_export_list(void);
 void	add_to_env(char *av, char *name, char *value);
 int		adjust_env(char *var, char *name);
 int		realloc_env(char *var);
+int     exist_check(char *env, char *name);
+char	**init_env(char **envp);
 //~~~~~~~~~~~~Builtins~~~~~~~~~~~~~~~~~~~
 int		shell_echo(char **av);
 int		shell_env(char **av,  char **envp);

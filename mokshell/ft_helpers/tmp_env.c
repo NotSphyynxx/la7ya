@@ -26,3 +26,27 @@ t_exp	**get_exp_list(void)
 	static t_exp	*exp_list = NULL;
 	return (&exp_list);
 }
+
+char	**init_env(char **envp)
+{
+	int	i;
+	char **new_env;
+
+	i = 0;
+	while (envp[i])
+		i++;
+	new_env = malloc(sizeof(char *) * (i + 1));
+	if (!new_env)
+	{
+		perror("malloc");
+		return NULL;
+	}
+	i = 0;
+	while (envp[i])
+	{
+		new_env[i] = envp[i];
+		i++;
+	}
+	new_env[i] = NULL;
+	return(new_env);
+}

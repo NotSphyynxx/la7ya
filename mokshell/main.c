@@ -11,7 +11,7 @@ int main(int ac, char **av, char **envp)
     t_parss path;
 
     printf("================ | Welcome to sara9osta | ================\n");
-    *get_env() = envp;
+    *get_env() = init_env(envp);
 	init_export_list();
     
     // Signals
@@ -30,12 +30,6 @@ int main(int ac, char **av, char **envp)
         if (*readed)
             add_history(readed);
         tokens = parss(readed, &path);
-        t_token *tmp = tokens;
-        while (tmp)
-        {
-            tmp = tmp->next;
-        }
-        // return (0);
         char **input = tokens_to_cmd(tokens, NULL);
         if (tokens || input)
         {
