@@ -21,6 +21,7 @@ char *get_env_value(char *key) {
     }
     return (NULL);
 }
+
 t_exp	**get_exp_list(void)
 {
 	static t_exp	*exp_list = NULL;

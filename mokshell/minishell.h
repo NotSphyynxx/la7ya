@@ -6,7 +6,7 @@
 /*   By: ilarhrib <ilarhrib@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/21 17:12:38 by ilarhrib          #+#    #+#             */
-/*   Updated: 2025/05/19 19:31:59 by ilarhrib         ###   ########.fr       */
+/*   Updated: 2025/05/20 17:38:02 by ilarhrib         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,6 +38,10 @@ typedef enum
     DOUBLE_QUOTE2
 }t_type;
 
+typedef struct s_exec
+{
+	char *cmnd_path;
+}	t_exec;
 
 typedef struct s_token
 {
@@ -48,22 +52,6 @@ typedef struct s_token
     struct s_token	*next;
 } t_token;
 
-
-typedef struct	s_exec{
-	pid_t	chld_pid;
-} t_exec;
-
-typedef struct exec_token {
-	t_token	*strt;
-	t_token	*crr;
-} e_token;
-
-typedef struct s_redir {
-	char *filename;
-	int type;  // REDIR_OUT, REDIR_APPEND, etc.
-	struct s_redir *next;
-} t_redir;
-
 typedef struct s_exp {
 	char *key;
 	char *value;
@@ -71,27 +59,11 @@ typedef struct s_exp {
 }   t_exp;
 
 
-//``````````````Sphynx``````````````````````//
-// t_token *tokenize_input(const char *input);
-// void print_tokens(t_token *tokens);
-// void free_tokens(t_token *tokens);
-// bool is_simple_builtin(const char *input);
-// bool    contains_redirection(t_token *tokens);
-// char **tokens_to_cmd_without_redirs(t_token *tokens);
-// bool is_simple_builtin_tokens(t_token *tokens);
-// void expand_token_value(t_token *token, char **envp);
-// t_token *parss(char *input, char **envp);
-// void expand_tokens(t_token *tokens, char **envp);
-// void free_token(t_token *token);
-// void free_tokens(t_token *tokens);
-// char	*ft_itoa(int n);
-
 //@-------------utils----------------------@//
 char	**ft_split(char const *s, char c);
 void	error(void);
 char	*ft_strjoin(char const *s1, char const *s2);
 size_t	ft_strlen(const char *str);
-char	*find_path(char *cmd, char **envp);
 void	ft_putstr_fd(char *s, int fd);
 char	*ft_strnstr(const char *hs, const char *n, size_t len);
 size_t	ft_strlcat(char *dst, const char *src, size_t dstsize);
@@ -117,7 +89,6 @@ char    *ft_strndup(const char *s, size_t n);
 void	sigint_handler(int sig);
 t_token	*parss(char *line);
 void	ft_lstadd_back(t_token **lst, t_token *new);
-// char	**ft_split(char *s, char c);
 t_token *new_token(char *valu, t_type type);
 void    add_token(t_token **tokens, t_token *new_tok);
 char    *type_to_string(t_type type);
@@ -127,19 +98,16 @@ void	free_tokens(t_token *tokens);
 char *expand_variable(char *line);
 
 //@------------Execution------------------@//
-// void	execute(char	**input, t_exec *exec, t_token *tokens);
-void	execute(char **input, t_exec *exec, t_token *start, t_token *end);
-void	cmnd_check(char **input, char **envp, t_exec *exec, t_token *token);
+void	execute(char **input, t_token *start, t_token *end, t_exec *exec);
+void	cmnd_check(char **input, char **envp, t_token *token, t_exec *exec);
 int		builtin_check(char **input, char **envp);
 void	execute_piped_commands(t_token *tokens, t_exec *exec);
 void	executor_simple_command(t_token *tokens, t_exec *exec);
-// int     handle_redirections(t_token *tokens);
-// int		apply_redirections(t_token *start, t_token *end);
 
 //~~~~~~~~~~~~Exec_helpers~~~~~~~~~~~~~~~
 int		apply_redirections(t_token *start, t_token *end);
 void	ft_free_str_array(char **array);
-char	*find_command_path(char *cmd);
+char	*find_command_path(char *cmd, t_exec *exec);
 int     contains_pipe_in_tokens(t_token *tokens);
 char    **tokens_to_cmd(t_token *start, t_token *end);
 void	handle_heredocs(t_token *tokens);
@@ -159,6 +127,12 @@ int		realloc_env(char *var);
 int     exist_check(char *env, char *name);
 char	**init_env(char **envp);
 int     is_builtin(char **input);
+void    init_shell(char **envp);
+void    read_check(char *readed);
+void	built_with_red_check(char **input, char **envp, t_token *tokens);
+int		there_is_red(t_token *tokens);
+void	leaks_handle(char *readed, t_token *tokens, char **input, t_exec *exec);
+
 //~~~~~~~~~~~~Builtins~~~~~~~~~~~~~~~~~~~
 int		shell_echo(char **av);
 int		shell_env(char **av,  char **envp);

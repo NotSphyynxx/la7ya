@@ -6,7 +6,7 @@
 /*   By: ilarhrib <ilarhrib@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/05 15:28:27 by ilarhrib          #+#    #+#             */
-/*   Updated: 2025/05/19 16:51:06 by ilarhrib         ###   ########.fr       */
+/*   Updated: 2025/05/20 17:31:56 by ilarhrib         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,11 +45,10 @@ void ft_free_str_array(char **arr)
 }
 
 
-char *find_command_path(char *cmd)
+char *find_command_path(char *cmd, t_exec *exec)
 {
 	char *path_env;
 	char **paths;
-	char *full_path;
 	int i;
 
 	if (ft_strchr(cmd, '/'))
@@ -67,24 +66,24 @@ char *find_command_path(char *cmd)
 	i = 0;
 	while (paths[i])
 	{
-		full_path = ft_strjoin(paths[i], "/");
-		if (!full_path)
+		exec->cmnd_path = ft_strjoin(paths[i], "/");
+		if (!exec->cmnd_path)
 		{
 			ft_free_str_array(paths);
 			return (NULL);
 		}
-		full_path = ft_strjoin(full_path, cmd);
-		if (!full_path)
+		exec->cmnd_path = ft_strjoin(exec->cmnd_path, cmd);
+		if (!exec->cmnd_path)
 		{
 			ft_free_str_array(paths);
 			return (NULL);
 		}
-		if (access(full_path, X_OK) == 0)
+		if (access(exec->cmnd_path, X_OK) == 0)
 		{
 			ft_free_str_array(paths);
-			return (full_path);
+			return (exec->cmnd_path);
 		}
-		free(full_path);
+		free(exec->cmnd_path);
 		i++;
 	}
 	ft_free_str_array(paths);
@@ -96,7 +95,6 @@ char **tokens_to_cmd(t_token *start, t_token *end)
     int count = 0;
     t_token *temp = start;
 
-    // Count number of WORD tokens (skip redirections)
     while (temp != end && temp)
     {
         if (temp->type == WORD || temp->type == ENV_VAR)
@@ -106,16 +104,11 @@ char **tokens_to_cmd(t_token *start, t_token *end)
             temp = temp->next;  // skip the next token (target)
         temp = temp->next;
     }
-
-    // Allocate command array
     char **cmd = malloc(sizeof(char *) * (count + 1));
     if (!cmd)
         return NULL;
-
     temp = start;
     int i = 0;
-
-    // Add words into cmd array (skip redirections)
     while (temp != end && temp)
     {
         if (temp->type == WORD || temp->type == ENV_VAR) {
@@ -127,28 +120,27 @@ char **tokens_to_cmd(t_token *start, t_token *end)
         }
         temp = temp->next;
     }
-
     cmd[i] = NULL;
     return cmd;
 }
 
-char    *ft_strndup(const char *s, size_t n)
+char	*ft_strndup(const char *s, size_t n)
 {
-    char    *dup;
-    size_t  i;
+	char	*dup;
+	size_t 	i;
 
-    i = 0;
-    while (s[i] && i < n)
-        i++;
-    dup = (char *)malloc(sizeof(char) * (i + 1));
-    if (!dup)
-        return (NULL);
-    i = 0;
-    while (s[i] && i < n)
-    {
-        dup[i] = s[i];
-        i++;
-    }
-    dup[i] = '\0';
-    return (dup);
+	i = 0;
+	while (s[i] && i < n)
+		i++;
+	dup = (char *)malloc(sizeof(char) * (i + 1));
+	if (!dup)
+		return (NULL);
+	i = 0;
+	while (s[i] && i < n)
+	{
+		dup[i] = s[i];
+		i++;
+	}
+	dup[i] = '\0';
+	return (dup);
 }

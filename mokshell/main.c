@@ -1,53 +1,41 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   main.c                                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: ilarhrib <ilarhrib@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/05/20 16:41:04 by ilarhrib          #+#    #+#             */
+/*   Updated: 2025/05/20 17:35:58 by ilarhrib         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
-int main(int ac, char **av, char **envp)
+int	main(int ac, char **av, char **envp)
 {
-    char *readed;
-    t_exec exec;
-    t_token *tokens;
+	char	*readed;
+	t_token	*tokens;
+	char	**input;
+	t_exec	exec;
 
-    (void)ac;
-    (void)av;
-
-    printf("================ | Welcome to sara9osta | ================\n");
-    *get_env() = init_env(envp);
-	init_export_list();
-    
-    // Signals
-    signal(SIGINT, sigint_handler);
-    signal(SIGQUIT, SIG_IGN);
-
-    while (1)
-    {
-        readed = readline("minishell$ ");
-        if (!readed)
-        {
-            printf("exit\n");
-            exit(0);
-        }
-        if (*readed)
-            add_history(readed);
-        tokens = parss(readed);
-        t_token *toke  = tokens;
-        while (toke)
-        {
-            printf("token-> %s\n", toke->value);
-            toke = toke->next;
-        }
-        char **input = tokens_to_cmd(tokens, NULL);
-        char **t = input;
-        while (*t)
-        {
-            printf("input-> %s\n", *t);
-            t++;
-        }
-        if (tokens || input)
-        {
-            cmnd_check(input, *get_env(), &exec, tokens);
-            free_tokens(tokens);
-            ft_free_str_array(input);
-        }
-        free(readed);
-    }
-    return (0);
+	(void)ac;
+	(void)av;
+	printf("================ | Welcome to Sidna-shell | ================\n");
+	init_shell(envp);
+	while (1)
+	{
+		readed = readline("minishell$ ");
+		read_check(readed);
+		if (*readed)
+			add_history(readed);
+		tokens = parss(readed);
+		input = tokens_to_cmd(tokens, NULL);
+		if (tokens || input)
+		{
+			cmnd_check(input, *get_env(), tokens, &exec);
+		}
+		leaks_handle(readed, tokens, input, &exec);
+	}
+	return (0);
 }

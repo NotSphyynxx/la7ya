@@ -6,13 +6,13 @@
 /*   By: ilarhrib <ilarhrib@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/08 17:24:48 by ilarhrib          #+#    #+#             */
-/*   Updated: 2025/05/14 14:42:42 by ilarhrib         ###   ########.fr       */
+/*   Updated: 2025/05/20 17:35:43 by ilarhrib         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void cmnd_check(char **input, char **envp, t_exec *exec, t_token *tokens)
+void cmnd_check(char **input, char **envp, t_token *tokens, t_exec *exec)
 {
     if (tokens)
     {
@@ -25,30 +25,18 @@ void cmnd_check(char **input, char **envp, t_exec *exec, t_token *tokens)
         {
             if (is_builtin(input))
             {
-                pid_t pid = fork();
-                if (pid < 0)
-                {
-                    perror("fork");
-                    return;
-                }
-                if (pid == 0)
-                {
-                    if (apply_redirections(tokens, NULL) == -1)
-                        exit(1);
+                if (there_is_red(tokens))
+                    built_with_red_check(input, envp, tokens);
+                else
                     builtin_check(input, envp);
-                    exit(0);
-                }
-                waitpid(pid, NULL, 0);
             }
             else
-            {
                 executor_simple_command(tokens, exec);
-            }
         }
     }
 }
 
-void execute(char **input, t_exec *exec, t_token *start, t_token *end)
+void execute(char **input, t_token *start, t_token *end, t_exec *exec)
 {
     char *path;
 
@@ -61,7 +49,7 @@ void execute(char **input, t_exec *exec, t_token *start, t_token *end)
         exit(0);
     }
 
-    path = find_command_path(input[0]);
+    path = find_command_path(input[0], exec);
     if (!path)
     {
         write(STDERR_FILENO, "minishell: command not found\n", 29);
@@ -101,7 +89,7 @@ void execute_piped_commands(t_token *tokens, t_exec *exec)
                 if (prev_fd != -1)
                     close(prev_fd);
                 char **cmd = tokens_to_cmd(start, curr);
-                execute(cmd, exec, start, curr);
+                execute(cmd, start, curr, exec);
                 ft_free_str_array(cmd);
                 exit(0);
             }
@@ -123,7 +111,7 @@ void execute_piped_commands(t_token *tokens, t_exec *exec)
         if (prev_fd != -1)
             close(prev_fd);
         char **cmd = tokens_to_cmd(start, NULL);
-        execute(cmd, exec, start, NULL);
+        execute(cmd, start, NULL, exec);
         ft_free_str_array(cmd);
         exit(0);
     }
@@ -198,7 +186,7 @@ void executor_simple_command(t_token *tokens, t_exec *exec)
             ft_free_str_array(cmd);
             exit(0);
         }
-        path = find_command_path(cmd[0]);
+        path = find_command_path(cmd[0], exec);
         if (!path)
         {
             write(2, "minishell: command not found\n", 29);

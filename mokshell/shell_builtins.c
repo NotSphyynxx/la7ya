@@ -3,26 +3,22 @@
 
 int shell_echo(char **av)
 {
-	int	i;
-	int	new_line;
-	char	**str;
+	int i = 1;
+	int new_line = 1;
 
-	str = av;
-	i = 1;
-	new_line = 1;
-	if (av[1] && av[1][0] == '-' && av[1][1] == 'n' && av[1][2] == '\0')
+	while (av[i] && av[i][0] == '-')
 	{
+		int j = 1;
+		while (av[i][j] == 'n')
+			j++;
+		if (av[i][j] != '\0')
+			break; // not a pure -n option, stop parsing flags
 		new_line = 0;
-		i = 2;
+		i++;
 	}
 	while (av[i])
 	{
-		char *p = av[i];
-		while (*p)
-		{
-			write(STDOUT_FILENO, p, 1);
-			p++;
-		}
+		write(STDOUT_FILENO, av[i], ft_strlen(av[i]));
 		if (av[i + 1])
 			write(STDOUT_FILENO, " ", 1);
 		i++;
@@ -31,6 +27,7 @@ int shell_echo(char **av)
 		write(STDOUT_FILENO, "\n", 1);
 	return (0);
 }
+
 
 int	shell_env(char **av,  char **envp)
 {
