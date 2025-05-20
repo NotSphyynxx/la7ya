@@ -19,7 +19,7 @@ void cmnd_check(char **input, char **envp, t_token *tokens, t_exec *exec)
         handle_heredocs(tokens);
         if (contains_pipe_in_tokens(tokens))
         {
-            execute_piped_commands(tokens, exec);
+            execute_pipe_commands(tokens, exec);
         }
         else
         {
@@ -45,7 +45,6 @@ void execute(char **input, t_token *start, t_token *end, t_exec *exec)
 
     if (builtin_check(input, *get_env()))
     {
-        printf("used a builtin\n");
         exit(0);
     }
 
@@ -63,12 +62,10 @@ void execute(char **input, t_token *start, t_token *end, t_exec *exec)
 }
 
 
-// ✅ execute_piped_commands: fork for each pipe segment, chain pipes, wait for all
-void execute_piped_commands(t_token *tokens, t_exec *exec)
+void execute_pipe_commands(t_token *tokens, t_exec *exec)
 {
     t_token *curr = tokens;
     t_token *start = tokens;
-    pid_t child_pid;
     int fd[2];
     int prev_fd = -1;
 
@@ -76,23 +73,7 @@ void execute_piped_commands(t_token *tokens, t_exec *exec)
     {
         if (curr->type == PIPE)
         {
-            pipe(fd);
-            child_pid = fork();
-            if (child_pid == 0)
-            {
-                // printf("here in child == 0\n");
-                if (prev_fd != -1)
-                    dup2(prev_fd, STDIN_FILENO);
-                dup2(fd[1], STDOUT_FILENO);
-                close(fd[0]);
-                close(fd[1]);
-                if (prev_fd != -1)
-                    close(prev_fd);
-                char **cmd = tokens_to_cmd(start, curr);
-                execute(cmd, start, curr, exec);
-                ft_free_str_array(cmd);
-                exit(0);
-            }
+            execute_piped_cmnd(start, curr, prev_fd, fd, exec);
             close(fd[1]);
             if (prev_fd != -1)
                 close(prev_fd);
@@ -101,74 +82,15 @@ void execute_piped_commands(t_token *tokens, t_exec *exec)
         }
         curr = curr->next;
     }
-
-    // Final command (after last pipe)
-    child_pid = fork();
-    if (child_pid == 0)
-    {
-        if (prev_fd != -1)
-            dup2(prev_fd, STDIN_FILENO);
-        if (prev_fd != -1)
-            close(prev_fd);
-        char **cmd = tokens_to_cmd(start, NULL);
-        execute(cmd, start, NULL, exec);
-        ft_free_str_array(cmd);
-        exit(0);
-    }
+    execute_final_command(start, prev_fd, exec);
     if (prev_fd != -1)
         close(prev_fd);
-
     while (wait(NULL) > 0);
-}
-
-
-
-// ✅ apply_redirections: applies redirections from start up to end
-int apply_redirections(t_token *start, t_token *end)
-{
-    t_token *curr = start;
-    int fd;
-
-    while (curr && curr != end)
-    {
-        if (curr->type == REDIR_OUT)
-        {
-            fd = open(curr->next->value, O_WRONLY | O_CREAT | O_TRUNC, 0644);
-            if (fd < 0)
-                return (perror("open >"), -1);
-            dup2(fd, STDOUT_FILENO);
-            close(fd);
-        }
-        else if (curr->type == REDIR_APPEND)
-        {
-            fd = open(curr->next->value, O_WRONLY | O_CREAT | O_APPEND, 0644);
-            if (fd < 0)
-                return (perror("open >>"), -1);
-            dup2(fd, STDOUT_FILENO);
-            close(fd);
-        }
-        else if (curr->type == REDIR_IN)
-        {
-            fd = open(curr->next->value, O_RDONLY);
-            if (fd < 0)
-                return (perror("open <"), -1);
-            // If it's the heredoc temp file, delete it now
-            if (ft_strcmp(curr->next->value, "/tmp/.heredoc_tmp") == 0)
-                unlink(curr->next->value);
-
-            dup2(fd, STDIN_FILENO);
-            close(fd);
-        }
-        curr = curr->next;
-    }
-    return (0);
 }
 
 void executor_simple_command(t_token *tokens, t_exec *exec)
 {
     pid_t pid;
-    char **cmd;
-    char *path;
 
     pid = fork();
     if (pid == -1)
@@ -177,26 +99,7 @@ void executor_simple_command(t_token *tokens, t_exec *exec)
         return ;
     }
     if (pid == 0)
-    {
-        if (apply_redirections(tokens, NULL) == -1)
-            return ;
-        cmd = tokens_to_cmd(tokens, NULL);
-        if (builtin_check(cmd, *get_env()))
-        {
-            ft_free_str_array(cmd);
-            exit(0);
-        }
-        path = find_command_path(cmd[0], exec);
-        if (!path)
-        {
-            write(2, "minishell: command not found\n", 29);
-            ft_free_str_array(cmd);
-            exit(127);
-        }
-        execve(path, cmd, *get_env());
-        perror("execve failed");
-        ft_free_str_array(cmd);
-        exit(1);
-    }
+        executor_child_process(tokens, exec);
     waitpid(pid, NULL, 0);
 }
+
