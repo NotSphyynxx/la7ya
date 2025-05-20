@@ -20,6 +20,8 @@ t_token *new_token(char *value, t_type type)
     token->value = ft_strdup(value);
     token->type = type;
     token->next = NULL;
+    token->was_single = 0;
+    token->was_double = 0;
     return token;
 }
 

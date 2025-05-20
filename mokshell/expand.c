@@ -22,8 +22,9 @@ static char *strjoin(const char *s1, const char *s2)
     return res;
 }
 
-char *get_env2_value(const char *name, char **env)
+char *get_env2_value(const char *name)
 {
+    char **env = *get_env();
     int i = 0;
     while (env[i])
     {
@@ -39,7 +40,7 @@ char *get_env2_value(const char *name, char **env)
     return "";
 }
 
-char *expand_variable(char *line, char **env)
+char *expand_variable(char *line)
 {
     int i = 0;
     int start = 0;
@@ -61,7 +62,7 @@ char *expand_variable(char *line, char **env)
             while (line[i] && (ft_isalnum(line[i]) || line[i] == '_'))
                 i++;
             char *var_name = ft_substr(line, var_start, i - var_start);
-            char *val = ft_strdup(get_env2_value(var_name, env));
+            char *val = ft_strdup(get_env2_value(var_name));
 
             tmp = result;
             result = ft_strjoin(tmp, val);
@@ -84,20 +85,23 @@ char *expand_variable(char *line, char **env)
         free(tmp);
         free(remaining);
     }
-
     return result;
 }
 
-void expand(t_token *tokens, char **env)
+void expand(t_token *tokens)
 {
     t_token *curr = tokens;
     while (curr)
     {
+        printf("  [expand] token='%s' will%s expand\n",
+               curr->value,
+               (!curr->was_single && ft_strchr(curr->value, '$')) ? "" : " not");
         if (curr->type == WORD && !curr->was_single && ft_strchr(curr->value, '$'))
         {
-            char *expanded = expand_variable(curr->value, env);
+            char *expanded = expand_variable(curr->value);
             free(curr->value);
             curr->value = expanded;
+            printf("             -> '%s'\n", curr->value);
         }
         curr = curr->next;
     }

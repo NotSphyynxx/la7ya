@@ -8,7 +8,6 @@ int main(int ac, char **av, char **envp)
 
     (void)ac;
     (void)av;
-    t_parss path;
 
     printf("================ | Welcome to sara9osta | ================\n");
     *get_env() = init_env(envp);
@@ -20,7 +19,6 @@ int main(int ac, char **av, char **envp)
 
     while (1)
     {
-        path.env = *get_env();
         readed = readline("minishell$ ");
         if (!readed)
         {
@@ -29,9 +27,20 @@ int main(int ac, char **av, char **envp)
         }
         if (*readed)
             add_history(readed);
-        tokens = parss(readed, &path);
+        tokens = parss(readed);
+        t_token *toke  = tokens;
+        while (toke)
+        {
+            printf("token-> %s\n", toke->value);
+            toke = toke->next;
+        }
         char **input = tokens_to_cmd(tokens, NULL);
-        char **i = input;
+        char **t = input;
+        while (*t)
+        {
+            printf("input-> %s\n", *t);
+            t++;
+        }
         if (tokens || input)
         {
             cmnd_check(input, *get_env(), &exec, tokens);

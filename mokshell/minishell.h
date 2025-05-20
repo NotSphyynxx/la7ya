@@ -48,10 +48,6 @@ typedef struct s_token
     struct s_token	*next;
 } t_token;
 
-typedef struct s_parss
-{
-    char **env;
-}t_parss;
 
 typedef struct	s_exec{
 	pid_t	chld_pid;
@@ -102,7 +98,7 @@ size_t	ft_strlcat(char *dst, const char *src, size_t dstsize);
 size_t	ft_strlcpy(char *dst, const char *src, size_t dstsize);
 int		ft_strcmp(char *s1, char *s2);
 char *get_env_value(char *key);
-char *get_env2_value(const char *name, char **env);
+char *get_env2_value(const char *name);
 char	***get_env(void);
 char	*ft_strchr(const char *s, int c);
 char	*ft_strdup(const char *s1);
@@ -119,16 +115,16 @@ char    *ft_strndup(const char *s, size_t n);
 
 //@------------Parsing--------------------@//
 void	sigint_handler(int sig);
-t_token	*parss(char *line ,t_parss *envr);
+t_token	*parss(char *line);
 void	ft_lstadd_back(t_token **lst, t_token *new);
 // char	**ft_split(char *s, char c);
 t_token *new_token(char *valu, t_type type);
 void    add_token(t_token **tokens, t_token *new_tok);
 char    *type_to_string(t_type type);
 int check_syntax(t_token *tokens);
-void    expand(t_token *tokens, char **env);
+void    expand(t_token *tokens);
 void	free_tokens(t_token *tokens);
-char *expand_variable(char *line, char **env);
+char *expand_variable(char *line);
 
 //@------------Execution------------------@//
 // void	execute(char	**input, t_exec *exec, t_token *tokens);
@@ -162,6 +158,7 @@ int		adjust_env(char *var, char *name);
 int		realloc_env(char *var);
 int     exist_check(char *env, char *name);
 char	**init_env(char **envp);
+int     is_builtin(char **input);
 //~~~~~~~~~~~~Builtins~~~~~~~~~~~~~~~~~~~
 int		shell_echo(char **av);
 int		shell_env(char **av,  char **envp);

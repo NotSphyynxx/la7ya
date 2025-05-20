@@ -23,7 +23,24 @@ void cmnd_check(char **input, char **envp, t_exec *exec, t_token *tokens)
         }
         else
         {
-            if (!builtin_check(input, envp))
+            if (is_builtin(input))
+            {
+                pid_t pid = fork();
+                if (pid < 0)
+                {
+                    perror("fork");
+                    return;
+                }
+                if (pid == 0)
+                {
+                    if (apply_redirections(tokens, NULL) == -1)
+                        exit(1);
+                    builtin_check(input, envp);
+                    exit(0);
+                }
+                waitpid(pid, NULL, 0);
+            }
+            else
             {
                 executor_simple_command(tokens, exec);
             }
