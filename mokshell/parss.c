@@ -21,7 +21,7 @@ t_token *parss(char *line)
             }
             add_token(&tokens, new_token(ft_strdup("|"), PIPE));
             i++;
-            printf("Added token: %s (type: %d)\n", tokens->value, tokens->type);
+            //printf("Added token: %s (type: %d)\n", tokens->value, tokens->type);
         }
         else if (line[i] == '>' || line[i] == '<')
         {
@@ -34,13 +34,13 @@ t_token *parss(char *line)
             {
                 add_token(&tokens, new_token(ft_strdup(">>"), REDIR_APPEND));
                 i += 2;
-                printf("Added token: %s (type: %d)\n", tokens->value, tokens->type);
+                //printf("Added token: %s (type: %d)\n", tokens->value, tokens->type);
             }
             else if (line[i] == '<' && line[i + 1] == '<')
             {
                 add_token(&tokens, new_token(ft_strdup("<<"), HEREDOC));
                 i += 2;
-                printf("Added token: %s (type: %d)\n", tokens->value, tokens->type);
+                //printf("Added token: %s (type: %d)\n", tokens->value, tokens->type);
 
             }
             else
@@ -53,7 +53,7 @@ t_token *parss(char *line)
                     type = REDIR_IN;
                 add_token(&tokens, new_token(ft_strdup(op), type));
                 i++;
-                printf("Added token: %s (type: %d)\n", tokens->value, tokens->type);
+                //printf("Added token: %s (type: %d)\n", tokens->value, tokens->type);
 
             }
         }
@@ -76,7 +76,7 @@ t_token *parss(char *line)
                 new_tok->was_double = 1;
             add_token(&tokens, new_tok);
             i++; // Skip closing quote
-            printf("Added token: %s (type: %d)\n", tokens->value, tokens->type);
+            //printf("Added token: %s (type: %d)\n", tokens->value, tokens->type);
 
         }
         else
@@ -86,7 +86,7 @@ t_token *parss(char *line)
                 i++;
             char *word = ft_substr(line, start, i - start);
             add_token(&tokens, new_token(word, WORD));
-            printf("Added token: %s (type: %d)\n", tokens->value, tokens->type);
+            //printf("Added token: %s (type: %d)\n", tokens->value, tokens->type);
 
         }
     }

@@ -51,3 +51,19 @@ char	**init_env(char **envp)
 	new_env[i] = NULL;
 	return(new_env);
 }
+
+void	init_export_list(void)
+{
+	char	**env;
+	int		i;
+	t_exp	*node;
+
+	env = *get_env();
+	i = 0;
+	while (env && env[i])
+	{
+		node = split_env_to_exp(env[i]);
+		add_exp_back(get_exp_list(), node);
+		i++;
+	}
+}

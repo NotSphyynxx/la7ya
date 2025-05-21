@@ -6,7 +6,7 @@
 /*   By: ilarhrib <ilarhrib@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/08 16:05:20 by ilarhrib          #+#    #+#             */
-/*   Updated: 2025/05/14 17:08:25 by ilarhrib         ###   ########.fr       */
+/*   Updated: 2025/05/21 16:49:55 by ilarhrib         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,8 @@ void handle_heredocs(t_token *tokens)
     t_token *curr = tokens;
     int tmp_fd;
     pid_t pid;
+    static int heredoc_count = 0;
+    char tmp_filename[256];
 
     while (curr)
     {
@@ -26,7 +28,8 @@ void handle_heredocs(t_token *tokens)
             if (pid == 0)
             {
                 char *line;
-                tmp_fd = open("/tmp/.heredoc_tmp", O_WRONLY | O_CREAT | O_TRUNC, 0644);
+                snprintf(tmp_filename, sizeof(tmp_filename), "/tmp/.heredoc_tmp_%d", heredoc_count);
+                tmp_fd = open(tmp_filename, O_WRONLY | O_CREAT | O_TRUNC, 0644);
                 if (tmp_fd < 0)
                 {
                     perror("heredoc tmp file error");
@@ -47,14 +50,17 @@ void handle_heredocs(t_token *tokens)
                 close(tmp_fd);
                 exit(0);
             }
-            waitpid(pid, NULL, 0); // parent waits for heredoc child to finish
-            curr->type = REDIR_IN;
+            waitpid(pid, NULL, 0);
+            snprintf(tmp_filename, sizeof(tmp_filename), "/tmp/.heredoc_tmp_%d", heredoc_count);
             free(curr->next->value);
-            curr->next->value = ft_strdup("/tmp/.heredoc_tmp");
+            curr->next->value = ft_strdup(tmp_filename);
+            curr->type = REDIR_IN;
+            heredoc_count++;
         }
         curr = curr->next;
     }
 }
+
 
 
 

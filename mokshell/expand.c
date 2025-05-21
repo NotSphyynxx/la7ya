@@ -93,9 +93,9 @@ void expand(t_token *tokens)
     t_token *curr = tokens;
     while (curr)
     {
-        printf("  [expand] token='%s' will%s expand\n",
-               curr->value,
-               (!curr->was_single && ft_strchr(curr->value, '$')) ? "" : " not");
+    //    printf("  [expand] token='%s' will%s expand\n",
+    //           curr->value,
+    //           (!curr->was_single && ft_strchr(curr->value, '$')) ? "" : " not");
         if (curr->type == WORD && !curr->was_single && ft_strchr(curr->value, '$'))
         {
             char *expanded = expand_variable(curr->value);

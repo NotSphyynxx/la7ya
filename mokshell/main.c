@@ -6,7 +6,7 @@
 /*   By: ilarhrib <ilarhrib@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/20 16:41:04 by ilarhrib          #+#    #+#             */
-/*   Updated: 2025/05/20 17:35:58 by ilarhrib         ###   ########.fr       */
+/*   Updated: 2025/05/21 17:23:44 by ilarhrib         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,9 +32,7 @@ int	main(int ac, char **av, char **envp)
 		tokens = parss(readed);
 		input = tokens_to_cmd(tokens, NULL);
 		if (tokens || input)
-		{
 			cmnd_check(input, *get_env(), tokens, &exec);
-		}
 		leaks_handle(readed, tokens, input, &exec);
 	}
 	return (0);

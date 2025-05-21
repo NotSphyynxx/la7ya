@@ -50,6 +50,7 @@ int there_is_red(t_token *tokens)
 	}
 	return (0);
 }
+
 void	built_with_red_check(char **input, char **envp, t_token *tokens)
 {
 	pid_t pid = fork();

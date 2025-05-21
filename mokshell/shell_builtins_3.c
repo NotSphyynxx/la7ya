@@ -6,74 +6,55 @@
 /*   By: ilarhrib <ilarhrib@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/03 15:53:37 by ilarhrib          #+#    #+#             */
-/*   Updated: 2025/05/03 16:53:11 by ilarhrib         ###   ########.fr       */
+/*   Updated: 2025/05/21 17:13:19 by ilarhrib         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-static void	shift_vars(int index, int count)
+static void search_then_unset(char **env, char *name)
 {
-	char **env = *get_env();
-	int i = index;
-
-	while (i < count - 1)
-	{
-		env[i] = env[i + 1];
-		i++;
-	}
-	env[count - 1] = NULL;
-}
-
-static void	remove_env_var(char *name)
-{
-	char **env = *get_env();
 	int i = 0;
-	int count = 0;
+	int j;
+	int len = ft_strlen(name);
 
-	while(env && env[count])
-		count++;
 	while (env[i])
 	{
-		if (!ft_strncmp(env[i], name, ft_strlen(name)) && env[i][ft_strlen(name)])
+		if (ft_strncmp(env[i], name, len) == 0 && env[i][len] == '=')
 		{
-			shift_vars(i, count);
+			free(env[i]);
+			j = i;
+			while (env[j + 1])
+			{
+				env[j] = env[j + 1];
+				j++;
+			}
+			env[j] = NULL;
 			return ;
 		}
 		i++;
 	}
 }
 
-int	shell_unset(char **av)
+int shell_unset(char **av)
 {
-	int			i;
-	char	*name;
+	char **env;
+	int i = 1;
 
-	if (!av[1])
-	{
-		write(STDERR_FILENO, "unset: not enough arguments\n", 28);
-		return (1);
-	}
-	i = 1;
+	env = *get_env();
 	while (av[i])
 	{
-		name = av[i];
-	
-		char *name_ptr = name;
-		while (*name_ptr)
+		if (ft_strchr(av[i], '=') != NULL)
 		{
-			if (!ft_isalnum(*name_ptr) && *name_ptr != '_')
-			{
-				write(STDERR_FILENO, "unset: invalid name\n", 21);
-				return (1);
-			}
-			name_ptr++;
+			write(STDERR_FILENO, "unset: not a valid identifier\n", 31);
+			return (1);
 		}
-		remove_env_var(name);
+		search_then_unset(env, av[i]);
 		i++;
 	}
 	return (0);
 }
+
 
 static int	is_valid_number(char *str)
 {

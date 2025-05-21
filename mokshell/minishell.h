@@ -6,7 +6,7 @@
 /*   By: ilarhrib <ilarhrib@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/21 17:12:38 by ilarhrib          #+#    #+#             */
-/*   Updated: 2025/05/20 17:38:02 by ilarhrib         ###   ########.fr       */
+/*   Updated: 2025/05/21 16:20:29 by ilarhrib         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -135,6 +135,7 @@ int		there_is_red(t_token *tokens);
 void	leaks_handle(char *readed, t_token *tokens, char **input, t_exec *exec);
 void    execute_piped_cmnd(t_token *start, t_token *end, int prev_fd, int fd[2], t_exec *exec);
 void    execute_final_command(t_token *start, int prev_fd, t_exec *exec);
+void	wait_for_children(void);
 
 //~~~~~~~~~~~~Builtins~~~~~~~~~~~~~~~~~~~
 int		shell_echo(char **av);
