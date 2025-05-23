@@ -14,8 +14,21 @@
 
 void	wait_for_children(void)
 {
-	while (wait(NULL) > 0)
-		;
+	int	status;
+	pid_t	pid;
+
+	while ((pid = wait(&status)) > 0)
+	{
+		update_exit_status(status);
+	}
+}
+
+void	update_exit_status(int status)
+{
+	if (WIFEXITED(status))
+		get_shell()->exit_status = WEXITSTATUS(status);
+	else if (WIFSIGNALED(status))
+		get_shell()->exit_status = 128 + WTERMSIG(status);
 }
 
 int	has_equal_sign(char *av)
@@ -44,4 +57,10 @@ int	is_append_export(char *av)
 		i++;
 	}
 	return (0);
+}
+
+t_shell *get_shell(void)
+{
+    static t_shell	shell;
+    return (&shell);
 }

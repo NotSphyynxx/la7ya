@@ -84,8 +84,10 @@ void	execute_pipe_commands(t_token *tokens, t_exec *exec)
 
 void	executor_simple_command(t_token *tokens, t_exec *exec)
 {
+	int status;
 	pid_t	pid;
 
+	status = 0;
 	pid = fork();
 	if (pid == -1)
 	{
@@ -96,5 +98,6 @@ void	executor_simple_command(t_token *tokens, t_exec *exec)
 	{
 		executor_child_process(tokens, exec);
 	}
-	wait_for_children();
+	waitpid(pid, &status, 0);
+	update_exit_status(status);
 }

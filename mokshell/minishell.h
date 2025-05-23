@@ -48,6 +48,7 @@ typedef struct s_token
     char			*value;
     int				was_double;
     int				was_single;
+    int             ambigious;
     t_type			type;
     struct s_token	*next;
 } t_token;
@@ -58,6 +59,10 @@ typedef struct s_exp {
 	struct s_exp *next;
 }   t_exp;
 
+typedef struct s_shell
+{
+    int exit_status;
+}   t_shell;
 
 //@-------------utils----------------------@//
 char	**ft_split(char const *s, char c);
@@ -84,6 +89,7 @@ int     ft_isspace(char c);
 char    *ft_strcpy(char *dest, const char *src);
 char    *ft_strcat(char *dest, const char *src);
 char    *ft_strndup(const char *s, size_t n);
+char    *ft_itoa(int n);
 
 //@------------Parsing--------------------@//
 void	sigint_handler(int sig);
@@ -138,6 +144,8 @@ void    execute_final_command(t_token *start, int prev_fd, t_exec *exec);
 void	wait_for_children(void);
 int		is_append_export(char *av);
 int		has_equal_sign(char *av);
+t_shell *get_shell(void);
+void	update_exit_status(int status);
 
 //~~~~~~~~~~~~Builtins~~~~~~~~~~~~~~~~~~~
 int		shell_echo(char **av);

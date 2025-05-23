@@ -53,6 +53,7 @@ int there_is_red(t_token *tokens)
 
 void	built_with_red_check(char **input, char **envp, t_token *tokens)
 {
+	int		status = 0;
 	pid_t pid = fork();
 	if (pid < 0)
 	{
@@ -66,5 +67,6 @@ void	built_with_red_check(char **input, char **envp, t_token *tokens)
 		builtin_check(input, envp);
 		exit(0);
 	}
-	waitpid(pid, NULL, 0);
+	waitpid(pid,&status, 0);
+	update_exit_status(status);
 }

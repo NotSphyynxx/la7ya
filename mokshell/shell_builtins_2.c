@@ -28,7 +28,6 @@ void	export_variable(char *av)
 			value = NULL;
 		}
 	}
-
 	if (!check_valid_key(key))
 	{
 		write(2, "export: invalid identifier\n", 27);
@@ -120,7 +119,8 @@ int	shell_export(char **av)
 	}
 	while (av[i])
 	{
-		export_variable(av[i]);
+		if (ft_strlen(av[i]) > 0)
+			export_variable(av[i]);
 		i++;
 	}
 	return (0);

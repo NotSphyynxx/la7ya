@@ -26,42 +26,61 @@ void	leaks_handle(char *readed, t_token *tokens, char **input, t_exec *exec)
 int apply_redirections(t_token *start, t_token *end)
 {
     t_token *curr = start;
-    int fd;
+    int      fd;
+    t_token *file_tok;
 
     while (curr && curr != end)
     {
-        if (curr->type == REDIR_OUT)
+        if (curr->type == REDIR_OUT
+         || curr->type == REDIR_APPEND
+         || curr->type == REDIR_IN)
         {
-            fd = open(curr->next->value, O_WRONLY | O_CREAT | O_TRUNC, 0644);
-            if (fd < 0)
-                return (perror("open >"), -1);
-            dup2(fd, STDOUT_FILENO);
-            close(fd);
-        }
-        else if (curr->type == REDIR_APPEND)
-        {
-            fd = open(curr->next->value, O_WRONLY | O_CREAT | O_APPEND, 0644);
-            if (fd < 0)
-                return (perror("open >>"), -1);
-            dup2(fd, STDOUT_FILENO);
-            close(fd);
-        }
-        else if (curr->type == REDIR_IN)
-        {
-            fd = open(curr->next->value, O_RDONLY);
-            if (fd < 0)
-                return (perror("open <"), -1);
-            // If it's the heredoc temp file, delete it now
-            if (ft_strcmp(curr->next->value, "/tmp/.heredoc_tmp") == 0)
-                unlink(curr->next->value);
-
-            dup2(fd, STDIN_FILENO);
-            close(fd);
+            file_tok = curr->next;
+            // 1) Missing target or empty value
+            if (!file_tok || !file_tok->value || file_tok->value[0] == '\0')
+            {
+                write(STDERR_FILENO, "minishell: ambiguous redirect\n", 30);
+                return (-1);
+            }
+            // 2) Marked ambiguous during expand
+            if (file_tok->ambigious)
+            {
+                write(STDERR_FILENO, "minishell: ambiguous redirect\n", 30);
+                return (-1);
+            }
+            // 3) Now perform the actual open
+            if (curr->type == REDIR_OUT)
+            {
+                fd = open(file_tok->value, O_WRONLY | O_CREAT | O_TRUNC, 0644);
+                if (fd < 0)
+                    return (perror("open >"), -1);
+                dup2(fd, STDOUT_FILENO);
+                close(fd);
+            }
+            else if (curr->type == REDIR_APPEND)
+            {
+                fd = open(file_tok->value, O_WRONLY | O_CREAT | O_APPEND, 0644);
+                if (fd < 0)
+                    return (perror("open >>"), -1);
+                dup2(fd, STDOUT_FILENO);
+                close(fd);
+            }
+            else /* REDIR_IN */
+            {
+                fd = open(file_tok->value, O_RDONLY);
+                if (fd < 0)
+                    return (perror("open <"), -1);
+                if (ft_strcmp(file_tok->value, "/tmp/.heredoc_tmp") == 0)
+                    unlink(file_tok->value);
+                dup2(fd, STDIN_FILENO);
+                close(fd);
+            }
         }
         curr = curr->next;
     }
     return (0);
 }
+
 
 void execute_piped_cmnd(t_token *start, t_token *end, int prev_fd, int fd[2], t_exec *exec)
 {

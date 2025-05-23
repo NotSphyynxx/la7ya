@@ -15,7 +15,10 @@
 int builtin_check(char **input, char **envp)
 {
     if (!input || !(*input))
+	{
+		update_exit_status(-1);
         return (0);
+	}
     else if (ft_strcmp(input[0], "echo") == 0)
         return (shell_echo(input), 1);
     else if (ft_strcmp(input[0], "env") == 0)
@@ -30,6 +33,7 @@ int builtin_check(char **input, char **envp)
         return (shell_unset(input), 1);
     else if (ft_strcmp(input[0], "exit") == 0)
         return (shell_exit(input), 1);
+	update_exit_status(-1);
     return (0);
 }
 
