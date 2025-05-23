@@ -11,29 +11,32 @@ int	ft_isalpha(int ch)
 
 void	add_to_env(char *av, char *name, char *value)
 {
-	int		i;
-	int		eq_flag;
+	char	*new_entry;
 	char	*tmp;
-	char	*var;
+	char	*existing_val;
+	char	*final_value;
 
-	i = 0;
-	eq_flag =0;
-	tmp = ft_strjoin(name, "=");
-	var = ft_strjoin(tmp, value);
+	if (!has_equal_sign(av))
+		return ;
+	final_value = value;
+	if (is_append_export(av))
+	{
+		existing_val = get_env_value(name);
+		if (existing_val)
+			final_value = ft_strjoin(existing_val, value);
+		else
+			final_value = ft_strdup(value);
+	}
+	new_entry = ft_strjoin(name, "=");
+	tmp = new_entry;
+	new_entry = ft_strjoin(new_entry, final_value);
 	free(tmp);
-	while (av[i])
-	{
-		if (av[i] == '=')
-			eq_flag = 1;
-		i++;
-	}
-	if (eq_flag)
-	{
-		if (adjust_env(var, name) == 1)
-			free(var);
-	}
+	if (adjust_env(new_entry, name) == 1)
+		free(new_entry);
 	else
-		free(var);
+		free(new_entry);
+	if (is_append_export(av))
+		free(final_value);
 }
 
 int	adjust_env(char *var, char *name)
@@ -91,21 +94,12 @@ int	realloc_env(char *var)
 	return (0);
 }
 
-int	exist_check(char *env, char *name)
+int	exist_check(char *env_entry, char *name)
 {
-	char	**mot;
+	int	len;
 
-	mot = ft_split(env, '=');
-	if(!mot)
-	{
-		perror("malloc");
-		return (0);
-	}
-	if (ft_strcmp(mot[0], name) == 0)
-	{
-		ft_free_str_array(mot);
+	len = ft_strlen(name);
+	if (ft_strncmp(env_entry, name, len) == 0 && env_entry[len] == '=')
 		return (1);
-	}
-	ft_free_str_array(mot);
 	return (0);
 }

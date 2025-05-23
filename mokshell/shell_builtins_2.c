@@ -3,21 +3,32 @@
 void	export_variable(char *av)
 {
 	char	*eq_pos;
+	char	*plus_eq_pos;
 	char	*key;
 	char	*value;
 	t_exp	*existing;
 
-	eq_pos = ft_strchr(av, '=');
-	if (eq_pos)
+	plus_eq_pos = ft_strnstr(av, "+=", ft_strlen(av));
+	if (plus_eq_pos)
 	{
-		key = ft_substr(av, 0, eq_pos - av);
-		value = ft_strdup(eq_pos + 1);
+		key = ft_substr(av, 0, plus_eq_pos - av);
+		value = ft_strdup(plus_eq_pos + 2);
 	}
 	else
 	{
-		key = ft_strdup(av);
-		value = NULL;
+		eq_pos = ft_strchr(av, '=');
+		if (eq_pos)
+		{
+			key = ft_substr(av, 0, eq_pos - av);
+			value = ft_strdup(eq_pos + 1);
+		}
+		else
+		{
+			key = ft_strdup(av);
+			value = NULL;
+		}
 	}
+
 	if (!check_valid_key(key))
 	{
 		write(2, "export: invalid identifier\n", 27);
@@ -26,24 +37,53 @@ void	export_variable(char *av)
 			free(value);
 		return ;
 	}
+
 	existing = find_exp(*get_exp_list(), key);
 	if (existing)
 	{
-		if (existing->value)
-			free(existing->value);
-		existing->value = value;
-		add_to_env(av, key, value);
+		// Append if `+=` was used
+		if (plus_eq_pos)
+		{
+			char *tmp = existing->value;
+			existing->value = ft_strjoin(existing->value ? existing->value : "", value);
+			free(tmp);
+			free(value);
+		}
+		else
+		{
+			if (existing->value)
+				free(existing->value);
+			existing->value = value;
+		}
+		add_to_env(av, key, existing->value);
 	}
 	else
 	{
-		add_exp_back(get_exp_list(), new_exp_node(key, value));
+		if (plus_eq_pos)
+		{
+			// When key doesn't exist and += is used, initialize with empty string first,
+			// then append the new value to avoid creating invalid entries.
+			add_exp_back(get_exp_list(), new_exp_node(ft_strdup(key), ft_strdup("")));
+			t_exp *new_node = find_exp(*get_exp_list(), key);
+			if (new_node)
+			{
+				char *tmp = new_node->value;
+				new_node->value = ft_strjoin(new_node->value, value);
+				free(tmp);
+			}
+		}
+		else
+		{
+			add_exp_back(get_exp_list(), new_exp_node(ft_strdup(key), value));
+		}
 		add_to_env(av, key, value);
-		return ;
+		if (plus_eq_pos)
+			free(value);
 	}
-	if (!existing)
-		return ;
+
 	free(key);
 }
+
 
 t_exp	*split_env_to_exp(char *env_entry)
 {
