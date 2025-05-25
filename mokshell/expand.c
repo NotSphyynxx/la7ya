@@ -1,10 +1,13 @@
 
 #include "minishell.h"
 
+
+// Lookup env variable value
 char *get_env2_value(const char *name)
 {
     char **env = *get_env();
     int i = 0;
+
     while (env[i])
     {
         char *equal = ft_strchr(env[i], '=');
@@ -19,6 +22,7 @@ char *get_env2_value(const char *name)
     return "";
 }
 
+// Replace variables in a string line
 char *expand_variable(char *line)
 {
     int i = 0;
@@ -36,18 +40,17 @@ char *expand_variable(char *line)
             result = ft_strjoin(tmp, before);
             free(tmp);
             free(before);
-
             i++; // skip $
 
             if (line[i] == '?')
             {
-                // Handle exit status
+                // Special case: exit status
                 char *exit_status_str = ft_itoa(get_shell()->exit_status);
                 tmp = result;
                 result = ft_strjoin(tmp, exit_status_str);
                 free(tmp);
                 free(exit_status_str);
-                i++; // skip ?
+                i++; // skip '?'
             }
             else
             {
@@ -69,7 +72,7 @@ char *expand_variable(char *line)
             i++;
     }
 
-    // Append remaining text after last $
+    // Append remaining part of the line
     if (start < i)
     {
         char *remaining = ft_substr(line, start, i - start);
@@ -81,15 +84,15 @@ char *expand_variable(char *line)
     return result;
 }
 
-
+// Expand variables in tokens and detect ambiguous redirections
 void expand(t_token *tokens)
 {
     t_token *curr = tokens;
 
-    // 1️⃣ Variable Expansion Pass
+    // 1️⃣ Variable expansion pass
     while (curr)
     {
-        if (curr->type == WORD && !curr->was_single && ft_strchr(curr->value, '$'))
+        if (curr->type == WORD && !curr->was_single && ft_strchr(curr->value, '$') && curr->value[1])
         {
             char *expanded = expand_variable(curr->value);
             free(curr->value);
@@ -98,15 +101,16 @@ void expand(t_token *tokens)
         curr = curr->next;
     }
 
-    // 2️⃣ Ambiguous Redirection Detection Pass
+    // 2️⃣ Ambiguous redirection detection pass
+    curr = tokens;  // 🔥 Reset curr before this second pass
     while (curr)
     {
-        if (curr->type == REDIR_IN || curr->type == REDIR_OUT || curr->type == REDIR_APPEND || curr->type == HEREDOC)
+        if (curr->type == REDIR_IN || curr->type == REDIR_OUT ||
+            curr->type == REDIR_APPEND || curr->type == HEREDOC)
         {
             if (!curr->next || !curr->next->value || ft_strlen(curr->next->value) == 0
                 || ft_strchr(curr->next->value, ' '))
             {
-                // Mark the *redirection target* token as ambiguous
                 if (curr->next)
                     curr->next->ambigious = 1;
             }
@@ -114,3 +118,4 @@ void expand(t_token *tokens)
         curr = curr->next;
     }
 }
+

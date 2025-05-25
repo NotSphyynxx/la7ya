@@ -25,58 +25,64 @@ static char *make_heredoc_filename(int count)
 	free(num_str);
 	return filename;
 }
-
-void	handle_heredocs(t_token *tokens)
+static void	handle_heredoc_child(t_token *curr, int count)
 {
-	t_token	*curr = tokens;
-	int		tmp_fd;
-	pid_t	pid;
-	static int heredoc_count = 0;
-	char	*tmp_filename;
-	int		status;
+	int		fd;
+	char	*filename;
+	char	*line;
 
-	while (curr)
+	filename = make_heredoc_filename(count);
+	if (!filename)
+		exit(1);
+	fd = open(filename, O_WRONLY | O_CREAT | O_TRUNC, 0644);
+	free(filename);
+	if (fd < 0)
+	{
+		perror("heredoc tmp file error");
+		exit(1);
+	}
+	while (1)
+	{
+		line = readline("> ");
+		if (!line || ft_strcmp(line, curr->next->value) == 0)
+		{
+			free(line);
+			break;
+		}
+		write(fd, line, ft_strlen(line));
+		write(fd, "\n", 1);
+		free(line);
+	}
+	close(fd);
+	exit(0);
+}
+
+void	handle_heredocs_range(t_token *start, t_token *end)
+{
+	t_token		*curr;
+	pid_t		pid;
+	int			status;
+	static int	count;
+	char		*filename;
+
+	curr = start;
+	while (curr && curr != end)
 	{
 		if (curr->type == HEREDOC)
 		{
 			pid = fork();
 			if (pid == 0)
-			{
-				tmp_filename = make_heredoc_filename(heredoc_count);
-				if (!tmp_filename)
-					exit(1);
-				tmp_fd = open(tmp_filename, O_WRONLY | O_CREAT | O_TRUNC, 0644);
-				free(tmp_filename);
-				if (tmp_fd < 0)
-				{
-					perror("heredoc tmp file error");
-					exit(1);
-				}
-				while (1)
-				{
-					char *line = readline("> ");
-					if (!line || ft_strcmp(line, curr->next->value) == 0)
-					{
-						free(line);
-						break;
-					}
-					write(tmp_fd, line, ft_strlen(line));
-					write(tmp_fd, "\n", 1);
-					free(line);
-				}
-				close(tmp_fd);
-				exit(0);
-			}
+				handle_heredoc_child(curr, count);
 			waitpid(pid, &status, 0);
 			update_exit_status(status);
-			tmp_filename = make_heredoc_filename(heredoc_count);
-			if (tmp_filename)
+			filename = make_heredoc_filename(count);
+			if (filename)
 			{
 				free(curr->next->value);
-				curr->next->value = tmp_filename;
+				curr->next->value = filename;
 			}
 			curr->type = REDIR_IN;
-			heredoc_count++;
+			count++;
 		}
 		curr = curr->next;
 	}

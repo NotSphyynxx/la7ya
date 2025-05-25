@@ -6,27 +6,35 @@ int shell_echo(char **av)
 	int i = 1;
 	int new_line = 1;
 
-	while (av[i] && av[i][0] == '-')
+	while (av[i] && av[i][0] == '\0')
+		i++;
+	while (av[i] && av[i][0] == '-' && av[i][1] == 'n')
 	{
 		int j = 1;
 		while (av[i][j] == 'n')
 			j++;
 		if (av[i][j] != '\0')
-			break; // not a pure -n option, stop parsing flags
+			break;
 		new_line = 0;
 		i++;
+		while (av[i] && av[i][0] == '\0')
+			i++;
 	}
 	while (av[i])
 	{
-		write(STDOUT_FILENO, av[i], ft_strlen(av[i]));
-		if (av[i + 1])
-			write(STDOUT_FILENO, " ", 1);
+		if (av[i][0] != '\0')
+		{
+			write(STDOUT_FILENO, av[i], ft_strlen(av[i]));
+			if (av[i + 1])
+				write(STDOUT_FILENO, " ", 1);
+		}
 		i++;
 	}
 	if (new_line)
 		write(STDOUT_FILENO, "\n", 1);
 	return (0);
 }
+
 
 
 int	shell_env(char **av,  char **envp)
@@ -81,7 +89,7 @@ void	shell_cd(char **args)
 	{
 		path = get_env_value("HOME");
 		if (!path || chdir(path) != 0)
-			perror("cd");
+			write(STDERR_FILENO, "minishell: cd: PATH not set\n", 29);
 	}
 	else
 	{

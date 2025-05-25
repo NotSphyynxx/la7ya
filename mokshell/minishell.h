@@ -102,6 +102,13 @@ int check_syntax(t_token *tokens);
 void    expand(t_token *tokens);
 void	free_tokens(t_token *tokens);
 char *expand_variable(char *line);
+int check_all(t_token **tokens, char *line, int *i);
+int check_syntax(t_token *tokens);
+int check_quote(t_token **tokens, char *line, int *i);
+int check_heredoc(t_token **tokens, char *line, int *i);
+int    check_pipe(t_token **tokens, char *line, int *i);
+int check_all(t_token **tokens, char *line, int *i);
+void last_check(t_token **tokens, char *line, int *i);
 
 //@------------Execution------------------@//
 void	execute(char **input, t_token *start, t_token *end, t_exec *exec);
@@ -117,7 +124,7 @@ void	ft_free_str_array(char **array);
 char	*find_command_path(char *cmd, t_exec *exec);
 int     contains_pipe_in_tokens(t_token *tokens);
 char    **tokens_to_cmd(t_token *start, t_token *end);
-void	handle_heredocs(t_token *tokens);
+void	handle_heredocs_range(t_token *start, t_token *end);
 t_exp	*split_env_to_exp(char *env_entry);
 void	printf_export_list(void);
 t_exp	**get_exp_list(void);

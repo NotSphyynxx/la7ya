@@ -16,7 +16,6 @@ void	cmnd_check(char **input, char **envp, t_token *tokens, t_exec *exec)
 {
 	if (tokens)
 	{
-		handle_heredocs(tokens);
 		if (contains_pipe_in_tokens(tokens))
 			execute_pipe_commands(tokens, exec);
 		else
@@ -38,6 +37,7 @@ void	execute(char **input, t_token *start, t_token *end, t_exec *exec)
 {
 	char	*path;
 
+	handle_heredocs_range(start, end);
 	if (apply_redirections(start, end) == -1)
 		exit(1);
 	if (builtin_check(input, *get_env()))
