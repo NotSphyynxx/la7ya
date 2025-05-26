@@ -12,14 +12,12 @@
 
 #include "../minishell.h"
 
-void	leaks_handle(char *readed, t_token *tokens, char **input, t_exec *exec)
+void	leaks_handle(char *readed, t_token *tokens)
 {
 	if (readed)
 		free(readed);
 	if (tokens)
 		free_tokens(tokens);
-	if (input)
-		ft_free_str_array(input);
 }
 
 // ✅ apply_redirections: applies redirections from start up to end

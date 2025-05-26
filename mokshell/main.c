@@ -19,10 +19,13 @@ int	main(int ac, char **av, char **envp)
 	char	**input;
 	t_exec	exec;
 
+	if (ac > 2)
+		return 0;
 	(void)ac;
 	(void)av;
 	printf("================ | Welcome to Sidna-shell | ================\n");
 	init_shell(envp);
+	exec.gc_head = NULL;
 	while (1)
 	{
 		readed = readline("minishell$ ");
@@ -33,7 +36,9 @@ int	main(int ac, char **av, char **envp)
 		input = tokens_to_cmd(tokens, NULL);
 		if (tokens || input)
 			cmnd_check(input, *get_env(), tokens, &exec);
-		leaks_handle(readed, tokens, input, &exec);
+		gc_clear(&exec, readed, tokens, input);
 	}
+	free_exp(*get_exp_list());
+	ft_free_str_array(*get_env());
 	return (0);
 }

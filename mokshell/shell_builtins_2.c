@@ -34,6 +34,7 @@ void	export_variable(char *av)
 		free(key);
 		if (value)
 			free(value);
+		update_exit_status(2);
 		return ;
 	}
 

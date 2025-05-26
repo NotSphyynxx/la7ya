@@ -1,7 +1,6 @@
 
 #include "minishell.h"
 
-
 // Lookup env variable value
 char *get_env2_value(const char *name)
 {
@@ -52,7 +51,7 @@ char *expand_variable(char *line)
                 free(exit_status_str);
                 i++; // skip '?'
             }
-            else
+            else if (line[i] && (ft_isalnum(line[i]) || line[i] == '_'))
             {
                 // Regular variable
                 int var_start = i;
@@ -66,13 +65,19 @@ char *expand_variable(char *line)
                 free(val);
                 free(var_name);
             }
+            else
+            {
+                // Just a lone '$' — copy it as-is
+                tmp = result;
+                result = ft_strjoin(tmp, "$");
+                free(tmp);
+            }
             start = i;
         }
         else
             i++;
     }
-
-    // Append remaining part of the line
+    // Append remaining text after last $
     if (start < i)
     {
         char *remaining = ft_substr(line, start, i - start);
@@ -92,7 +97,7 @@ void expand(t_token *tokens)
     // 1️⃣ Variable expansion pass
     while (curr)
     {
-        if (curr->type == WORD && !curr->was_single && ft_strchr(curr->value, '$') && curr->value[1])
+        if (curr->type == WORD && !curr->was_single && ft_strchr(curr->value, '$'))
         {
             char *expanded = expand_variable(curr->value);
             free(curr->value);

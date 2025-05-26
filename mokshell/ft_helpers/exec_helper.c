@@ -16,7 +16,7 @@ int builtin_check(char **input, char **envp)
 {
     if (!input || !(*input))
 	{
-		update_exit_status(-1);
+		update_exit_status(2);
         return (0);
 	}
     else if (ft_strcmp(input[0], "echo") == 0)
@@ -33,7 +33,6 @@ int builtin_check(char **input, char **envp)
         return (shell_unset(input), 1);
     else if (ft_strcmp(input[0], "exit") == 0)
         return (shell_exit(input), 1);
-	update_exit_status(-1);
     return (0);
 }
 
@@ -111,7 +110,7 @@ char **tokens_to_cmd(t_token *start, t_token *end)
             temp = temp->next;  // skip the next token (target)
         temp = temp->next;
     }
-    char **cmd = malloc(sizeof(char *) * (count + 1));
+    char	**cmd = malloc(sizeof(char *) * (count + 1));
     if (!cmd)
         return NULL;
     temp = start;
@@ -119,7 +118,10 @@ char **tokens_to_cmd(t_token *start, t_token *end)
     while (temp != end && temp)
     {
         if (temp->type == WORD || temp->type == ENV_VAR) {
-            cmd[i++] = ft_strdup(temp->value); // Use the expanded value
+            cmd[i] = ft_strdup(temp->value); // Use the expanded value
+			if (!cmd[i])
+				ft_free_str_array(cmd);
+			i++;
         }
         else if (temp->type == REDIR_OUT || temp->type == REDIR_APPEND ||
                  temp->type == REDIR_IN || temp->type == HEREDOC) {

@@ -38,9 +38,16 @@ typedef enum
     DOUBLE_QUOTE2
 }t_type;
 
+typedef struct s_gc_node
+{
+	void				*ptr;
+	struct s_gc_node	*next;
+}	t_gc_node;
+
 typedef struct s_exec
 {
-	char *cmnd_path;
+    t_gc_node   *gc_head;
+	char        *cmnd_path;
 }	t_exec;
 
 typedef struct s_token
@@ -145,7 +152,6 @@ void    init_shell(char **envp);
 void    read_check(char *readed);
 void	built_with_red_check(char **input, char **envp, t_token *tokens);
 int		there_is_red(t_token *tokens);
-void	leaks_handle(char *readed, t_token *tokens, char **input, t_exec *exec);
 void    execute_piped_cmnd(t_token *start, t_token *end, int prev_fd, int fd[2], t_exec *exec);
 void    execute_final_command(t_token *start, int prev_fd, t_exec *exec);
 void	wait_for_children(void);
@@ -153,6 +159,9 @@ int		is_append_export(char *av);
 int		has_equal_sign(char *av);
 t_shell *get_shell(void);
 void	update_exit_status(int status);
+void *gc_malloc(size_t size, t_exec *exec);
+void gc_clear(t_exec *exec, char *readed, t_token *tokens, char **input);
+void    free_exp(t_exp *exp);
 
 //~~~~~~~~~~~~Builtins~~~~~~~~~~~~~~~~~~~
 int		shell_echo(char **av);

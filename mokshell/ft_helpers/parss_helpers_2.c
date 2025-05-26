@@ -31,3 +31,19 @@ void last_check(t_token **tokens, char *line, int *i)
         free(word);
     }
 }
+
+void    free_exp(t_exp *exp)
+{
+    t_exp   *tmp;
+    while(exp)
+    {
+        tmp = exp->next;
+        if (exp->key)
+            free(exp->key);
+        if (exp->value)
+            free(exp->value);
+        free(exp);
+        exp = tmp;
+    }
+
+}

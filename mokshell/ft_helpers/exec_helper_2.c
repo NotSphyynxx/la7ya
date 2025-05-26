@@ -126,7 +126,10 @@ t_exp	*new_exp_node(char *key, char *value)
 
 	node = malloc(sizeof(t_exp));
 	if (!node)
+	{
+		update_exit_status(2);
 		return (NULL);
+	}
     node->key = key;
     node->value = value;
 	node->next = NULL;
