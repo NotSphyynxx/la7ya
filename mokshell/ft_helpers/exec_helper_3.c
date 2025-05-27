@@ -38,4 +38,60 @@ int	check_valid_key(char *key)
 	}
 	return (1);
 }
+void ft_free_str_array(char **arr)
+{
+    int i = 0;
+    while (arr && arr[i])
+    {
+        free(arr[i++]);
+    }
+    free(arr);
+}
 
+
+char *find_command_path(char *cmd, t_exec *exec)
+{
+	char	*path_env;
+	char	**paths;
+	char	*tmp;
+	int		i;
+
+	if (ft_strchr(cmd, '/'))
+	{
+		if (access(cmd, X_OK) == 0)
+			return (ft_strdup(cmd));
+		return (NULL);
+	}
+	path_env = get_env_value("PATH");
+	if (!path_env)
+		return (NULL);
+	paths = ft_split(path_env, ':');
+	if (!paths)
+		return (NULL);
+	i = 0;
+	while (paths[i])
+	{
+		tmp = ft_strjoin(paths[i], "/");
+		if (!tmp)
+		{
+			ft_free_str_array(paths);
+			return (NULL);
+		}
+		exec->cmnd_path = ft_strjoin(tmp, cmd);
+		free(tmp);
+		if (!exec->cmnd_path)
+		{
+			ft_free_str_array(paths);
+			return (NULL);
+		}
+		if (access(exec->cmnd_path, X_OK) == 0)
+		{
+			ft_free_str_array(paths);
+			return (exec->cmnd_path);
+		}
+		free(exec->cmnd_path);
+		i++;
+	}
+	ft_free_str_array(paths);
+	return (NULL);
+}

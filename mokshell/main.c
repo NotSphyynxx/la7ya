@@ -34,7 +34,7 @@ int	main(int ac, char **av, char **envp)
 			add_history(readed);
 		tokens = parss(readed);
 		input = tokens_to_cmd(tokens, NULL);
-		if (tokens || input)
+		if (input)
 			cmnd_check(input, *get_env(), tokens, &exec);
 		gc_clear(&exec, readed, tokens, input);
 	}

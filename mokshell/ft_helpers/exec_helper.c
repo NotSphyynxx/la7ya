@@ -36,101 +36,142 @@ int builtin_check(char **input, char **envp)
     return (0);
 }
 
+// Helper: split a single string on spaces, return array or NULL on malloc fail
+static char **split_on_spaces(const char *s)
+{
+    char    **parts;
+    int     n;
 
-void ft_free_str_array(char **arr)
+    parts = ft_split(s, ' ');
+    if (!parts)
+        return (NULL);
+    // remove any empty entries
+    n = 0;
+    while (parts[n])
+    {
+        if (parts[n][0] == '\0')
+        {
+            ft_free_str_array(parts);
+            return (NULL);
+        }
+        n++;
+    }
+    return (parts);
+}
+// Helper: count number of words in a string (split by spaces)
+static int ft_count_words(const char *s, char c)
+{
+    int count = 0;
+    int in_word = 0;
+
+    while (*s)
+    {
+        if (*s != c && !in_word)
+        {
+            in_word = 1;
+            count++;
+        }
+        else if (*s == c)
+            in_word = 0;
+        s++;
+    }
+    return (count);
+}
+
+
+static int is_assignment(const char *s)
 {
     int i = 0;
-    while (arr && arr[i])
+    while (s[i] && s[i] != ' ')
     {
-        free(arr[i++]);
+        if (s[i] == '=')
+            return (1);
+        i++;
     }
-    free(arr);
+    return (0);
 }
-
-
-char *find_command_path(char *cmd, t_exec *exec)
-{
-	char	*path_env;
-	char	**paths;
-	char	*tmp;
-	int		i;
-
-	if (ft_strchr(cmd, '/'))
-	{
-		if (access(cmd, X_OK) == 0)
-			return (ft_strdup(cmd));
-		return (NULL);
-	}
-	path_env = get_env_value("PATH");
-	if (!path_env)
-		return (NULL);
-	paths = ft_split(path_env, ':');
-	if (!paths)
-		return (NULL);
-	i = 0;
-	while (paths[i])
-	{
-		tmp = ft_strjoin(paths[i], "/");
-		if (!tmp)
-		{
-			ft_free_str_array(paths);
-			return (NULL);
-		}
-		exec->cmnd_path = ft_strjoin(tmp, cmd);
-		free(tmp);
-		if (!exec->cmnd_path)
-		{
-			ft_free_str_array(paths);
-			return (NULL);
-		}
-		if (access(exec->cmnd_path, X_OK) == 0)
-		{
-			ft_free_str_array(paths);
-			return (exec->cmnd_path);
-		}
-		free(exec->cmnd_path);
-		i++;
-	}
-	ft_free_str_array(paths);
-	return (NULL);
-}
-
 
 char **tokens_to_cmd(t_token *start, t_token *end)
 {
-    int count = 0;
-    t_token *temp = start;
+    int     count = 0;
+    t_token *t = start;
+    char    **cmd;
+    int     i = 0;
 
-    while (temp != end && temp)
+    // 1️⃣ Count how many argv slots we'll need
+    while (t && t != end)
     {
-        if (temp->type == WORD || temp->type == ENV_VAR)
-            count++;
-        else if (temp->type == REDIR_OUT || temp->type == REDIR_APPEND ||
-                 temp->type == REDIR_IN || temp->type == HEREDOC)
-            temp = temp->next;  // skip the next token (target)
-        temp = temp->next;
+        if (t->type == WORD || t->type == ENV_VAR)
+        {
+            char *clean = t->value;
+            if (!t->was_single && !t->was_double)
+                while (*clean == ' ')
+                    clean++;
+            if (*clean == '\0')
+            {
+                t = t->next;
+                continue;
+            }
+            if (!t->was_single && !t->was_double && !is_assignment(clean) && ft_strchr(clean, ' '))
+                count += ft_count_words(clean, ' '); // custom word-count function
+            else
+                count++;
+        }
+        else if (t->type == REDIR_OUT || t->type == REDIR_APPEND
+              || t->type == REDIR_IN  || t->type == HEREDOC)
+            t = t->next;
+        t = t->next;
     }
-    char	**cmd = malloc(sizeof(char *) * (count + 1));
+
+    if (count == 0)
+        return (NULL);
+
+    cmd = malloc(sizeof(char *) * (count + 1));
     if (!cmd)
-        return NULL;
-    temp = start;
-    int i = 0;
-    while (temp != end && temp)
+        return (NULL);
+
+    // 2️⃣ Build argv
+    t = start;
+    while (t && t != end)
     {
-        if (temp->type == WORD || temp->type == ENV_VAR) {
-            cmd[i] = ft_strdup(temp->value); // Use the expanded value
-			if (!cmd[i])
-				ft_free_str_array(cmd);
-			i++;
+        if (t->type == WORD || t->type == ENV_VAR)
+        {
+            char *clean = t->value;
+            if (!t->was_single && !t->was_double)
+                while (*clean == ' ')
+                    clean++;
+            if (*clean == '\0')
+            {
+                t = t->next;
+                continue;
+            }
+            if (!t->was_single && !t->was_double && !is_assignment(clean) && ft_strchr(clean, ' '))
+            {
+                char **parts = ft_split(clean, ' ');
+                if (parts)
+                {
+                    for (int j = 0; parts[j]; j++)
+                        cmd[i++] = ft_strdup(parts[j]);
+                    ft_free_str_array(parts);
+                }
+            }
+            else
+                cmd[i++] = ft_strdup(clean);
         }
-        else if (temp->type == REDIR_OUT || temp->type == REDIR_APPEND ||
-                 temp->type == REDIR_IN || temp->type == HEREDOC) {
-            temp = temp->next;  // skip the next token (target)
-        }
-        temp = temp->next;
+        else if (t->type == REDIR_OUT || t->type == REDIR_APPEND
+              || t->type == REDIR_IN  || t->type == HEREDOC)
+            t = t->next;
+        t = t->next;
     }
     cmd[i] = NULL;
-    return cmd;
+
+    if (i == 0)
+    {
+        free(cmd);
+        return (NULL);
+    }
+
+    return (cmd);
 }
 
 char	*ft_strndup(const char *s, size_t n)
