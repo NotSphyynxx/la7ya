@@ -45,5 +45,4 @@ void    free_exp(t_exp *exp)
         free(exp);
         exp = tmp;
     }
-
 }
