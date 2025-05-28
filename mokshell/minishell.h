@@ -115,7 +115,7 @@ int check_quote(t_token **tokens, char *line, int *i);
 int check_heredoc(t_token **tokens, char *line, int *i);
 int    check_pipe(t_token **tokens, char *line, int *i);
 int check_all(t_token **tokens, char *line, int *i);
-void last_check(t_token **tokens, char *line, int *i);
+int last_check(t_token **tokens, char *line, int *i);
 
 //@------------Execution------------------@//
 void	execute(char **input, t_token *start, t_token *end, t_exec *exec);

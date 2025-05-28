@@ -20,7 +20,8 @@ int check_all(t_token **tokens, char *line, int *i)
                 return (0);
         }
         else
-            last_check(tokens, line, i);
+            if (last_check(tokens, line, i) == 1)
+                return 0;
     }
     return 1;
 }
