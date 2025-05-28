@@ -16,6 +16,7 @@ void	cmnd_check(char **input, char **envp, t_token *tokens, t_exec *exec)
 {
 	if (tokens)
 	{
+		printf("1\n");
 		if (contains_pipe_in_tokens(tokens))
 			execute_pipe_commands(tokens, exec);
 		else
