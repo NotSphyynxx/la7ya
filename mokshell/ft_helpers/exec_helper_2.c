@@ -12,30 +12,42 @@
 
 #include "../minishell.h"
 
-static char *make_heredoc_filename(int count)
+// Returns a malloc’d "/tmp/.heredoc_tmp_<n>" where <n> is the first
+// integer ≥0 such that that file does not yet exist.
+// Caller must free the returned string.
+static char *make_heredoc_filename(void)
 {
-	char	*prefix = "/tmp/.heredoc_tmp_";
-	char	*num_str;
-	char	*filename;
+    int     i = 0;
+    char    *num;
+    char    *tmp;
+    char    *path;
 
-	num_str = ft_itoa(count);
-	if (!num_str)
-		return NULL;
-	filename = ft_strjoin(prefix, num_str);
-	free(num_str);
-	return filename;
+    while (1)
+    {
+        num = ft_itoa(i);
+        if (!num)
+            return NULL;
+        tmp = ft_strjoin("/tmp/.heredoc_tmp_", num);
+        free(num);
+        if (!tmp)
+            return NULL;
+        if (access(tmp, F_OK) != 0)
+        {
+            path = tmp;
+            break;
+        }
+        free(tmp);
+        i++;
+    }
+    return path;
 }
-static void	handle_heredoc_child(t_token *curr, int count)
+
+static void	handle_heredoc_child(t_token *curr, char *filename)
 {
 	int		fd;
-	char	*filename;
 	char	*line;
 
-	filename = make_heredoc_filename(count);
-	if (!filename)
-		exit(1);
 	fd = open(filename, O_WRONLY | O_CREAT | O_TRUNC, 0644);
-	free(filename);
 	if (fd < 0)
 	{
 		perror("heredoc tmp file error");
@@ -62,7 +74,6 @@ void	handle_heredocs_range(t_token *start, t_token *end)
 	t_token		*curr;
 	pid_t		pid;
 	int			status;
-	static int	count;
 	char		*filename;
 
 	curr = start;
@@ -70,23 +81,22 @@ void	handle_heredocs_range(t_token *start, t_token *end)
 	{
 		if (curr->type == HEREDOC)
 		{
+			filename = make_heredoc_filename();
+			if (!filename)
+				return ;
 			pid = fork();
 			if (pid == 0)
-				handle_heredoc_child(curr, count);
+				handle_heredoc_child(curr, filename);
 			waitpid(pid, &status, 0);
 			update_exit_status(status);
-			filename = make_heredoc_filename(count);
-			if (filename)
-			{
-				free(curr->next->value);
-				curr->next->value = filename;
-			}
+			free(curr->next->value);
+			curr->next->value = filename;
 			curr->type = REDIR_IN;
-			count++;
 		}
 		curr = curr->next;
 	}
 }
+
 
 int contains_pipe_in_tokens(t_token *tokens)
 {

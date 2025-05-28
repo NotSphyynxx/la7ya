@@ -34,19 +34,13 @@ int apply_redirections(t_token *start, t_token *end)
          || curr->type == REDIR_IN)
         {
             file_tok = curr->next;
-            // 1) Missing target or empty value
-            if (!file_tok || !file_tok->value || file_tok->value[0] == '\0')
-            {
-                write(STDERR_FILENO, "minishell: ambiguous redirect\n", 30);
-                return (-1);
-            }
-            // 2) Marked ambiguous during expand
+            // Marked ambiguous during expand
             if (file_tok->ambigious)
             {
                 write(STDERR_FILENO, "minishell: ambiguous redirect\n", 30);
                 return (-1);
             }
-            // 3) Now perform the actual open
+            // Now perform the actual open
             if (curr->type == REDIR_OUT)
             {
                 fd = open(file_tok->value, O_WRONLY | O_CREAT | O_TRUNC, 0644);
@@ -79,8 +73,7 @@ int apply_redirections(t_token *start, t_token *end)
     return (0);
 }
 
-
-void execute_piped_cmnd(t_token *start, t_token *end, int prev_fd, int fd[2], t_exec *exec)
+void    execute_piped_cmnd(t_token *start, t_token *end, int prev_fd, int fd[2], t_exec *exec)
 {
     pid_t child_pid;
 

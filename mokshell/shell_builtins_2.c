@@ -45,7 +45,10 @@ void	export_variable(char *av)
 		if (plus_eq_pos)
 		{
 			char *tmp = existing->value;
-			existing->value = ft_strjoin(existing->value ? existing->value : "", value);
+			if (existing->value)
+				existing->value = ft_strjoin(existing->value, value);
+			else
+				existing->value = ft_strdup(value);
 			free(tmp);
 			free(value);
 		}

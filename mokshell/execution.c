@@ -37,7 +37,6 @@ void	execute(char **input, t_token *start, t_token *end, t_exec *exec)
 {
 	char	*path;
 
-	handle_heredocs_range(start, end);
 	if (apply_redirections(start, end) == -1)
 		exit(1);
 	if (builtin_check(input, *get_env()))
@@ -63,6 +62,7 @@ void	execute_pipe_commands(t_token *tokens, t_exec *exec)
 	curr = tokens;
 	start = tokens;
 	prev_fd = -1;
+	handle_heredocs_range(tokens, NULL);
 	while (curr)
 	{
 		if (curr->type == PIPE)
@@ -88,6 +88,7 @@ void	executor_simple_command(t_token *tokens, t_exec *exec)
 	pid_t	pid;
 
 	status = 0;
+	handle_heredocs_range(tokens, NULL);
 	pid = fork();
 	if (pid == -1)
 	{
