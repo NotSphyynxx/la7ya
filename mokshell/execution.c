@@ -47,6 +47,11 @@ void	execute(char **input, t_token *start, t_token *end, t_exec *exec)
 		write(STDERR_FILENO, "minishell: command not found\n", 29);
 		exit(127);
 	}
+	if (access(path, X_OK) != 0)
+	{
+		perror("minishell");
+		exit(126);
+	}
 	execve(path, input, *get_env());
 	perror("execve failed");
 	exit(126);

@@ -9,7 +9,6 @@ char *strip_quotes(char *str)
 
     if (!result)
         return NULL;
-
     while (str[i])
     {
         if (str[i] == '\'' || str[i] == '"')

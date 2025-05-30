@@ -34,6 +34,8 @@ void    read_check(char *readed)
 	if (!readed)
 		{
 			printf("exit\n");
+			free_exp(*get_exp_list());
+			ft_free_str_array(*get_env());
 			exit(0);
 		}
 }

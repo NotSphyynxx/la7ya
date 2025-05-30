@@ -1,7 +1,5 @@
 #include "../minishell.h"
 
-
-
 void ft_free_str_array(char **arr)
 {
     int i = 0;

@@ -33,7 +33,7 @@ int    check_pipe(t_token **tokens, char *line, int *i)
         printf("Syntax error: unexpected token '||'\n");
         return 0;
     }
-    add_token(tokens, new_token(ft_strdup("|"), PIPE));
+    add_token(tokens, new_token("|", PIPE));
     (*i)++;
     return 1;
 }
@@ -46,12 +46,12 @@ int check_heredoc(t_token **tokens, char *line, int *i)
     }
     else if (line[*i] == '>' && line[*i + 1] == '>')
     {
-        add_token(tokens, new_token(ft_strdup(">>"), REDIR_APPEND));
+        add_token(tokens, new_token(">>", REDIR_APPEND));
         (*i) += 2;
     }
     else if (line[*i] == '<' && line[*i + 1] == '<')
     {
-        add_token(tokens, new_token(ft_strdup("<<"), HEREDOC));
+        add_token(tokens, new_token("<<", HEREDOC));
         (*i) += 2;
     }
     else
@@ -62,7 +62,7 @@ int check_heredoc(t_token **tokens, char *line, int *i)
             type = REDIR_OUT;
         else
             type = REDIR_IN;
-        add_token(tokens, new_token(ft_strdup(op), type));
+        add_token(tokens, new_token(op, type));
         (*i)++;
     }
     return 1;
