@@ -46,7 +46,9 @@ static void	handle_heredoc_child(t_token *curr, char *filename)
 {
 	int		fd;
 	char	*line;
+	int i;
 
+	i = 0;
 	fd = open(filename, O_WRONLY | O_CREAT | O_TRUNC, 0644);
 	if (fd < 0)
 	{
