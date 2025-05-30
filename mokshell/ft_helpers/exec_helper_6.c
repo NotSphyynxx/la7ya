@@ -152,7 +152,7 @@ void executor_child_process(t_token *tokens, t_exec *exec)
     char **cmd;
     char *path;
 
-    handle_heredocs_range(tokens);
+    // handle_heredocs_range(tokens);
     if (apply_redirections(tokens, NULL) == -1)
         exit(1);
     cmd = tokens_to_cmd(tokens, NULL);

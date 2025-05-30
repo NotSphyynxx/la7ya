@@ -182,10 +182,7 @@ int check_syntax(t_token *tokens)
     while (current)
     {
         if (current->type == HEREDOC && current->next && current->next->type == WORD)
-        {
             handle_heredocs_range(current);
-            // printf("2\n");
-        }
         if (current->type == PIPE && current->next && current->next->type == PIPE)
         {
             printf("Syntax error: unexpected '||' \n");
