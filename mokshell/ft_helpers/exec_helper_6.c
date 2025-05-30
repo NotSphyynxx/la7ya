@@ -20,7 +20,6 @@ void	leaks_handle(char *readed, t_token *tokens)
 		free_tokens(tokens);
 }
 
-// ✅ apply_redirections: applies redirections from start up to end
 int apply_redirections(t_token *start, t_token *end)
 {
     t_token *curr = start;
@@ -29,44 +28,77 @@ int apply_redirections(t_token *start, t_token *end)
 
     while (curr && curr != end)
     {
-        if (curr->type == REDIR_OUT
-         || curr->type == REDIR_APPEND
-         || curr->type == REDIR_IN)
+        if (curr->type == REDIR_IN)
         {
             file_tok = curr->next;
-            // Marked ambiguous during expand
+            // 1) Missing target or empty value
+            if (!file_tok || !file_tok->value || file_tok->value[0] == '\0')
+            {
+                write(STDERR_FILENO, "minishell: ambiguous redirect\n", 30);
+                return (-1);
+            }
+            // 2) Marked ambiguous during expand
             if (file_tok->ambigious)
             {
                 write(STDERR_FILENO, "minishell: ambiguous redirect\n", 30);
                 return (-1);
             }
-            // Now perform the actual open
-            if (curr->type == REDIR_OUT)
+            fd = open(curr->next->value, O_RDONLY);
+            if (fd < 0)
+                return (perror("open <"), -1);
+
+            // if it's one of our heredoc files, remove it now
+            if (ft_strncmp(curr->next->value,
+                           "/tmp/.heredoc_tmp_", 18) == 0)
             {
-                fd = open(file_tok->value, O_WRONLY | O_CREAT | O_TRUNC, 0644);
-                if (fd < 0)
-                    return (perror("open >"), -1);
-                dup2(fd, STDOUT_FILENO);
-                close(fd);
+                unlink(curr->next->value);
             }
-            else if (curr->type == REDIR_APPEND)
+            dup2(fd, STDIN_FILENO);
+            close(fd);
+        }
+        else if (curr->type == REDIR_OUT)
+        {
+            file_tok = curr->next;
+            // 1) Missing target or empty value
+            if (!file_tok || !file_tok->value || file_tok->value[0] == '\0')
             {
-                fd = open(file_tok->value, O_WRONLY | O_CREAT | O_APPEND, 0644);
-                if (fd < 0)
-                    return (perror("open >>"), -1);
-                dup2(fd, STDOUT_FILENO);
-                close(fd);
+                write(STDERR_FILENO, "minishell: ambiguous redirect\n", 30);
+                return (-1);
             }
-            else /* REDIR_IN */
+            // 2) Marked ambiguous during expand
+            if (file_tok->ambigious)
             {
-                fd = open(file_tok->value, O_RDONLY);
-                if (fd < 0)
-                    return (perror("open <"), -1);
-                if (ft_strcmp(file_tok->value, "/tmp/.heredoc_tmp") == 0)
-                    unlink(file_tok->value);
-                dup2(fd, STDIN_FILENO);
-                close(fd);
+                write(STDERR_FILENO, "minishell: ambiguous redirect\n", 30);
+                return (-1);
             }
+            fd = open(curr->next->value,
+                      O_WRONLY | O_CREAT | O_TRUNC, 0644);
+            if (fd < 0)
+                return (perror("open >"), -1);
+            dup2(fd, STDOUT_FILENO);
+            close(fd);
+        }
+        else if (curr->type == REDIR_APPEND)
+        {
+            file_tok = curr->next;
+            // 1) Missing target or empty value
+            if (!file_tok || !file_tok->value || file_tok->value[0] == '\0')
+            {
+                write(STDERR_FILENO, "minishell: ambiguous redirect\n", 30);
+                return (-1);
+            }
+            // 2) Marked ambiguous during expand
+            if (file_tok->ambigious)
+            {
+                write(STDERR_FILENO, "minishell: ambiguous redirect\n", 30);
+                return (-1);
+            }
+            fd = open(curr->next->value,
+                      O_WRONLY | O_CREAT | O_APPEND, 0644);
+            if (fd < 0)
+                return (perror("open >>"), -1);
+            dup2(fd, STDOUT_FILENO);
+            close(fd);
         }
         curr = curr->next;
     }
@@ -107,6 +139,8 @@ void execute_final_command(t_token *start, int prev_fd, t_exec *exec)
         if (prev_fd != -1)
             close(prev_fd);
         char **cmd = tokens_to_cmd(start, NULL);
+        if (!cmd)
+            exit(0);
         execute(cmd, start, NULL, exec);
         ft_free_str_array(cmd);
         exit(0);
@@ -122,6 +156,8 @@ void executor_child_process(t_token *tokens, t_exec *exec)
     if (apply_redirections(tokens, NULL) == -1)
         exit(1);
     cmd = tokens_to_cmd(tokens, NULL);
+    if (!cmd)
+        exit (0);
     if (builtin_check(cmd, *get_env()))
     {
         ft_free_str_array(cmd);

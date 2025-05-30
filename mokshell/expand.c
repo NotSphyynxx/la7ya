@@ -113,8 +113,7 @@ void expand(t_token *tokens)
         if (curr->type == REDIR_IN || curr->type == REDIR_OUT ||
             curr->type == REDIR_APPEND || curr->type == HEREDOC)
         {
-            if (!curr->next || !curr->next->value || ft_strlen(curr->next->value) == 0
-                || ft_strchr(curr->next->value, ' '))
+            if (!curr->next || !curr->next->value || ft_strlen(curr->next->value) == 0)
             {
                 if (curr->next)
                     curr->next->ambigious = 1;

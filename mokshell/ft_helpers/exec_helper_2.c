@@ -69,33 +69,33 @@ static void	handle_heredoc_child(t_token *curr, char *filename)
 	exit(0);
 }
 
-void	handle_heredocs_range(t_token *start, t_token *end)
+void handle_heredocs_range(t_token *start, t_token *end)
 {
-	t_token		*curr;
-	pid_t		pid;
-	int			status;
-	char		*filename;
+    t_token *curr = start;
+    pid_t    pid;
+    int      status;
+    char    *filename;
 
-	curr = start;
-	while (curr && curr != end)
-	{
-		if (curr->type == HEREDOC)
-		{
-			filename = make_heredoc_filename();
-			if (!filename)
-				return ;
-			pid = fork();
-			if (pid == 0)
-				handle_heredoc_child(curr, filename);
-			waitpid(pid, &status, 0);
-			update_exit_status(status);
-			free(curr->next->value);
-			curr->next->value = filename;
-			curr->type = REDIR_IN;
-		}
-		curr = curr->next;
-	}
+    while (curr && curr != end)
+    {
+        if (curr->type == HEREDOC)
+        {
+            filename = make_heredoc_filename();
+            if (!filename)
+                return;
+            pid = fork();
+            if (pid == 0)
+                handle_heredoc_child(curr, filename);
+            waitpid(pid, &status, 0);
+            update_exit_status(status);
+            free(curr->next->value);
+            curr->next->value = filename;
+            curr->type = REDIR_IN;
+        }
+        curr = curr->next;
+    }
 }
+
 
 
 int contains_pipe_in_tokens(t_token *tokens)

@@ -98,7 +98,6 @@ char **tokens_to_cmd(t_token *start, t_token *end)
     char    **cmd;
     int     i = 0;
 
-    // 1️⃣ Count how many argv slots we'll need
     while (t && t != end)
     {
         if (t->type == WORD || t->type == ENV_VAR)
