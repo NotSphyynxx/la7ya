@@ -131,7 +131,7 @@ void	ft_free_str_array(char **array);
 char	*find_command_path(char *cmd, t_exec *exec);
 int     contains_pipe_in_tokens(t_token *tokens);
 char    **tokens_to_cmd(t_token *start, t_token *end);
-void	handle_heredocs_range(t_token *start, t_token *end);
+void handle_heredocs_range(t_token *start);
 t_exp	*split_env_to_exp(char *env_entry);
 void	printf_export_list(void);
 t_exp	**get_exp_list(void);

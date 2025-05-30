@@ -48,6 +48,7 @@ t_token *parss(char *line)
     int i = 0;
     if (!check_all(&tokens, line, &i))
         return (NULL);
+    
     if (check_syntax(tokens))
     {
         printf("Invalid syntax.\n");
