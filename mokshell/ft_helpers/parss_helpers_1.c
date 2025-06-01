@@ -1,5 +1,82 @@
 #include "../minishell.h"
 
+static char *make_heredoc_filename(void)
+{
+    int     i = 0;
+    char    *num;
+    char    *tmp;
+    char    *path;
+
+    while (1)
+    {
+        num = ft_itoa(i);
+        if (!num)
+            return NULL;
+        tmp = ft_strjoin("/tmp/.heredoc_tmp_", num);
+        free(num);
+        if (!tmp)
+            return NULL;
+        if (access(tmp, F_OK) != 0)
+        {
+            path = tmp;
+            break;
+        }
+        free(tmp);
+        i++;
+    }
+    return path;
+}
+
+static void	handle_heredoc_child(t_token *curr, char *filename)
+{
+	int		fd;
+	char	*line;
+
+	fd = open(filename, O_WRONLY | O_CREAT | O_TRUNC, 0644);
+	if (fd < 0)
+	{
+		perror("heredoc tmp file error");
+		exit(1);
+	}
+	while (1)
+	{
+		line = readline("> ");
+		if (!line || ft_strcmp(line, curr->next->value) == 0)
+		{
+			free(line);
+			break;
+		}
+		write(fd, line, ft_strlen(line));
+		write(fd, "\n", 1);
+		free(line);
+	}
+	close(fd);
+	exit(0);
+}
+
+void handle_heredocs_range(t_token *curr)
+{
+    pid_t    pid;
+    int      status;
+    char    *filename;
+
+    if (curr->type == HEREDOC)
+    {
+        filename = make_heredoc_filename();
+        if (!filename)
+            return;
+        pid = fork();
+        if (pid == 0)
+            handle_heredoc_child(curr, filename);
+        waitpid(pid, &status, 0);
+        update_exit_status(status);
+        free(curr->next->value);
+        curr->next->value = filename;
+        curr->type = REDIR_IN;
+        // printf("1\n");
+    }
+}
+
 int check_all(t_token **tokens, char *line, int *i)
 {
     while (line[*i])
@@ -16,6 +93,7 @@ int check_all(t_token **tokens, char *line, int *i)
         }
         else if (line[*i] == '>' || line[*i] == '<')
         {
+
             if (!check_heredoc(tokens, line, i))
                 return (0);
         }
@@ -37,14 +115,10 @@ int    check_pipe(t_token **tokens, char *line, int *i)
     (*i)++;
     return 1;
 }
+
 int check_heredoc(t_token **tokens, char *line, int *i)
 {
-    if (line[*i] == '>' && line[*i + 1] == '>' && line[*i + 2] == '>')
-    {
-        printf("Syntax error: unexpected '>>>'\n");
-        return 0;
-    }
-    else if (line[*i] == '>' && line[*i + 1] == '>')
+    if (line[*i] == '>' && line[*i + 1] == '>')
     {
         add_token(tokens, new_token(">>", REDIR_APPEND));
         (*i) += 2;
@@ -67,6 +141,7 @@ int check_heredoc(t_token **tokens, char *line, int *i)
     }
     return 1;
 }
+
 int check_quote(t_token **tokens, char *line, int *i)
 {
     char quote = line[(*i)++];
@@ -106,6 +181,8 @@ int check_syntax(t_token *tokens)
     }
     while (current)
     {
+        if (current->type == HEREDOC && current->next && current->next->type == WORD)
+            handle_heredocs_range(current);
         if (current->type == PIPE && current->next && current->next->type == PIPE)
         {
             printf("Syntax error: unexpected '||' \n");
@@ -128,18 +205,6 @@ int check_syntax(t_token *tokens)
             && current->next->next && current->next->next->type == PIPE)
         {
             printf("Syntax error: missing file after redirection\n");
-            return 1;
-        }
-        if (current && current->type == WORD && current->next  
-            && current->next->type == DOUBLE_QUOTE1)
-        {
-            printf("Error: missing closing \"\n");
-            return 1;
-        }
-        if (current && current->type == WORD && current->next  
-            && current->next->type == SINGLE_QUOTE1)
-        {
-            printf("Error: missing closing \'\n");
             return 1;
         }
         current = current->next;

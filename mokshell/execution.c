@@ -67,7 +67,7 @@ void	execute_pipe_commands(t_token *tokens, t_exec *exec)
 	curr = tokens;
 	start = tokens;
 	prev_fd = -1;
-	handle_heredocs_range(tokens, NULL);
+	// handle_heredocs_range(tokens);
 	while (curr)
 	{
 		if (curr->type == PIPE)
@@ -93,7 +93,7 @@ void	executor_simple_command(t_token *tokens, t_exec *exec)
 	pid_t	pid;
 
 	status = 0;
-	handle_heredocs_range(tokens, NULL);
+	(tokens);
 	pid = fork();
 	if (pid == -1)
 	{
