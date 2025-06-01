@@ -67,7 +67,6 @@ void	execute_pipe_commands(t_token *tokens, t_exec *exec)
 	curr = tokens;
 	start = tokens;
 	prev_fd = -1;
-	// handle_heredocs_range(tokens);
 	while (curr)
 	{
 		if (curr->type == PIPE)

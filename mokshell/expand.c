@@ -1,7 +1,6 @@
 
 #include "minishell.h"
 
-// Lookup env variable value
 char *get_env2_value(const char *name)
 {
     char **env = *get_env();

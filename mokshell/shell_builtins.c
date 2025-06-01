@@ -1,25 +1,8 @@
 
 #include "minishell.h"
 
-int shell_echo(char **av)
+static void	print_echo_args(char **av, int i)
 {
-	int i = 1;
-	int new_line = 1;
-
-	while (av[i] && av[i][0] == '\0')
-		i++;
-	while (av[i] && av[i][0] == '-' && av[i][1] == 'n')
-	{
-		int j = 1;
-		while (av[i][j] == 'n')
-			j++;
-		if (av[i][j] != '\0')
-			break;
-		new_line = 0;
-		i++;
-		while (av[i] && av[i][0] == '\0')
-			i++;
-	}
 	while (av[i])
 	{
 		if (av[i][0] != '\0')
@@ -30,11 +13,35 @@ int shell_echo(char **av)
 		}
 		i++;
 	}
+}
+
+int	shell_echo(char **av)
+{
+	int	i;
+	int	j;
+	int	new_line;
+
+	i = 1;
+	new_line = 1;
+	while (av[i] && av[i][0] == '\0')
+		i++;
+	while (av[i] && av[i][0] == '-' && av[i][1] == 'n')
+	{
+		j = 1;
+		while (av[i][j] == 'n')
+			j++;
+		if (av[i][j] != '\0')
+			break ;
+		new_line = 0;
+		i++;
+		while (av[i] && av[i][0] == '\0')
+			i++;
+	}
+	print_echo_args(av, i);
 	if (new_line)
 		write(STDOUT_FILENO, "\n", 1);
 	return (0);
 }
-
 
 
 int	shell_env(char **av,  char **envp)
