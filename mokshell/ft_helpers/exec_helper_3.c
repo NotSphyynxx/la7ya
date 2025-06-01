@@ -1,97 +1,73 @@
 #include "../minishell.h"
 
-void	add_exp_back(t_exp **lst, t_exp *new)
+static int	redir_input(const char *filename)
 {
-	t_exp *tmp;
+	int	fd;
 
-	if (!*lst)
-	{
-		*lst = new;
-		return ;
-	}
-	tmp = *lst;
-	while(tmp->next)
-		tmp = tmp->next;
-	tmp->next = new;
+	fd = open(filename, O_RDONLY);
+	if (fd < 0)
+		return (perror("open <"), -1);
+	if (ft_strncmp(filename, "/tmp/.heredoc_tmp_", 18) == 0)
+		unlink(filename);
+	dup2(fd, STDIN_FILENO);
+	close(fd);
+	return (0);
 }
 
-t_exp	*find_exp(t_exp *list, char *key)
+static int	redir_output_trunc(const char *filename)
 {
-	while (list)
-	{
-		if (ft_strcmp(list->key, key) == 0)
-			return (list);
-		list = list->next;
-	}
-	return (NULL);
+	int	fd;
+
+	fd = open(filename, O_WRONLY | O_CREAT | O_TRUNC, 0644);
+	if (fd < 0)
+		return (perror("open >"), -1);
+	dup2(fd, STDOUT_FILENO);
+	close(fd);
+	return (0);
 }
 
-int	check_valid_key(char *key)
+static int	redir_output_append(const char *filename)
 {
-	if (!ft_isalpha(*key) && *key != '_')
-		return (0);
-	while(*key)
-	{
-		if (!ft_isalnum(*key) && *key != '_')
-			return (0);
-		key++;
-	}
-	return (1);
-}
-void ft_free_str_array(char **arr)
-{
-    int i = 0;
-    while (arr && arr[i])
-    {
-        free(arr[i++]);
-    }
-    free(arr);
+	int	fd;
+
+	fd = open(filename, O_WRONLY | O_CREAT | O_APPEND, 0644);
+	if (fd < 0)
+		return (perror("open >>"), -1);
+	dup2(fd, STDOUT_FILENO);
+	close(fd);
+	return (0);
 }
 
-
-char *find_command_path(char *cmd, t_exec *exec)
+static int	handle_redirection(t_token *redir)
 {
-	char	*path_env;
-	char	**paths;
-	char	*tmp;
-	int		i;
+	char	*filename;
 
-	if (ft_strchr(cmd, '/'))
+	filename = redir->next->value;
+	if (redir->type == REDIR_IN)
+		return (redir_input(filename));
+	if (redir->type == REDIR_OUT)
+		return (redir_output_trunc(filename));
+	if (redir->type == REDIR_APPEND)
+		return (redir_output_append(filename));
+	return (0);
+}
+
+int	apply_redirections(t_token *start, t_token *end)
+{
+	t_token	*curr;
+
+	curr = start;
+	while (curr && curr != end)
 	{
-		if (access(cmd, X_OK) == 0)
-			return (ft_strdup(cmd));
-		return (NULL);
-	}
-	path_env = get_env_value("PATH");
-	if (!path_env)
-		return (NULL);
-	paths = ft_split(path_env, ':');
-	if (!paths)
-		return (NULL);
-	i = 0;
-	while (paths[i])
-	{
-		tmp = ft_strjoin(paths[i], "/");
-		if (!tmp)
+		if (curr->type == REDIR_IN || curr->type == REDIR_OUT
+			|| curr->type == REDIR_APPEND)
 		{
-			ft_free_str_array(paths);
-			return (NULL);
+			if (check_file_token(curr->next) == -1)
+				return (-1);
+			if (handle_redirection(curr) == -1)
+				return (-1);
 		}
-		exec->cmnd_path = ft_strjoin(tmp, cmd);
-		free(tmp);
-		if (!exec->cmnd_path)
-		{
-			ft_free_str_array(paths);
-			return (NULL);
-		}
-		if (access(exec->cmnd_path, X_OK) == 0)
-		{
-			ft_free_str_array(paths);
-			return (exec->cmnd_path);
-		}
-		free(exec->cmnd_path);
-		i++;
+		curr = curr->next;
 	}
-	ft_free_str_array(paths);
-	return (NULL);
+	return (0);
 }

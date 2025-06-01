@@ -12,7 +12,7 @@
 
 #include "../minishell.h"
 
-static int	ft_countword(char *str, char c)
+int	ft_countword(char *str, char c)
 {
 	size_t	i;
 	int		wc;

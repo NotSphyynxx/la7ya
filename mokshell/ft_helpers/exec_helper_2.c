@@ -12,108 +12,26 @@
 
 #include "../minishell.h"
 
-// Returns a malloc’d "/tmp/.heredoc_tmp_<n>" where <n> is the first
-// integer ≥0 such that that file does not yet exist.
-// Caller must free the returned string.
-// static char *make_heredoc_filename(void)
-// {
-//     int     i = 0;
-//     char    *num;
-//     char    *tmp;
-//     char    *path;
-
-//     while (1)
-//     {
-//         num = ft_itoa(i);
-//         if (!num)
-//             return NULL;
-//         tmp = ft_strjoin("/tmp/.heredoc_tmp_", num);
-//         free(num);
-//         if (!tmp)
-//             return NULL;
-//         if (access(tmp, F_OK) != 0)
-//         {
-//             path = tmp;
-//             break;
-//         }
-//         free(tmp);
-//         i++;
-//     }
-//     return path;
-// }
-
-// static void	handle_heredoc_child(t_token *curr, char *filename)
-// {
-// 	int		fd;
-// 	char	*line;
-
-// 	fd = open(filename, O_WRONLY | O_CREAT | O_TRUNC, 0644);
-// 	if (fd < 0)
-// 	{
-// 		perror("heredoc tmp file error");
-// 		exit(1);
-// 	}
-// 	while (1)
-// 	{
-// 		line = readline("> ");
-// 		if (!line || ft_strcmp(line, curr->next->value) == 0)
-// 		{
-// 			free(line);
-// 			break;
-// 		}
-// 		write(fd, line, ft_strlen(line));
-// 		write(fd, "\n", 1);
-// 		free(line);
-// 	}
-// 	close(fd);
-// 	exit(0);
-// }
-
-// void handle_heredocs_range(t_token *start)
-// {
-//     t_token *curr = start;
-//     pid_t    pid;
-//     int      status;
-//     char    *filename;
-
-//     while (curr)
-//     {
-//         if (curr->type == HEREDOC)
-//         {
-//             filename = make_heredoc_filename();
-//             if (!filename)
-//                 return;
-//             pid = fork();
-//             if (pid == 0)
-//                 handle_heredoc_child(curr, filename);
-//             waitpid(pid, &status, 0);
-//             update_exit_status(status);
-//             free(curr->next->value);
-//             curr->next->value = filename;
-//             curr->type = REDIR_IN;
-//         }
-//         curr = curr->next;
-//     }
-// }
-
-int contains_pipe_in_tokens(t_token *tokens)
+int	contains_pipe_in_tokens(t_token *tokens)
 {
-	t_token *curr = tokens;
+	t_token	*curr;
+
+	curr = tokens;
 	while (curr)
 	{
 		if (curr->type == PIPE)
-			return 1;
+			return (1);
 		curr = curr->next;
 	}
-	return 0;
+	return (0);
 }
 
 void	printf_export_list(void)
 {
-	t_exp *env;
+	t_exp	*env;
 
 	env = *get_exp_list();
-	while(env)
+	while (env)
 	{
 		write(1, "declare -x ", 11);
 		write(1, env->key, ft_strlen(env->key));
@@ -138,8 +56,53 @@ t_exp	*new_exp_node(char *key, char *value)
 		update_exit_status(2);
 		return (NULL);
 	}
-    node->key = key;
-    node->value = value;
+	node->key = key;
+	node->value = value;
 	node->next = NULL;
 	return (node);
+}
+
+int	builtin_check(char **input, char **envp)
+{
+	if (!input || !(*input))
+	{
+		update_exit_status(2);
+		return (0);
+	}
+	else if (ft_strcmp(input[0], "echo") == 0)
+		return (shell_echo(input), 1);
+	else if (ft_strcmp(input[0], "env") == 0)
+		return (shell_env(input, envp), 1);
+	else if (ft_strcmp(input[0], "pwd") == 0)
+		return (shell_pwd(input), 1);
+	else if (ft_strcmp(input[0], "cd") == 0)
+		return (shell_cd(input), 1);
+	else if (ft_strcmp(input[0], "export") == 0)
+		return (shell_export(input), 1);
+	else if (ft_strcmp(input[0], "unset") == 0)
+		return (shell_unset(input), 1);
+	else if (ft_strcmp(input[0], "exit") == 0)
+		return (shell_exit(input), 1);
+	return (0);
+}
+
+char	*ft_strndup(const char *s, size_t n)
+{
+	char	*dup;
+	size_t	i;
+
+	i = 0;
+	while (s[i] && i < n)
+		i++;
+	dup = (char *)malloc(sizeof(char) * (i + 1));
+	if (!dup)
+		return (NULL);
+	i = 0;
+	while (s[i] && i < n)
+	{
+		dup[i] = s[i];
+		i++;
+	}
+	dup[i] = '\0';
+	return (dup);
 }

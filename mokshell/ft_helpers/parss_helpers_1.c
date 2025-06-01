@@ -73,7 +73,6 @@ void handle_heredocs_range(t_token *curr)
         free(curr->next->value);
         curr->next->value = filename;
         curr->type = REDIR_IN;
-        // printf("1\n");
     }
 }
 

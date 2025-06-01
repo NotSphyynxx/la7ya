@@ -116,6 +116,10 @@ int check_heredoc(t_token **tokens, char *line, int *i);
 int    check_pipe(t_token **tokens, char *line, int *i);
 int check_all(t_token **tokens, char *line, int *i);
 int last_check(t_token **tokens, char *line, int *i);
+int should_count_token(t_token *t);
+int count_args(t_token *start, t_token *end);
+void add_token_to_args(t_token *t, char **cmd, int *i);
+void fill_args(t_token *start, t_token *end, char **cmd);
 
 //@------------Execution------------------@//
 void	execute(char **input, t_token *start, t_token *end, t_exec *exec);
@@ -127,6 +131,7 @@ void    executor_child_process(t_token *tokens, t_exec *exec);
 
 //~~~~~~~~~~~~Exec_helpers~~~~~~~~~~~~~~~
 int		apply_redirections(t_token *start, t_token *end);
+int     check_file_token(t_token *file_tok);
 void	ft_free_str_array(char **array);
 char	*find_command_path(char *cmd, t_exec *exec);
 int     contains_pipe_in_tokens(t_token *tokens);
@@ -159,9 +164,13 @@ int		is_append_export(char *av);
 int		has_equal_sign(char *av);
 t_shell *get_shell(void);
 void	update_exit_status(int status);
-void *gc_malloc(size_t size, t_exec *exec);
-void gc_clear(t_exec *exec, char *readed, t_token *tokens, char **input);
+void    *gc_malloc(size_t size, t_exec *exec);
+void    gc_clear(t_exec *exec, char *readed, t_token *tokens, char **input);
 void    free_exp(t_exp *exp);
+int     ft_countword(char *str, char c);
+int     is_assignment(char *str);
+char    **split_on_spaces(char *str);
+
 
 //~~~~~~~~~~~~Builtins~~~~~~~~~~~~~~~~~~~
 int		shell_echo(char **av);
@@ -172,4 +181,4 @@ int		shell_unset(char **av);
 int		shell_exit(char **av);
 void	shell_cd(char **args);
 
-# endif
+#endif
