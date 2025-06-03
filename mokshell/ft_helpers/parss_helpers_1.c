@@ -118,6 +118,8 @@ static void	handle_heredoc_child(t_token *curr, char *filename)
 		write(fd, line, ft_strlen(line));
 		write(fd, "\n", 1);
 		free(line);
+        if (tmp)
+            free(tmp);
 	}
 	close(fd);
 	exit(0);
