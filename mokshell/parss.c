@@ -53,6 +53,14 @@ t_token *parss(char *line)
         printf("Invalid syntax.\n");
         return NULL;
     }
+    t_token *start = tokens;
+    while (tokens)
+    {
+        printf("%d\n", tokens->was_double);
+        printf("%d\n", tokens->was_single);
+        tokens = tokens->next;
+    }
+    tokens = start;
     expand(tokens);
     remove_quotes_tokens(tokens);
     return (tokens);

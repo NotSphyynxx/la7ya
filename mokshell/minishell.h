@@ -55,6 +55,7 @@ typedef struct s_token
     char			*value;
     int				was_double;
     int				was_single;
+    int             quoted;
     int             ambigious;
     t_type			type;
     struct s_token	*next;
@@ -120,6 +121,7 @@ int should_count_token(t_token *t);
 int count_args(t_token *start, t_token *end);
 void add_token_to_args(t_token *t, char **cmd, int *i);
 void fill_args(t_token *start, t_token *end, char **cmd);
+void set_quote_flags(t_token *tok);
 
 //@------------Execution------------------@//
 void	execute(char **input, t_token *start, t_token *end, t_exec *exec);

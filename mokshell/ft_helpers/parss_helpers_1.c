@@ -141,33 +141,23 @@ int check_heredoc(t_token **tokens, char *line, int *i)
     return 1;
 }
 
-int check_quote(t_token **tokens, char *line, int *i)
-{
-    char quote = line[(*i)++];
-    int start = *i;
+// int check_quote(t_token **tokens, char *line, int *i)
+// {
+//     char quote = line[(*i)++];
+//     int start = *i;
 
-    while (line[*i] && line[*i] != quote)
-        (*i)++;
-
-    if (!line[*i])
-    {
-        printf("Syntax error: unclosed quote\n");
-        return 0;
-    }
-    // Include the quotes when storing the value
-    int full_len = *i - start + 2; // +2 for both quotes
-    char *full_quoted = ft_substr(line, start - 1, full_len);
-
-    t_token *new_tok = new_token(full_quoted, WORD);
-    if (quote == '\'')
-        new_tok->was_single = 1;
-    else
-        new_tok->was_double = 1;
-    add_token(tokens, new_tok);
-    free(full_quoted);
-    (*i)++; // skip closing quote
-    return 1;
-}
+//     while (line[*i] && line[*i] != quote)
+//         (*i)++;
+//     while (tokens)
+//     {
+//         if (quote == '\'')
+//             tokens->was_single = 1;
+//         else
+//             tokens->was_double = 1;
+//         tokens = tokens->next;
+//     }
+//     return 1;
+// }
 
 int check_syntax(t_token *tokens)
 {

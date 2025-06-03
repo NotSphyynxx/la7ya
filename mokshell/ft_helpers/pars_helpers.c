@@ -72,3 +72,27 @@ char    *ft_strcat(char *dest, const char *src)
     dest[i + j] = '\0';
     return (dest);
 }
+
+void set_quote_flags(t_token *tok)
+{
+    int i = 0;
+    char quote = 0;
+
+    if (!tok || !tok->value)
+        return;
+
+    while (tok->value[i])
+    {
+        if ((tok->value[i] == '\'' || tok->value[i] == '"') && quote == 0)
+        {
+            quote = tok->value[i];
+            if (quote == '\'')
+                tok->was_single = 1;
+            else if (quote == '"')
+                tok->was_double = 1;
+        }
+        else if (tok->value[i] == quote)
+            quote = 0;
+        i++;
+    }
+}

@@ -23,6 +23,7 @@ int has_unclosed_quote(const char *str)
 {
     int i = 0;
     char quote = 0;
+    t_token *curr;
 
     while (str[i])
     {
@@ -46,6 +47,7 @@ int last_check(t_token **tokens, char *line, int *i)
         return 1;
     }
     t_token *tok = new_token(word, WORD);
+    set_quote_flags(tok);
     add_token(tokens, tok);
     free(word);
     return 0;
