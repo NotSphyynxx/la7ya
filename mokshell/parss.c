@@ -1,7 +1,7 @@
 
 #include "minishell.h"
 
-char *strip_quotes(char *str)
+char *ft_strip_quotes(char *str)
 {
     size_t len = ft_strlen(str);
     char *result = malloc(len + 1);
@@ -34,7 +34,7 @@ static void remove_quotes_tokens(t_token *tokens)
     {
         if (tokens->type == WORD)
         {
-            char *stripped = strip_quotes(tokens->value);
+            char *stripped = ft_strip_quotes(tokens->value);
             free(tokens->value);
             tokens->value = stripped;
         }

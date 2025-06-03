@@ -101,6 +101,8 @@ char    *ft_itoa(int n);
 
 //@------------Parsing--------------------@//
 void	sigint_handler(int sig);
+char *expand_var(char *line);
+char *ft_strip_quotes(char *str);
 t_token	*parss(char *line);
 void	ft_lstadd_back(t_token **lst, t_token *new);
 t_token *new_token(char *valu, t_type type);

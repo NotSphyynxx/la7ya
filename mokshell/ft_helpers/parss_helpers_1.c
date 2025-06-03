@@ -26,11 +26,69 @@ static char *make_heredoc_filename(void)
     }
     return path;
 }
+// static void	handle_heredoc_child(t_token *curr, char *filename)
+// {
+// 	int		fd;
+//     int     i;
+// 	char	*line;
+//     char *temp_line;
+//     t_token    *del = curr;
+//     char    *string;
+//     t_token *token;
 
+//     i = 0;
+//     token = curr;
+//         if (curr->type == HEREDOC)
+//             del = curr->next;
+//         printf("%s\n", del->value);
+//     // printf("%s\n", del);
+//     curr = token;
+//     string = del->value;
+//     string = strip_quotes(string);
+// 	fd = open(filename, O_WRONLY | O_CREAT | O_TRUNC, 0644);
+// 	if (fd < 0)
+// 	{
+// 		perror("heredoc tmp file error");
+// 		exit(1);
+// 	}
+//     printf("ddd%s\n", string);
+// 	while (1)
+// 	{
+// 		line = readline("> ");
+//         printf("%s\n", string);
+//         printf("line %s\n", line);
+//         if (ft_strcmp(line, string) == 0)
+//         {
+//             printf("here\n");
+//             free(line);
+//             break;
+//         }
+        
+// 		// if (!line || ft_strcmp(line, curr->next->value) == 0)
+// 		// {
+// 		// 	free(line);
+// 		// 	break;
+//         // }
+//         // temp_line = line;
+//         curr = curr->next;
+//         if (ft_strchr(line, '$') && curr->was_double == 0 && curr->was_single == 0)
+//         {
+//             line = expand_var(line);
+//             // free(temp_line);
+//         }
+// 		write(fd, line, ft_strlen(line));
+// 		write(fd, "\n", 1);
+// 		free(line);
+//     }
+// 	close(fd);
+// 	exit(0);
+// }
 static void	handle_heredoc_child(t_token *curr, char *filename)
 {
 	int		fd;
 	char	*line;
+    char *temp_line;
+    char *tmp;
 
 	fd = open(filename, O_WRONLY | O_CREAT | O_TRUNC, 0644);
 	if (fd < 0)
@@ -38,14 +96,25 @@ static void	handle_heredoc_child(t_token *curr, char *filename)
 		perror("heredoc tmp file error");
 		exit(1);
 	}
+    curr = curr->next;
+    if (curr->was_double == 1 || curr->was_single == 1)
+    {
+        tmp = ft_strip_quotes(curr->value);
+    }
 	while (1)
 	{
 		line = readline("> ");
-		if (!line || ft_strcmp(line, curr->next->value) == 0)
+		if (!line || !ft_strcmp(line, curr->value) || !ft_strcmp(line, tmp))
 		{
 			free(line);
 			break;
 		}
+        if (curr->was_double == 0 && curr->was_single == 0)
+        {
+            temp_line = line;
+            line = expand_var(line);
+            free(temp_line);
+        }
 		write(fd, line, ft_strlen(line));
 		write(fd, "\n", 1);
 		free(line);
