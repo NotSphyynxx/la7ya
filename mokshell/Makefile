@@ -5,14 +5,14 @@ CC      = cc #-g -fsanitize=address
 CFLAGS  = -I$(HOME)/.local/include
 
 SRCS    = main.c ft_helpers/utils_1.c ft_helpers/utils_2.c ft_helpers/ft_split.c ft_helpers/tmp_env.c \
-		shell_builtins.c execution.c ft_helpers/utils_3.c shell_builtins_2.c shell_builtins_3.c \
+		builtins/shell_builtins.c execution.c ft_helpers/utils_3.c builtins/shell_builtins_2.c builtins/shell_builtins_3.c \
 		ft_helpers/utils_4.c ft_helpers/exec_helper.c ft_helpers/pars_helpers.c \
 		ft_helpers/exec_helper_2.c ft_helpers/exec_helper_3.c ft_helpers/exec_helper_4.c \
-		parss.c new_token.c type.c expand.c ft_helpers/exec_helper_5.c \
+		parss.c parsing/new_token.c parsing/type.c parsing/expand.c ft_helpers/exec_helper_5.c \
 		ft_helpers/exec_helper_6.c ft_helpers/exec_helper_7.c ft_helpers/utils_5.c \
-		ft_helpers/parss_helpers_1.c ft_helpers/parss_helpers_2.c garbage_coll.c \
+		ft_helpers/parss_helpers_1.c ft_helpers/parss_helpers_2.c ft_helpers/garbage_coll.c \
 		ft_helpers/exec_helper_8.c ft_helpers/exec_helper_9.c ft_helpers/exec_helper_10.c \
-		expand_heredoc.c
+		parsing/expand_heredoc.c builtins/shell_builtins_4.c ft_helpers/exec_helper_11.c 
 		
 
 
@@ -34,7 +34,7 @@ $(NAME): $(OBJS)
 	$(CC) $(CFLAGS) $(READLINE_COMPILE) -c $< -o $@ 
 
 stock : $(OBJS)
-	mv *.o obj && mv ft_helpers/*.o obj 
+	mv *.o obj && mv ft_helpers/*.o obj && mv parsing/*.o obj && mv builtins/*.o obj
 clean:
 	rm -f $(OBJS)
 

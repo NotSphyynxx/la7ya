@@ -1,5 +1,5 @@
 
-#include "minishell.h"
+#include "../minishell.h"
 
 char *get_env2_value(const char *name)
 {

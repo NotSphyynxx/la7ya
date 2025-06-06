@@ -55,3 +55,14 @@ int	exist_check(char *env_entry, char *name)
 		return (1);
 	return (0);
 }
+char	**get_pwd_storage(void)
+{
+	static char *pwd = NULL;
+	return (&pwd);
+}
+
+void	free_pwd_storage(void)
+{
+	free(*get_pwd_storage());
+	*get_pwd_storage() = NULL;
+}

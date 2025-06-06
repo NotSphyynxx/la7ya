@@ -27,6 +27,7 @@ void    init_shell(char **envp)
 	init_export_list();
 	signal(SIGINT, sigint_handler);
 	signal(SIGQUIT, SIG_IGN);
+	init_pwd();
 }
 
 void    read_check(char *readed)

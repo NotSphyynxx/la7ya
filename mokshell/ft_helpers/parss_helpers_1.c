@@ -87,40 +87,44 @@ static void	handle_heredoc_child(t_token *curr, char *filename)
 {
 	int		fd;
 	char	*line;
-    char *temp_line;
-    char *tmp;
+    char	*temp_line;
+    char	*tmp = NULL;
+    char	*to_free = NULL;
 
 	fd = open(filename, O_WRONLY | O_CREAT | O_TRUNC, 0644);
 	if (fd < 0)
 	{
-		perror("heredoc tmp file error");
+        perror("heredoc tmp file error");
 		exit(1);
 	}
-    curr = curr->next;
-    if (curr->was_double == 1 || curr->was_single == 1)
-    {
-        tmp = ft_strip_quotes(curr->value);
-    }
+	curr = curr->next;
+	if (curr->was_double == 1 || curr->was_single == 1)
+	{
+		tmp = ft_strip_quotes(curr->value);
+		to_free = tmp;
+		if (tmp[0] == '$')
+			tmp++;
+	}
 	while (1)
 	{
 		line = readline("> ");
-		if (!line || !ft_strcmp(line, curr->value) || !ft_strcmp(line, tmp))
+		if (!line || !ft_strcmp(line, curr->value) || (tmp && !ft_strcmp(line, tmp)))
 		{
 			free(line);
 			break;
 		}
-        if (curr->was_double == 0 && curr->was_single == 0)
-        {
-            temp_line = line;
-            line = expand_var(line);
-            free(temp_line);
-        }
+		if (curr->was_double == 0 && curr->was_single == 0)
+		{
+			temp_line = line;
+			line = expand_var(line);
+			free(temp_line);
+		}
 		write(fd, line, ft_strlen(line));
 		write(fd, "\n", 1);
 		free(line);
-        if (tmp)
-            free(tmp);
 	}
+	if (to_free)
+		free(to_free);
 	close(fd);
 	exit(0);
 }
@@ -149,13 +153,16 @@ void handle_heredocs_range(t_token *curr)
 
 int check_all(t_token **tokens, char *line, int *i)
 {
+    printf("3\n");
     while (line[*i])
     {
         if (ft_isspace(line[*i]))
         {
+            printf("4\n");
             (*i)++;
             continue;
         }
+
         if (line[*i] == '|')
         {
             if (!check_pipe(tokens, line, i))
@@ -163,7 +170,6 @@ int check_all(t_token **tokens, char *line, int *i)
         }
         else if (line[*i] == '>' || line[*i] == '<')
         {
-
             if (!check_heredoc(tokens, line, i))
                 return (0);
         }

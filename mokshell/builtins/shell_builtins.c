@@ -1,5 +1,5 @@
 
-#include "minishell.h"
+#include "../minishell.h"
 
 static void	print_echo_args(char **av, int i)
 {
@@ -74,33 +74,30 @@ int	shell_env(char **av,  char **envp)
 
 int	shell_pwd(char **av)
 {
-	char	*cwd;
-
 	(void)av;
-	cwd = getcwd(NULL, 0);
-	if (!cwd)
-	{
-		write(STDERR_FILENO, "pwd: error getting directory\n", 29);
-		return (1);
-	}
-	write(STDOUT_FILENO, cwd, ft_strlen(cwd));
-	write(STDOUT_FILENO, "\n", 1);
-	free(cwd);
+	printf("%s\n", *get_pwd_storage());
 	return (0);
 }
+
 void	shell_cd(char **args)
 {
 	char	*path;
 
 	if (!args[1])
-	{
 		path = get_env_value("HOME");
-		if (!path || chdir(path) != 0)
-			write(STDERR_FILENO, "minishell: cd: PATH not set\n", 29);
-	}
 	else
+		path = args[1];
+
+	if (!path)
 	{
-		if (chdir(args[1]) != 0)
-			perror("cd");
+		write(2, "cd: HOME not set\n", 17);
+		return ;
 	}
+	if (chdir(path) != 0)
+	{
+		perror("cd");
+		return ;
+	}
+	update_pwd_on_cd(path);
 }
+

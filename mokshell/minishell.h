@@ -22,6 +22,9 @@
 # include <sys/wait.h>
 # include <signal.h>
 # include <stdbool.h>
+# include <limits.h>
+
+// #define malloc(x) NULL
 
 typedef enum
 {
@@ -124,6 +127,8 @@ int count_args(t_token *start, t_token *end);
 void add_token_to_args(t_token *t, char **cmd, int *i);
 void fill_args(t_token *start, t_token *end, char **cmd);
 void set_quote_flags(t_token *tok);
+t_token	**get_token_list(void);
+void	free_tokens_list(void);
 
 //@------------Execution------------------@//
 void	execute(char **input, t_token *start, t_token *end, t_exec *exec);
@@ -174,7 +179,14 @@ void    free_exp(t_exp *exp);
 int     ft_countword(char *str, char c);
 int     is_assignment(char *str);
 char    **split_on_spaces(char *str);
-
+char	**get_pwd_storage(void);
+void	free_pwd_storage(void);
+void	init_pwd(void);
+void	update_pwd_on_cd(char *path);
+void	join_path(char **pwd, char *addition);
+void	update_env_value(char *key, char *value);
+int	ft_is_space(char c);
+int	ft_atoi_with_overflow(const char *str, int *overflow);
 
 //~~~~~~~~~~~~Builtins~~~~~~~~~~~~~~~~~~~
 int		shell_echo(char **av);

@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "../minishell.h"
 
 static void search_then_unset(char **env, char *name)
 {
@@ -54,40 +54,34 @@ int shell_unset(char **av)
 	}
 	return (0);
 }
- 
-static int	is_valid_number(char *str)
-{
-	int i = 0;
 
-	if (str[i] == '-')
-		i++;
-	while (str[i])
-	{
-		if (!ft_isdigit(str[i]))
-			return (0);
-		i++;
-	}
-	return (1);
+void	clean_exit(int code)
+{
+	free_tokens_list();
+	ft_free_str_array(*get_env());
+	free(*get_pwd_storage());
+	free_exp(*get_exp_list());
+	exit(code);
 }
-
-int shell_exit(char **av)
+int	shell_exit(char **av)
 {
-	int exit_code;
+	int			overflow;
+	long long	exit_code;
 
 	write(STDOUT_FILENO, "exit\n", 5);
 	if (!av[1])
-		exit(0);
-	
-	if (!is_valid_number(av[1]))
+		clean_exit(0);
+	exit_code = ft_atoi_with_overflow(av[1], &overflow);
+	if (overflow)
 	{
-		write(STDERR_FILENO, "exit: numeric argument required\n", 32);
-		exit(255);
+		write(2, "exit: numeric argument required\n", 32);
+		clean_exit(255);
 	}
-	exit_code = ft_atoi(av[1]);
 	if (av[2])
 	{
-		write(STDERR_FILENO, "exit: too many arguments\n", 26);
+		write(2, "exit: too many arguments\n", 26);
 		return (1);
 	}
-	exit(exit_code);
+	clean_exit((unsigned char)exit_code);
+	return (0);
 }

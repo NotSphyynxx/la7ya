@@ -29,10 +29,12 @@ int	main(int ac, char **av, char **envp)
 	exec.gc_head = NULL;
 	while (1)
 	{
+		printf("1\n");
 		readed = readline("minishell$ ");
 		read_check(readed);
 		if (*readed)
 			add_history(readed);
+		printf("2\n");
 		tokens = parss(readed);
 		input = tokens_to_cmd(tokens, NULL);
 		if (input || tokens)

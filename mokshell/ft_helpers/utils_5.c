@@ -43,3 +43,47 @@ char    *ft_itoa(int n)
         str[0] = '-';
     return (str);
 }
+
+void	init_pwd(void)
+{
+	char *cwd;
+
+	cwd = getcwd(NULL, 0);
+	if (!cwd)
+		cwd = ft_strdup("/");
+	*get_pwd_storage() = cwd;
+}
+
+int	ft_is_space(char c)
+{
+	return (c == ' ' || (c >= 9 && c <= 13));
+}
+
+int	ft_atoi_with_overflow(const char *str, int *overflow)
+{
+	long long	num = 0;
+	int			sign = 1;
+
+	*overflow = 0;
+	while (ft_is_space(*str))
+		str++;
+	if (*str == '+' || *str == '-')
+		if (*str++ == '-')
+			sign = -1;
+	while (ft_isdigit(*str))
+	{
+		if (num > (LLONG_MAX - (*str - '0')) / 10)
+		{
+			*overflow = 1;
+			return (0);
+		}
+		num = num * 10 + (*str - '0');
+		str++;
+	}
+	if (*str)
+	{
+		*overflow = 1;
+		return (0);
+	}
+	return ((int)(num * sign));
+}
