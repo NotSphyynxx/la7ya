@@ -24,7 +24,7 @@
 # include <stdbool.h>
 # include <limits.h>
 
-// #define malloc(x) NULL
+#define malloc(x) NULL
 
 typedef enum
 {

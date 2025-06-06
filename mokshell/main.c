@@ -14,7 +14,6 @@
 
 int	main(int ac, char **av, char **envp)
 {
-	//cat > x | cat -e
 	char	*readed;
 	t_token	*tokens;
 	char	**input;
@@ -22,20 +21,22 @@ int	main(int ac, char **av, char **envp)
 
 	if (ac > 2)
 		return 0;
-	(void)ac;
 	(void)av;
 	printf("================ | Welcome to Sidna-shell | ================\n");
 	init_shell(envp);
 	exec.gc_head = NULL;
 	while (1)
 	{
-		printf("1\n");
 		readed = readline("minishell$ ");
 		read_check(readed);
 		if (*readed)
 			add_history(readed);
-		printf("2\n");
 		tokens = parss(readed);
+		if (!tokens)
+		{
+			write(STDERR_FILENO, "minishell: failed to parse input\n", 34);
+			continue ;
+		}
 		input = tokens_to_cmd(tokens, NULL);
 		if (input || tokens)
 			cmnd_check(input, *get_env(), tokens, &exec);

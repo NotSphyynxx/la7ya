@@ -153,16 +153,13 @@ void handle_heredocs_range(t_token *curr)
 
 int check_all(t_token **tokens, char *line, int *i)
 {
-    printf("3\n");
     while (line[*i])
     {
         if (ft_isspace(line[*i]))
         {
-            printf("4\n");
             (*i)++;
             continue;
         }
-
         if (line[*i] == '|')
         {
             if (!check_pipe(tokens, line, i))
@@ -174,8 +171,8 @@ int check_all(t_token **tokens, char *line, int *i)
                 return (0);
         }
         else
-            if (last_check(tokens, line, i) == 1)
-                return 0;
+        if (last_check(tokens, line, i) == 1)
+            return 0;
     }
     return 1;
 }

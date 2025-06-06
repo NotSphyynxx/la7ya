@@ -39,13 +39,15 @@ int has_unclosed_quote(const char *str)
 int last_check(t_token **tokens, char *line, int *i)
 {
     char *word = collect_word(line, i);
-
+    if (!word)
+        return (1);
     if (has_unclosed_quote(word))
     {
         write(STDERR_FILENO, "minishell: syntax error: unclosed quote\n", 40);
         free(word);
         return 1;
     }
+    
     t_token *tok = new_token(word, WORD);
     set_quote_flags(tok);
     add_token(tokens, tok);

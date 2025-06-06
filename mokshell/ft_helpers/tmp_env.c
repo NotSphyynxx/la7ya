@@ -39,7 +39,7 @@ char	**init_env(char **envp)
 	new_env = malloc(sizeof(char *) * (i + 1));
 	if (!new_env)
 	{
-		perror("malloc");
+		write(2, "malloc error\n", 14);
 		return NULL;
 	}
 	i = 0;

@@ -48,21 +48,11 @@ t_token *parss(char *line)
     int i = 0;
     if (!check_all(&tokens, line, &i))
         return (NULL);
-    printf("3\n");
     if (check_syntax(tokens))
     {
         printf("Invalid syntax.\n");
         return NULL;
     }
-    printf("4\n");
-    t_token *start = tokens;
-    while (tokens)
-    {
-        printf("%d\n", tokens->was_double);
-        printf("%d\n", tokens->was_single);
-        tokens = tokens->next;
-    }
-    tokens = start;
     expand(tokens);
     remove_quotes_tokens(tokens);
     *get_token_list() = tokens;
