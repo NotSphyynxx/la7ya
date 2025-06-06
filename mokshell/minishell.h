@@ -24,7 +24,7 @@
 # include <stdbool.h>
 # include <limits.h>
 
-#define malloc(x) NULL
+// #define malloc(x) NULL
 
 typedef enum
 {
@@ -114,7 +114,7 @@ char    *type_to_string(t_type type);
 int check_syntax(t_token *tokens);
 void    expand(t_token *tokens);
 void	free_tokens(t_token *tokens);
-char *expand_variable(char *line);
+char *expand_variable(char *line, int *flag);
 int check_all(t_token **tokens, char *line, int *i);
 int check_syntax(t_token *tokens);
 int check_quote(t_token **tokens, char *line, int *i);
@@ -129,6 +129,7 @@ void fill_args(t_token *start, t_token *end, char **cmd);
 void set_quote_flags(t_token *tok);
 t_token	**get_token_list(void);
 void	free_tokens_list(void);
+int	wf_name(char *str, int flag);
 
 //@------------Execution------------------@//
 void	execute(char **input, t_token *start, t_token *end, t_exec *exec);

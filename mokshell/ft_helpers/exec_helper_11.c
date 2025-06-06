@@ -22,3 +22,21 @@ void	free_tokens_list(void)
 	}
 	*get_token_list() = NULL;
 }
+
+int	wf_name(char *str, int flag)
+{
+	int i;
+
+	i = 0;
+	if (!flag)
+		return (0);
+	while (str[i] == ' ')
+		i++;
+	while(str[i])
+	{
+		if (str[i] == ' ')
+			return (1);
+		i++;
+	}
+	return (0);
+}

@@ -21,7 +21,7 @@ char *get_env2_value(const char *name)
 }
 
 // Replace variables in a string line
-char *expand_variable(char *line)
+char *expand_variable(char *line, int *flag)
 {
     int i = 0;
     int start = 0;
@@ -63,6 +63,7 @@ char *expand_variable(char *line)
                 free(tmp);
                 free(val);
                 free(var_name);
+                *flag = 1;
             }
             else
             {
@@ -92,13 +93,14 @@ char *expand_variable(char *line)
 void expand(t_token *tokens)
 {
     t_token *curr = tokens;
+    int flag = 0;
 
     // 1️⃣ Variable expansion pass
     while (curr)
     {
         if (curr->type == WORD && !curr->was_single && ft_strchr(curr->value, '$'))
         {
-            char *expanded = expand_variable(curr->value);
+            char *expanded = expand_variable(curr->value, &flag);
             free(curr->value);
             curr->value = expanded;
         }
@@ -112,7 +114,8 @@ void expand(t_token *tokens)
         if (curr->type == REDIR_IN || curr->type == REDIR_OUT ||
             curr->type == REDIR_APPEND || curr->type == HEREDOC)
         {
-            if (!curr->next || !curr->next->value || ft_strlen(curr->next->value) == 0)
+            if (!curr->next || !curr->next->value || ft_strlen(curr->next->value) == 0
+                || wf_name(curr->next->value, flag) == 1)
             {
                 if (curr->next)
                     curr->next->ambigious = 1;
