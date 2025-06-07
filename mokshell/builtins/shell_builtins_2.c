@@ -1,95 +1,49 @@
 #include "../minishell.h"
 
-/* parse key, value and detect “+=” */
-/* parse key, val, detect += — no validation or frees here */
-static void	parse_export_arg(char *arg, char **key, char **val, int *append)
+char	*get_current_pwd(void)
 {
-	char	*plus;
-	char	*eq;
+	char	*cwd;
+	char	*pwd;
 
-	*append = 0;
-	plus = ft_strnstr(arg, "+=", ft_strlen(arg));
-	if (plus)
-	{
-		*append = 1;
-		*key    = ft_substr(arg, 0, plus - arg);
-		*val    = ft_strdup(plus + 2);
-	}
-	else if ((eq = ft_strchr(arg, '=')))
-	{
-		*key = ft_substr(arg, 0, eq - arg);
-		*val = ft_strdup(eq + 1);
-	}
-	else
-	{
-		*key = ft_strdup(arg);
-		*val = NULL;
-	}
+	cwd = getcwd(NULL, 0);
+	if (!cwd)
+		return (NULL);
+	pwd = ft_strjoin("PWD=", cwd);
+	free(cwd);
+	return (pwd);
 }
 
+static void	add_new_node(char *key, char *val, int append)
+{
+	if (append && !val)
+		val = ft_strdup("");
+	if (val)
+		add_exp_back(get_exp_list(), new_exp_node(ft_strdup(key),
+				ft_strdup(val)));
+	else
+		add_exp_back(get_exp_list(), new_exp_node(ft_strdup(key), NULL));
+}
 
-/* update or create in export list */
-/* update or create in export list */
-static void	apply_export_list(char *key, char *val, int append)
+void	apply_export_list(char *key, char *val, int append)
 {
 	t_exp	*ex;
-	char	*tmp;
 
 	ex = find_exp(*get_exp_list(), key);
 	if (ex)
 	{
 		if (val)
-		{
-			if (append)
-			{
-				tmp = ex->value;
-				ex->value = ft_strjoin(tmp, val);
-				free(tmp);
-			}
-			else
-			{
-				free(ex->value);
-				ex->value = ft_strdup(val);
-			}
-		}
+			update_existing_node(ex, val, append);
 	}
 	else
-	{
-		/* ALWAYS add a new export entry, even if val == NULL */
-		if (append && !val)
-			val = ft_strdup("");
-		add_exp_back(get_exp_list(),
-			new_exp_node(ft_strdup(key),
-				(val ? ft_strdup(val) : NULL)));
-	}
+		add_new_node(key, val, append);
 }
 
-
-/* sync one variable into the env array */
-static void	sync_env_var(char *key, char *val)
-{
-	char	*entry;
-
-	if (!val)
-		return ;
-	entry = ft_strjoin(key, "=");
-	entry = ft_strjoin(entry, val);
-	adjust_env(entry, key);
-	free(entry);
-}
-
-/* the main export builtin */
-/* the export builtin, doing validation, list‐update, env‐sync, frees */
 int	shell_export(char **av)
 {
-	int		i;
-	int		append;
-	int		err;
-	char	*key;
-	char	*val;
-	t_exp	*ex;   /* <--- new */
+	int	i;
+	int	err;
 
-	i   = 1;
+	i = 1;
 	err = 0;
 	if (!av[1])
 	{
@@ -99,32 +53,7 @@ int	shell_export(char **av)
 	}
 	while (av[i])
 	{
-		parse_export_arg(av[i], &key, &val, &append);
-
-		if (!check_valid_key(key))
-		{
-			error_export(&key, &val);
-			err = 1;
-		}
-		else
-		{
-			apply_export_list(key, val, append);
-
-			/* if we have a value, sync the right one: */
-			if (val)
-			{
-				if (append)
-				{
-					ex = find_exp(*get_exp_list(), key);
-					sync_env_var(key, ex->value);
-				}
-				else
-					sync_env_var(key, val);
-			}
-
-			free(key);
-			free(val);
-		}
+		handle_export_arg(av[i], &err);
 		i++;
 	}
 	update_exit_status(err);

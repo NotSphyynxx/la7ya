@@ -12,55 +12,54 @@
 
 #include "../minishell.h"
 
-// Check if cmd is a direct path and executable
-static char *check_direct_path(char *cmd)
+static char	*check_direct_path(char *cmd)
 {
-    if (access(cmd, X_OK) == 0)
-        return (ft_strdup(cmd));
-    return (NULL);
-}
-// Search for command in PATH directories
-static char *search_in_path(char *cmd, char **paths, t_exec *exec)
-{
-    int     i;
-    char    *tmp;
-
-    i = 0;
-    while (paths[i])
-    {
-        tmp = ft_strjoin(paths[i], "/");
-        if (!tmp)
-            return (NULL);
-        exec->cmnd_path = ft_strjoin(tmp, cmd);
-        free(tmp);
-        if (!exec->cmnd_path)
-            return (NULL);
-        if (access(exec->cmnd_path, X_OK) == 0)
-            return (exec->cmnd_path);
-        free(exec->cmnd_path);
-        i++;
-    }
-    return (NULL);
+	if (access(cmd, X_OK) == 0)
+		return (ft_strdup(cmd));
+	return (NULL);
 }
 
-// Main command lookup function
-char *find_command_path(char *cmd, t_exec *exec)
+static char	*search_in_path(char *cmd, char **paths)
 {
-    char    *path_env;
-    char    **paths;
-    char    *result;
+	int		i;
+	char	*tmp;
+	char	*path;
 
-    if (ft_strchr(cmd, '/'))
-        return (check_direct_path(cmd));
-    path_env = get_env_value("PATH");
-    if (!path_env)
-        return (NULL);
-    paths = ft_split(path_env, ':');
-    if (!paths)
-        return (NULL);
-    result = search_in_path(cmd, paths, exec);
-    ft_free_str_array(paths);
-    return (result);
+	i = 0;
+	while (paths[i])
+	{
+		tmp = ft_strjoin(paths[i], "/");
+		if (!tmp)
+			return (NULL);
+		path = ft_strjoin(tmp, cmd);
+		free(tmp);
+		if (!path)
+			return (NULL);
+		if (access(path, X_OK) == 0)
+			return (path);
+		free(path);
+		i++;
+	}
+	return (NULL);
+}
+
+char	*find_command_path(char *cmd)
+{
+	char	*path_env;
+	char	**paths;
+	char	*result;
+
+	if (ft_strchr(cmd, '/'))
+		return (check_direct_path(cmd));
+	path_env = get_env_value("PATH");
+	if (!path_env)
+		return (NULL);
+	paths = ft_split(path_env, ':');
+	if (!paths)
+		return (NULL);
+	result = search_in_path(cmd, paths);
+	ft_free_str_array(paths);
+	return (result);
 }
 
 int	check_valid_key(char *key)

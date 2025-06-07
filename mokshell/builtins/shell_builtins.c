@@ -1,4 +1,3 @@
-
 #include "../minishell.h"
 
 static void	print_echo_args(char **av, int i)
@@ -39,19 +38,6 @@ int	shell_echo(char **av)
 	return (0);
 }
 
-char	*get_current_pwd(void)
-{
-	char	*cwd;
-	char	*pwd;
-
-	cwd = getcwd(NULL, 0);
-	if (!cwd)
-		return (NULL);
-	pwd = ft_strjoin("PWD=", cwd);
-	free(cwd);
-	return (pwd);
-}
-
 int	shell_env(char **av, char **envp)
 {
 	char	**env;
@@ -90,7 +76,6 @@ int	shell_cd(char **args)
 		path = get_env_value("HOME");
 	else
 		path = args[1];
-
 	if (!path)
 	{
 		write(2, "cd: HOME not set\n", 17);

@@ -2,7 +2,7 @@
 
 void	check_path(char *path)
 {
-	int i;
+	int	i;
 
 	i = 0;
 	free(*get_pwd_storage());
@@ -16,9 +16,8 @@ void	check_path(char *path)
 
 void	check_double_dots(char *path)
 {
-	int			len;
 	char	*new_pwd;
-
+	int		len;
 
 	len = ft_strlen(*get_pwd_storage());
 	if (len > 1 && (*get_pwd_storage())[len - 1] == '/')
@@ -34,7 +33,7 @@ void	check_double_dots(char *path)
 void	check_dot(char *path)
 {
 	char		*tmp;
-	char	*new_pwd;
+	char		*new_pwd;
 
 	if ((*get_pwd_storage())[ft_strlen(*get_pwd_storage()) - 1] == '/')
 		tmp = ft_strdup(*get_pwd_storage());

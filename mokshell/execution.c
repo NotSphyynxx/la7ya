@@ -12,12 +12,12 @@
 
 #include "minishell.h"
 
-void	cmnd_check(char **input, char **envp, t_token *tokens, t_exec *exec)
+void	cmnd_check(char **input, char **envp, t_token *tokens)
 {
 	if (tokens)
 	{
 		if (contains_pipe_in_tokens(tokens))
-			execute_pipe_commands(tokens, exec);
+			execute_pipe_commands(tokens);
 		else
 		{
 			if (is_builtin(input))
@@ -28,12 +28,12 @@ void	cmnd_check(char **input, char **envp, t_token *tokens, t_exec *exec)
 					builtin_check(input, envp);
 			}
 			else
-				executor_simple_command(tokens, exec);
+				executor_simple_command(tokens);
 		}
 	}
 }
 
-void	execute(char **input, t_token *start, t_token *end, t_exec *exec)
+void	execute(char **input, t_token *start, t_token *end)
 {
 	char	*path;
 
@@ -41,7 +41,7 @@ void	execute(char **input, t_token *start, t_token *end, t_exec *exec)
 		exit(1);
 	if (builtin_check(input, *get_env()))
 		exit(0);
-	path = find_command_path(input[0], exec);
+	path = find_command_path(input[0]);
 	if (!path)
 	{
 		write(STDERR_FILENO, "minishell: command not found\n", 29);
@@ -57,7 +57,7 @@ void	execute(char **input, t_token *start, t_token *end, t_exec *exec)
 	exit(126);
 }
 
-void	execute_pipe_commands(t_token *tokens, t_exec *exec)
+void	execute_pipe_commands(t_token *tokens)
 {
 	t_token	*curr;
 	t_token	*start;
@@ -71,7 +71,7 @@ void	execute_pipe_commands(t_token *tokens, t_exec *exec)
 	{
 		if (curr->type == PIPE)
 		{
-			execute_piped_cmnd(start, curr, prev_fd, fd, exec);
+			execute_piped_cmnd(start, curr, prev_fd, fd);
 			close(fd[1]);
 			if (prev_fd != -1)
 				close(prev_fd);
@@ -80,13 +80,13 @@ void	execute_pipe_commands(t_token *tokens, t_exec *exec)
 		}
 		curr = curr->next;
 	}
-	execute_final_command(start, prev_fd, exec);
+	execute_final_command(start, prev_fd);
 	if (prev_fd != -1)
 		close(prev_fd);
 	wait_for_children();
 }
 
-void	executor_simple_command(t_token *tokens, t_exec *exec)
+void	executor_simple_command(t_token *tokens)
 {
 	int status;
 	pid_t	pid;
@@ -101,7 +101,7 @@ void	executor_simple_command(t_token *tokens, t_exec *exec)
 	}
 	if (pid == 0)
 	{
-		executor_child_process(tokens, exec);
+		executor_child_process(tokens);
 	}
 	waitpid(pid, &status, 0);
 	update_exit_status(status);

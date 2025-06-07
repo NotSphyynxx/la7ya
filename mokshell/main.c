@@ -34,7 +34,7 @@ void	read_and_exe(void)
 		}
 		input = tokens_to_cmd(tokens, NULL);
 		if (input || tokens)
-			cmnd_check(input, *get_env(), tokens, &exec);
+			cmnd_check(input, *get_env(), tokens);
 		gc_clear(&exec, readed, tokens, input);
 	}
 }

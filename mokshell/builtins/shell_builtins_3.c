@@ -52,7 +52,7 @@ int	shell_unset(char **av)
 		if (ft_strchr(key, '='))
 		{
 			write(STDERR_FILENO,
-			      "unset: not a valid identifier\n", 31);
+				"unset: not a valid identifier\n", 31);
 			ret = 1;
 		}
 		else
@@ -83,24 +83,20 @@ int	shell_exit(char **av)
 	write(STDOUT_FILENO, "exit\n", 5);
 	if (!av[1])
 		clean_exit(0);
-
 	exit_code = ft_atoi_with_overflow(av[1], &overflow);
 	if (overflow)
 	{
 		write(STDERR_FILENO, "exit: numeric argument required\n", 31);
 		clean_exit(255);
 	}
-
 	if (av[2])
 	{
 		write(STDERR_FILENO, "exit: too many arguments\n", 24);
 		return (1);
 	}
-
 	clean_exit((unsigned char)exit_code);
-	return (0); /* never reached, but for clarity */
+	return (0);
 }
-
 
 char	**create_minimal_env(void)
 {

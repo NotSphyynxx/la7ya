@@ -59,3 +59,39 @@ t_exp	*split_env_to_exp(char *env_entry)
 	node->next = NULL;
 	return (node);
 }
+void	sync_env_var(char *key, char *val)
+{
+	char	*entry;
+
+	if (!val)
+		return ;
+	entry = ft_strjoin(key, "=");
+	entry = ft_strjoin(entry, val);
+	adjust_env(entry, key);
+	free(entry);
+}
+
+void	parse_export_arg(char *arg, char **key, char **val, int *append)
+{
+	char	*plus;
+	char	*eq;
+
+	*append = 0;
+	plus = ft_strnstr(arg, "+=", ft_strlen(arg));
+	if (plus)
+	{
+		*append = 1;
+		*key    = ft_substr(arg, 0, plus - arg);
+		*val    = ft_strdup(plus + 2);
+	}
+	else if ((eq = ft_strchr(arg, '=')))
+	{
+		*key = ft_substr(arg, 0, eq - arg);
+		*val = ft_strdup(eq + 1);
+	}
+	else
+	{
+		*key = ft_strdup(arg);
+		*val = NULL;
+	}
+}
