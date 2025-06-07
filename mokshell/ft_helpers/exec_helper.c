@@ -19,7 +19,6 @@ static char *check_direct_path(char *cmd)
         return (ft_strdup(cmd));
     return (NULL);
 }
-
 // Search for command in PATH directories
 static char *search_in_path(char *cmd, char **paths, t_exec *exec)
 {

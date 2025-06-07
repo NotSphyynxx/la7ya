@@ -1,20 +1,5 @@
 #include "../minishell.h"
 
-void	add_exp_back(t_exp **lst, t_exp *new)
-{
-	t_exp *tmp;
-
-	if (!*lst)
-	{
-		*lst = new;
-		return ;
-	}
-	tmp = *lst;
-	while(tmp->next)
-		tmp = tmp->next;
-	tmp->next = new;
-}
-
 int skip_spaces(t_token *file_tok)
 {
     int i;

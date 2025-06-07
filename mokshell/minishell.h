@@ -156,7 +156,7 @@ int     ft_isalpha(int ch);
 t_exp	*find_exp(t_exp *list, char *key);
 void	add_exp_back(t_exp **lst, t_exp *new);
 int     check_valid_key(char *key);
-void	export_variable(char *av);
+void	export_variable(char *av, t_exp *existing);
 void	init_export_list(void);
 void	add_to_env(char *av, char *name, char *value);
 int		adjust_env(char *var, char *name);
@@ -194,6 +194,10 @@ void    check_double_dots(char *path);
 void    check_dot(char *path);
 void    update_pwd_stock(char *new_pwd);
 int     skip_spaces(t_token *file_tok);
+void	add_or_append_check(char *av, char **key, char **value, char *plus_eq_pos);
+void	add_or_append_exp(char *plus_eq_pos, t_exp *existing, char **value);
+void	create_and_fill(char *plus_eq_pos, char **value, char *key);
+void	error_export(char **key, char **value);
 
 //~~~~~~~~~~~~Builtins~~~~~~~~~~~~~~~~~~~
 int		shell_echo(char **av);
