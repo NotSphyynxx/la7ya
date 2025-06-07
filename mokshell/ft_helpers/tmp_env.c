@@ -34,6 +34,10 @@ char	**init_env(char **envp)
 	char **new_env;
 
 	i = 0;
+	if (!envp || !envp[0])
+	{
+		return (create_minimal_env());
+	}
 	while (envp[i])
 		i++;
 	new_env = malloc(sizeof(char *) * (i + 1));

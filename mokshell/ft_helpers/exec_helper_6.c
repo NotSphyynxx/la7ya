@@ -20,7 +20,7 @@ void	leaks_handle(char *readed, t_token *tokens)
 		free_tokens(tokens);
 }
 
-void    execute_piped_cmnd(t_token *start, t_token *end, int prev_fd, int fd[2], t_exec *exec)
+void    execute_piped_cmnd(t_token *start, t_token *end, int prev_fd, int fd[2])
 {
     pid_t child_pid;
 
@@ -36,13 +36,13 @@ void    execute_piped_cmnd(t_token *start, t_token *end, int prev_fd, int fd[2],
         if (prev_fd != -1)
             close(prev_fd);
         char **cmd = tokens_to_cmd(start, end);
-        execute(cmd, start, end, exec);
+        execute(cmd, start, end);
         ft_free_str_array(cmd);
         exit(0);
     }
 }
 
-void execute_final_command(t_token *start, int prev_fd, t_exec *exec)
+void execute_final_command(t_token *start, int prev_fd)
 {
     pid_t child_pid;
 
@@ -56,13 +56,13 @@ void execute_final_command(t_token *start, int prev_fd, t_exec *exec)
         char **cmd = tokens_to_cmd(start, NULL);
         if (!cmd)
             exit(0);
-        execute(cmd, start, NULL, exec);
+        execute(cmd, start, NULL);
         ft_free_str_array(cmd);
         exit(0);
     }
 }
 
-void executor_child_process(t_token *tokens, t_exec *exec)
+void executor_child_process(t_token *tokens)
 {
     char **cmd;
     char *path;
@@ -77,7 +77,7 @@ void executor_child_process(t_token *tokens, t_exec *exec)
         ft_free_str_array(cmd);
         exit(0);
     }
-    path = find_command_path(cmd[0], exec);
+    path = find_command_path(cmd[0]);
     if (!path)
     {
         write(2, "minishell: command not found\n", 29);

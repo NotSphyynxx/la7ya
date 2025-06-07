@@ -1,67 +1,73 @@
 #include "../minishell.h"
 
-void	join_path(char **pwd, char *addition)
+void	check_path(char *path)
 {
-	char *tmp;
-	char *new_pwd;
+	int	i;
 
-	// Avoid adding slash if pwd already ends with '/'
-	if ((*pwd)[ft_strlen(*pwd) - 1] == '/')
-		tmp = ft_strdup(*pwd);
+	i = 0;
+	free(*get_pwd_storage());
+	while (path[i] && path[i] == '/')
+		i++;
+	if (i == (int)ft_strlen(path))
+		*get_pwd_storage() = ft_strdup("/");
 	else
-		tmp = ft_strjoin(*pwd, "/");
-
-	new_pwd = ft_strjoin(tmp, addition);
-	free(tmp);
-	free(*pwd);
-	*pwd = new_pwd;
+		*get_pwd_storage() = ft_strdup(path);
 }
 
+void	check_double_dots(char *path)
+{
+	char	*new_pwd;
+	int		len;
+
+	len = ft_strlen(*get_pwd_storage());
+	if (len > 1 && (*get_pwd_storage())[len - 1] == '/')
+		len--;
+	while (len > 0 && (*get_pwd_storage())[len - 1] != '/')
+		len--;
+	if (len == 0)
+		len = 1;
+	new_pwd = ft_substr(*get_pwd_storage(), 0, len);
+	update_pwd_stock(new_pwd);
+}
+
+void	check_dot(char *path)
+{
+	char		*tmp;
+	char		*new_pwd;
+
+	if ((*get_pwd_storage())[ft_strlen(*get_pwd_storage()) - 1] == '/')
+		tmp = ft_strdup(*get_pwd_storage());
+	else
+		tmp = ft_strjoin(*get_pwd_storage(), "/");
+	new_pwd = ft_strjoin(tmp, path);
+	free(tmp);
+	update_pwd_stock(new_pwd);
+}
 
 void	update_pwd_on_cd(char *path)
 {
-	char *current_pwd;
+	char	*cwd;
 
-	// If absolute path, reset it directly
 	if (path[0] == '/')
+		check_path(path);
+	else
 	{
-		free(*get_pwd_storage());
-		*get_pwd_storage() = ft_strdup(path);
-	}
-	// if "..", and we can’t getcwd(), join ".."
-	else if (!ft_strcmp(path, ".."))
-	{
-		current_pwd = getcwd(NULL, 0);
-		if (!current_pwd)
-			join_path(get_pwd_storage(), "..");
+		cwd = getcwd(NULL, 0);
+		if (cwd)
+			update_pwd_stock(cwd);
 		else
 		{
-			// reset to real PWD when back to good state
-			free(*get_pwd_storage());
-			*get_pwd_storage() = current_pwd;
-			return ;
+			if (ft_strcmp(path, "..") == 0)
+				check_double_dots(path);
+			else if (ft_strcmp(path, ".") != 0)
+				check_dot(path);
 		}
 	}
-	// Otherwise, join relative path
-	else
-		join_path(get_pwd_storage(), path);
-
 	update_env_value("PWD", *get_pwd_storage());
 }
 
-
-void	update_env_value(char *key, char *value)
+void	update_pwd_stock(char *new_pwd)
 {
-	char	*var;
-	char	*tmp;
-
-	tmp = ft_strjoin(key, "=");
-	if (!tmp)
-		return ;
-	var = ft_strjoin(tmp, value);
-	free(tmp);
-	if (!var)
-		return ;
-	realloc_env(var);
-	free(var);
+	free(*get_pwd_storage());
+	*get_pwd_storage() = new_pwd;
 }

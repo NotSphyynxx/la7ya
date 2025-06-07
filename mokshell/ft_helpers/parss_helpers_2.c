@@ -76,3 +76,9 @@ void    free_exp(t_exp *exp)
 		exp = tmp;
 	}
 }
+
+// char    *remove_backslash(char *str)
+// {
+//     int len = ft_strlen(str);
+//     char *new_str = malloc(sizeof(char), ) 
+// }

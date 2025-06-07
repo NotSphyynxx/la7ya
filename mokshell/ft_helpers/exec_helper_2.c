@@ -64,27 +64,31 @@ t_exp	*new_exp_node(char *key, char *value)
 
 int	builtin_check(char **input, char **envp)
 {
+	int	status;
+	
+	status = 0;
 	if (!input || !(*input))
-	{
-		update_exit_status(2);
-		return (0);
-	}
+		return (update_exit_status(2), 0);
 	else if (ft_strcmp(input[0], "echo") == 0)
-		return (shell_echo(input), 1);
+		status = shell_echo(input);
 	else if (ft_strcmp(input[0], "env") == 0)
-		return (shell_env(input, envp), 1);
+		status = shell_env(input, envp);
 	else if (ft_strcmp(input[0], "pwd") == 0)
-		return (shell_pwd(input), 1);
+		status = shell_pwd(input);
 	else if (ft_strcmp(input[0], "cd") == 0)
-		return (shell_cd(input), 1);
+		status = shell_cd(input);
 	else if (ft_strcmp(input[0], "export") == 0)
-		return (shell_export(input), 1);
+		status = shell_export(input);
 	else if (ft_strcmp(input[0], "unset") == 0)
-		return (shell_unset(input), 1);
+		status = shell_unset(input);
 	else if (ft_strcmp(input[0], "exit") == 0)
-		return (shell_exit(input), 1);
-	return (0);
+		status = shell_exit(input);
+	else
+		return (0);
+	update_exit_status(status);
+	return (1);
 }
+
 
 char	*ft_strndup(const char *s, size_t n)
 {

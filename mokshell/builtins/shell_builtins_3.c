@@ -12,12 +12,14 @@
 
 #include "../minishell.h"
 
-static void search_then_unset(char **env, char *name)
+static void	search_then_unset(char **env, char *name)
 {
-	int i = 0;
-	int j;
-	int len = ft_strlen(name);
+	int	i;
+	int	j;
+	int	len;
 
+	len = ft_strlen(name);
+	i = 0;
 	while (env[i])
 	{
 		if (ft_strncmp(env[i], name, len) == 0 && env[i][len] == '=')
@@ -36,23 +38,32 @@ static void search_then_unset(char **env, char *name)
 	}
 }
 
-int shell_unset(char **av)
+int	shell_unset(char **av)
 {
-	char **env;
-	int i = 1;
+	int		i;
+	int		ret;
+	char	*key;
 
-	env = *get_env();
+	i = 1;
+	ret = 0;
 	while (av[i])
 	{
-		if (ft_strchr(av[i], '=') != NULL)
+		key = av[i];
+		if (ft_strchr(key, '='))
 		{
-			write(STDERR_FILENO, "unset: not a valid identifier\n", 31);
-			return (1);
+			write(STDERR_FILENO,
+				"unset: not a valid identifier\n", 31);
+			ret = 1;
 		}
-		search_then_unset(env, av[i]);
+		else
+		{
+			search_then_unset(*get_env(), key);
+			remove_export_node(get_exp_list(), key);
+		}
 		i++;
 	}
-	return (0);
+	update_exit_status(ret);
+	return (ret);
 }
 
 void	clean_exit(int code)
@@ -63,6 +74,7 @@ void	clean_exit(int code)
 	free_exp(*get_exp_list());
 	exit(code);
 }
+
 int	shell_exit(char **av)
 {
 	int			overflow;
@@ -74,14 +86,36 @@ int	shell_exit(char **av)
 	exit_code = ft_atoi_with_overflow(av[1], &overflow);
 	if (overflow)
 	{
-		write(2, "exit: numeric argument required\n", 32);
+		write(STDERR_FILENO, "exit: numeric argument required\n", 31);
 		clean_exit(255);
 	}
 	if (av[2])
 	{
-		write(2, "exit: too many arguments\n", 26);
+		write(STDERR_FILENO, "exit: too many arguments\n", 24);
 		return (1);
 	}
 	clean_exit((unsigned char)exit_code);
 	return (0);
+}
+
+char	**create_minimal_env(void)
+{
+	char	**env;
+
+	env = malloc(sizeof(char *) * 4);
+	if (!env)
+	{
+		write(2, "malloc error\n", 14);
+		return (NULL);
+	}
+	env[0] = get_current_pwd();
+	env[1] = ft_strdup("SHLVL=1");
+	env[2] = ft_strdup("_=./minishell");
+	env[3] = NULL;
+	if (!env[0] || !env[1] || !env[2])
+	{
+		ft_free_str_array(env);
+		return (NULL);
+	}
+	return (env);
 }

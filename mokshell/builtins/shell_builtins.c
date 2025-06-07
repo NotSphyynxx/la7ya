@@ -1,4 +1,3 @@
-
 #include "../minishell.h"
 
 static void	print_echo_args(char **av, int i)
@@ -23,8 +22,6 @@ int	shell_echo(char **av)
 
 	i = 1;
 	new_line = 1;
-	while (av[i] && av[i][0] == '\0')
-		i++;
 	while (av[i] && av[i][0] == '-' && av[i][1] == 'n')
 	{
 		j = 1;
@@ -34,8 +31,6 @@ int	shell_echo(char **av)
 			break ;
 		new_line = 0;
 		i++;
-		while (av[i] && av[i][0] == '\0')
-			i++;
 	}
 	print_echo_args(av, i);
 	if (new_line)
@@ -43,32 +38,26 @@ int	shell_echo(char **av)
 	return (0);
 }
 
-
-int	shell_env(char **av,  char **envp)
+int	shell_env(char **av, char **envp)
 {
 	char	**env;
 
 	if (av[1])
 	{
-		write(STDERR_FILENO, "env: too many arguments\n", 24);
-		return (1);
+		write(STDERR_FILENO, "env: ", 5);
+		write(STDERR_FILENO, av[1], ft_strlen(av[1]));
+		write(STDERR_FILENO, ": No such file or directory\n", 28);
+		update_exit_status(127);
+		return (127);
 	}
 	env = envp;
-	if (*env == NULL)
-	{
-		char *cd = getcwd(NULL, 0);
-		write(STDOUT_FILENO, cd, ft_strlen(cd));
-		write(STDOUT_FILENO, "\n", 1);
-		write(STDOUT_FILENO, "SHLVL=1\n", 8);
-		write(STDOUT_FILENO, "_=/usr/bin/env\n", 15);
-
-	}
 	while (*env)
 	{
-		write (STDOUT_FILENO, *env, ft_strlen(*env));
-		write (STDOUT_FILENO, "\n", 1);
+		write(STDOUT_FILENO, *env, ft_strlen(*env));
+		write(STDOUT_FILENO, "\n", 1);
 		env++;
 	}
+	update_exit_status(0);
 	return (0);
 }
 
@@ -79,7 +68,7 @@ int	shell_pwd(char **av)
 	return (0);
 }
 
-void	shell_cd(char **args)
+int	shell_cd(char **args)
 {
 	char	*path;
 
@@ -87,17 +76,19 @@ void	shell_cd(char **args)
 		path = get_env_value("HOME");
 	else
 		path = args[1];
-
 	if (!path)
 	{
 		write(2, "cd: HOME not set\n", 17);
-		return ;
+		return (1);
 	}
-	if (chdir(path) != 0)
+	if (chdir(path) == 0)
+	{
+		update_pwd_on_cd(path);
+		return (0);
+	}
+	else
 	{
 		perror("cd");
-		return ;
+		return (1);
 	}
-	update_pwd_on_cd(path);
 }
-

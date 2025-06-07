@@ -12,10 +12,13 @@
 
 #include "../minishell.h"
 
-void	error(void)
+void	error_export(char **key, char **value)
 {
-	write(2, "Error\n", 6);
-	exit(EXIT_FAILURE);
+	write(2, "export: invalid identifier\n", 27);
+	free(*key);
+	if (*value)
+		free(*value);
+	update_exit_status(2);
 }
 
 char	*ft_strjoin(char const *s1, char const *s2)
@@ -58,4 +61,19 @@ int	ft_strncmp(const char *s1, const char *s2, size_t n)
 		i++;
 	}
 	return (0);
+}
+
+void	add_exp_back(t_exp **lst, t_exp *new)
+{
+	t_exp *tmp;
+
+	if (!*lst)
+	{
+		*lst = new;
+		return ;
+	}
+	tmp = *lst;
+	while(tmp->next)
+		tmp = tmp->next;
+	tmp->next = new;
 }

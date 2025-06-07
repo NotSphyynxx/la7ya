@@ -40,3 +40,38 @@ int	wf_name(char *str, int flag)
 	}
 	return (0);
 }
+
+void	update_env_value(char *key, char *value)
+{
+	char	*var;
+	char	*tmp;
+
+	tmp = ft_strjoin(key, "=");
+	if (!tmp)
+		return ;
+	var = ft_strjoin(tmp, value);
+	free(tmp);
+	if (!var)
+		return ;
+	realloc_env(var);
+	free(var);
+}
+
+void	create_and_fill(char *plus_eq_pos, char **value, char *key)
+{
+		if (plus_eq_pos)
+		{
+			// When key doesn't exist and += is used, initialize with empty string first,
+			// then append the new value to avoid creating invalid entries.
+			add_exp_back(get_exp_list(), new_exp_node(ft_strdup(key), ft_strdup("")));
+			t_exp *new_node = find_exp(*get_exp_list(), key);
+			if (new_node)
+			{
+				char *tmp = new_node->value;
+				new_node->value = ft_strjoin(new_node->value, *value);
+				free(tmp);
+			}
+		}
+		else
+			add_exp_back(get_exp_list(), new_exp_node(ft_strdup(key), *value));
+}
