@@ -65,7 +65,7 @@ t_exp	*new_exp_node(char *key, char *value)
 int	builtin_check(char **input, char **envp)
 {
 	int	status;
-	
+
 	status = 0;
 	if (!input || !(*input))
 		return (update_exit_status(2), 0);
@@ -88,7 +88,6 @@ int	builtin_check(char **input, char **envp)
 	update_exit_status(status);
 	return (1);
 }
-
 
 char	*ft_strndup(const char *s, size_t n)
 {

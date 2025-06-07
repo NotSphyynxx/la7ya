@@ -88,7 +88,7 @@ void	execute_pipe_commands(t_token *tokens)
 
 void	executor_simple_command(t_token *tokens)
 {
-	int status;
+	int		status;
 	pid_t	pid;
 
 	status = 0;

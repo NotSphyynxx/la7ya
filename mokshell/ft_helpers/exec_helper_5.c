@@ -21,7 +21,7 @@ int	is_builtin(char **input)
 	return (0);
 }
 
-void    init_shell(char **envp)
+void	init_shell(char **envp)
 {
 	*get_env() = init_env(envp);
 	init_export_list();
@@ -30,7 +30,7 @@ void    init_shell(char **envp)
 	init_pwd();
 }
 
-void    read_check(char *readed)
+void	read_check(char *readed)
 {
 	if (!readed)
 		{
@@ -56,8 +56,11 @@ int there_is_red(t_token *tokens)
 
 void	built_with_red_check(char **input, char **envp, t_token *tokens)
 {
-	int		status = 0;
-	pid_t pid = fork();
+	int		status;
+	pid_t	pid;
+
+	status = 0;
+	pid = fork();
 	if (pid < 0)
 	{
 		perror("fork");

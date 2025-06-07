@@ -38,11 +38,11 @@ void	read_and_exe(void)
 		gc_clear(&exec, readed, tokens, input);
 	}
 }
+
 int	main(int ac, char **av, char **envp)
 {
-
 	if (ac > 2)
-		return 0;
+		return (0);
 	if (!isatty(1) || !isatty(0))
 		return (1);
 	(void)av;
