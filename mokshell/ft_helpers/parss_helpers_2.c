@@ -1,73 +1,80 @@
 #include "../minishell.h"
 
-static char *collect_word(char *line, int *i)
+static char	*collect_word(char *line, int *i)
 {
-    int start = *i;
-    while (line[*i] && !ft_isspace(line[*i]) && !ft_strchr("|<>", line[*i]))
-    {
-        if (line[*i] == '\'' || line[*i] == '"')
-        {
-            char quote = line[(*i)++];
-            while (line[*i] && line[*i] != quote)
-                (*i)++;
-            if (line[*i] == quote)
-                (*i)++;
-        }
-        else
-            (*i)++;
-    }
-    return ft_substr(line, start, *i - start); // includes quotes
+	int		start;
+	char	quote;
+
+	start = *i;
+	while (line[*i] && !ft_isspace(line[*i]) && !ft_strchr("|<>", line[*i]))
+	{
+		if (line[*i] == '\'' || line[*i] == '"')
+		{
+			quote = line[(*i)++];
+			while (line[*i] && line[*i] != quote) 
+				(*i)++;
+			if (line[*i] == quote)
+				(*i)++;
+		}
+		else
+			(*i)++;
+	}
+	return ft_substr(line, start, *i - start);
 }
 
-int has_unclosed_quote(const char *str)
+int	has_unclosed_quote(const char *str)
 {
-    int i = 0;
-    char quote = 0;
-    t_token *curr;
+	int		i;
+	char	quote;
+	t_token *curr;
 
-    while (str[i])
-    {
-        if ((str[i] == '\'' || str[i] == '"') && quote == 0)
-            quote = str[i]; // opening quote
-        else if (str[i] == quote)
-            quote = 0; // closing quote
-        i++;
-    }
-    return (quote != 0); // if quote is still open, it's unclosed
+	i = 0;
+	quote = 0;
+	while (str[i])
+	{
+		if ((str[i] == '\'' || str[i] == '"') && quote == 0)
+			quote = str[i];
+		else if (str[i] == quote)
+			quote = 0;
+		i++;
+	}
+	return (quote != 0);
 }
 
-int last_check(t_token **tokens, char *line, int *i)
+int	last_check(t_token **tokens, char *line, int *i)
 {
-    char *word = collect_word(line, i);
-    if (!word)
-        return (1);
-    if (has_unclosed_quote(word))
-    {
-        write(STDERR_FILENO, "minishell: syntax error: unclosed quote\n", 40);
-        free(word);
-        return 1;
-    }
-    
-    t_token *tok = new_token(word, WORD);
-    set_quote_flags(tok);
-    add_token(tokens, tok);
-    free(word);
-    return 0;
+	char *word;
+	t_token *tok;
+
+	word = collect_word(line, i);
+	if (!word)
+		return (1);
+	if (has_unclosed_quote(word))
+	{
+		write(STDERR_FILENO, "minishell: syntax error: unclosed quote\n", 40);
+		free(word);
+		return 1;
+	}
+	tok = new_token(word, WORD);
+	set_quote_flags(tok);
+	add_token(tokens, tok);
+	free(word);
+	return 0;
 }
 
 void    free_exp(t_exp *exp)
 {
-    t_exp   *tmp;
-    while(exp)
-    {
-        tmp = exp->next;
-        if (exp->key)
-            free(exp->key);
-        if (exp->value)
-            free(exp->value);
-        free(exp);
-        exp = tmp;
-    }
+	t_exp   *tmp;
+	while(exp)
+	{
+		tmp = exp->next;
+		if (exp->key)
+			free(exp->key);
+		if (exp->value)
+			free(exp->value);
+		free(exp);
+		exp = tmp;
+	}
 }
 
 // char    *remove_backslash(char *str)

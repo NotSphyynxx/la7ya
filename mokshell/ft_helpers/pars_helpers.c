@@ -14,85 +14,67 @@
 
 void sigint_handler(int sig)
 {
-    (void)sig;
-    rl_replace_line("", 0);
-    write(1, "\n", 1);
-    rl_on_new_line();
-    rl_redisplay();
+	(void)sig;
+	rl_replace_line("", 0);
+	write(1, "\n", 1);
+	rl_on_new_line();
+	rl_redisplay();
 }
 
 void free_tokens(t_token *tokens)
 {
-    t_token *tmp;
+	t_token *tmp;
 
-    while (tokens)
-    {
-        tmp = tokens->next;
-        if (tokens->value)
-            free(tokens->value);
-        free(tokens);
-        tokens = tmp;
-    }
+	while (tokens)
+	{
+		tmp = tokens->next;
+		if (tokens->value)
+			free(tokens->value);
+		free(tokens);
+		tokens = tmp;
+	}
 }
 
-int    ft_isspace(char c)
+int	ft_isspace(char c)
 {
-    return (c == ' ' || c == '\t' || c == '\n'
-        || c == '\v' || c == '\f' || c == '\r');
+	return (c == ' ' || c == '\t' || c == '\n'
+		|| c == '\v' || c == '\f' || c == '\r');
 }
 
 char    *ft_strcpy(char *dest, const char *src)
 {
-    int i;
+	int i;
 
-    i = 0;
-    while (src[i])
-    {
-        dest[i] = src[i];
-        i++;
-    }
-    dest[i] = '\0';
-    return (dest);
+	i = 0;
+	while (src[i])
+	{
+		dest[i] = src[i];
+		i++;
+	}
+	dest[i] = '\0';
+	return (dest);
 }
-
-char    *ft_strcat(char *dest, const char *src)
+void	set_quote_flags(t_token *tok)
 {
-    int i;
-    int j;
+	int		i;
+	char	quote;
 
-    i = 0;
-    while (dest[i])
-        i++;
-    j = 0;
-    while (src[j])
-    {
-        dest[i + j] = src[j];
-        j++;
-    }
-    dest[i + j] = '\0';
-    return (dest);
-}
-
-void set_quote_flags(t_token *tok)
-{
-    int i = 0;
-    char quote = 0;
-
-    if (!tok || !tok->value)
-        return;
-
-    while (tok->value[i])
-    {
-        if ((tok->value[i] == '\'' || tok->value[i] == '"') && quote == 0)
-        {
-            quote = tok->value[i];
-            if (quote == '\'')
-                tok->was_single = 1;
-            else if (quote == '"')
-                tok->was_double = 1;
-        }
-        else if (tok->value[i] == quote)
-            quote = 0;
-        i++;
-    }
+	i = 0;
+	quote = 0;
+	if (!tok || !tok->value)
+		return;
+	while (tok->value[i])
+	{
+		if ((tok->value[i] == '\'' || tok->value[i] == '"') && quote == 0)
+		{
+			quote = tok->value[i];
+			if (quote == '\'')
+				tok->was_single = 1;
+			else if (quote == '"')
+				tok->was_double = 1;
+		}
+		else if (tok->value[i] == quote)
+			quote = 0;
+		i++;
+	}
 }

@@ -12,8 +12,10 @@ SRCS    = main.c ft_helpers/utils_1.c ft_helpers/utils_2.c ft_helpers/ft_split.c
 		ft_helpers/exec_helper_6.c ft_helpers/exec_helper_7.c ft_helpers/utils_5.c \
 		ft_helpers/parss_helpers_1.c ft_helpers/parss_helpers_2.c ft_helpers/garbage_coll.c \
 		ft_helpers/exec_helper_8.c ft_helpers/exec_helper_9.c ft_helpers/exec_helper_10.c \
-		parsing/expand_heredoc.c builtins/shell_builtins_4.c ft_helpers/exec_helper_11.c \
-		ft_helpers/exec_helper_12.c
+		parsing/expand_heredoc.c ft_helpers/exec_helper_11.c ft_helpers/parss_hlp.c \
+		ft_helpers/parss_checksyn.c parsing/expand_help.c ft_helpers/parss_helper_10.c parsing/expand_helper2.c \
+		builtins/shell_builtins_4.c ft_helpers/exec_helper_12.c
+
 OBJS    = $(SRCS:.c=.o)
 
 HEADER = minishell.h
