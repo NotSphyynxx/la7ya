@@ -1,60 +1,83 @@
-
 #include "minishell.h"
 
-char *ft_strip_quotes(char *str)
+static int	handle_single_redirection(t_token **tokens, char *line, int *i)
 {
-    size_t len = ft_strlen(str);
-    char *result = malloc(len + 1);
-    size_t i = 0, j = 0;
+	char	*op;
+	t_type	type;
 
-    if (!result)
-        return NULL;
-    while (str[i])
-    {
-        if (str[i] == '\'' || str[i] == '"')
-        {
-            char quote = str[i++];
-            while (str[i] && str[i] != quote)
-                result[j++] = str[i++];
-            if (str[i] == quote)
-                i++;
-        }
-        else
-        {
-            result[j++] = str[i++];
-        }
-    }
-    result[j] = '\0';
-    return result;
+	op = malloc(2 * sizeof(char));
+	if (!op)
+		return (0);
+	op[0] = line[*i];
+	op[1] = '\0';
+	if (line[*i] == '>')
+		type = REDIR_OUT;
+	else
+		type = REDIR_IN;
+	add_token(tokens, new_token(op, type));
+	free(op);
+	(*i)++;
+	return (1);
 }
 
-static void remove_quotes_tokens(t_token *tokens)
+int	check_heredoc(t_token **tokens, char *line, int *i)
 {
-    while (tokens)
-    {
-        if (tokens->type == WORD)
-        {
-            char *stripped = ft_strip_quotes(tokens->value);
-            free(tokens->value);
-            tokens->value = stripped;
-        }
-        tokens = tokens->next;
-    }
+	char	*op;
+
+	if (line[*i] == '>' && line[*i + 1] == '>')
+	{
+		op = ft_strdup(">>");
+		if (!op)
+			return (0);
+		add_token(tokens, new_token(op, REDIR_APPEND));
+		free(op);
+		*i += 2;
+	}
+	else if (line[*i] == '<' && line[*i + 1] == '<')
+	{
+		op = ft_strdup("<<");
+		if (!op)
+			return (0);
+		add_token(tokens, new_token(op, HEREDOC));
+		free(op);
+		*i += 2;
+	}
+	else
+		return (handle_single_redirection(tokens, line, i));
+	return (1);
+}
+static void	remove_quotes_tokens(t_token *tokens)
+{
+	char	*stripped;
+
+	while (tokens)
+	{
+		if (tokens->type == WORD)
+		{
+			stripped = ft_strip_quotes(tokens->value);
+			free(tokens->value);
+			tokens->value = stripped;
+		}
+		tokens = tokens->next;
+	}
 }
 
 t_token *parss(char *line)
 {
-    t_token *tokens = NULL;
-    int i = 0;
-    if (!check_all(&tokens, line, &i))
-        return (NULL);
-    if (check_syntax(tokens))
-    {
-        printf("Invalid syntax.\n");
-        return NULL;
-    }
-    expand(tokens);
-    remove_quotes_tokens(tokens);
-    *get_token_list() = tokens;
-    return (tokens);
+	t_token	*tokens;
+	int	i;
+
+	tokens = NULL;
+	i = 0;
+	if (!check_all(&tokens, line, &i))
+		return (NULL);
+	if (check_syntax(tokens))
+	{
+		printf("Invalid syntax.\n");
+		return NULL;
+	}
+	expand(tokens);
+	remove_quotes_tokens(tokens);
+	*get_token_list() = tokens;
+	return (tokens);
 }

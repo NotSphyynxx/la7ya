@@ -130,6 +130,9 @@ void set_quote_flags(t_token *tok);
 t_token	**get_token_list(void);
 void	free_tokens_list(void);
 int	wf_name(char *str, int flag);
+void	handle_heredoc_child(t_token *curr, char *filename);
+char	*expand_var(char *line);
+char *get_env2_val(const char *name);
 
 //@------------Execution------------------@//
 void	execute(char **input, t_token *start, t_token *end, t_exec *exec);
