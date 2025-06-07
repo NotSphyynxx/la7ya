@@ -73,8 +73,9 @@ t_token *parss(char *line)
 		return (NULL);
 	if (check_syntax(tokens))
 	{
+		free_tokens(tokens);
 		printf("Invalid syntax.\n");
-		return NULL;
+		return (NULL);
 	}
 	expand(tokens);
 	remove_quotes_tokens(tokens);

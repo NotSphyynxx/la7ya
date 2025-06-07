@@ -14,7 +14,7 @@
 
 t_token	*new_token(char *value, t_type type)
 {
-	t_token *token;
+	t_token	*token;
 
 	token = malloc(sizeof(t_token));
 	if (!token)
@@ -26,7 +26,7 @@ t_token	*new_token(char *value, t_type type)
 	token->was_double = 0;
 	token->quoted = 0;
 	token->ambigious = 0;
-	return token;
+	return (token);
 }
 
 void	add_token(t_token **tokens, t_token *new_tok)
