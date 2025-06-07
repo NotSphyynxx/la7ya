@@ -41,10 +41,10 @@ void	read_and_exe(void)
 
 int	main(int ac, char **av, char **envp)
 {
-	if (ac > 2)
-		return (0);
-	if (!isatty(1) || !isatty(0))
-		return (1);
+	// if (ac > 2)
+	// 	return (0);
+	// if (!isatty(1) || !isatty(0))
+	// 	return (1);
 	(void)av;
 	printf("================ | Welcome to Sidna-shell | ================\n");
 	init_shell(envp);
