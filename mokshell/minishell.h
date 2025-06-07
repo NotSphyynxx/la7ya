@@ -156,7 +156,7 @@ int     ft_isalpha(int ch);
 t_exp	*find_exp(t_exp *list, char *key);
 void	add_exp_back(t_exp **lst, t_exp *new);
 int     check_valid_key(char *key);
-void	export_variable(char *av, t_exp *existing);
+void	export_variable(char *av);
 void	init_export_list(void);
 void	add_to_env(char *av, char *name, char *value);
 int		adjust_env(char *var, char *name);
@@ -198,6 +198,9 @@ void	add_or_append_check(char *av, char **key, char **value, char *plus_eq_pos);
 void	add_or_append_exp(char *plus_eq_pos, t_exp *existing, char **value);
 void	create_and_fill(char *plus_eq_pos, char **value, char *key);
 void	error_export(char **key, char **value);
+char	**create_minimal_env(void);
+char	*get_current_pwd(void);
+void	remove_export_node(t_exp **lst, char *key);
 
 //~~~~~~~~~~~~Builtins~~~~~~~~~~~~~~~~~~~
 int		shell_echo(char **av);
@@ -206,6 +209,6 @@ int		shell_pwd(char **av);
 int     shell_export(char **av);
 int		shell_unset(char **av);
 int		shell_exit(char **av);
-void	shell_cd(char **args);
+int     shell_cd(char **args);
 
 #endif

@@ -23,8 +23,6 @@ int	shell_echo(char **av)
 
 	i = 1;
 	new_line = 1;
-	while (av[i] && av[i][0] == '\0')
-		i++;
 	while (av[i] && av[i][0] == '-' && av[i][1] == 'n')
 	{
 		j = 1;
@@ -34,8 +32,6 @@ int	shell_echo(char **av)
 			break ;
 		new_line = 0;
 		i++;
-		while (av[i] && av[i][0] == '\0')
-			i++;
 	}
 	print_echo_args(av, i);
 	if (new_line)
@@ -43,31 +39,39 @@ int	shell_echo(char **av)
 	return (0);
 }
 
-void	handle_env_ignored(void)
+char	*get_current_pwd(void)
 {
-	printf("Comming soon !\n");
+	char	*cwd;
+	char	*pwd;
+
+	cwd = getcwd(NULL, 0);
+	if (!cwd)
+		return (NULL);
+	pwd = ft_strjoin("PWD=", cwd);
+	free(cwd);
+	return (pwd);
 }
 
-int	shell_env(char **av,  char **envp)
+int	shell_env(char **av, char **envp)
 {
 	char	**env;
 
 	if (av[1])
 	{
-		write(STDERR_FILENO, "env: too many arguments\n", 24);
-		return (1);
+		write(STDERR_FILENO, "env: ", 5);
+		write(STDERR_FILENO, av[1], ft_strlen(av[1]));
+		write(STDERR_FILENO, ": No such file or directory\n", 28);
+		update_exit_status(127);
+		return (127);
 	}
 	env = envp;
-	if (*env == NULL)
-	{
-		handle_env_ignored();
-	}
 	while (*env)
 	{
-		write (STDOUT_FILENO, *env, ft_strlen(*env));
-		write (STDOUT_FILENO, "\n", 1);
+		write(STDOUT_FILENO, *env, ft_strlen(*env));
+		write(STDOUT_FILENO, "\n", 1);
 		env++;
 	}
+	update_exit_status(0);
 	return (0);
 }
 
@@ -78,23 +82,28 @@ int	shell_pwd(char **av)
 	return (0);
 }
 
-void shell_cd(char **args)
+int	shell_cd(char **args)
 {
-    char *path;
+	char	*path;
 
-    if (!args[1])
-        path = get_env_value("HOME");
-    else
-        path = args[1];
+	if (!args[1])
+		path = get_env_value("HOME");
+	else
+		path = args[1];
 
-    if (!path)
-    {
-        write(2, "cd: HOME not set\n", 17);
-        return;
-    }
-
-    if (chdir(path) == 0)
-        update_pwd_on_cd(path);
-    else
-        perror("cd");
+	if (!path)
+	{
+		write(2, "cd: HOME not set\n", 17);
+		return (1);
+	}
+	if (chdir(path) == 0)
+	{
+		update_pwd_on_cd(path);
+		return (0);
+	}
+	else
+	{
+		perror("cd");
+		return (1);
+	}
 }

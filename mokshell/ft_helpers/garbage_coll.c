@@ -37,3 +37,25 @@ void gc_clear(t_exec *exec, char *readed, t_token *tokens, char **input)
 	ft_free_str_array(input);
 }
 
+t_exp	*split_env_to_exp(char *env_entry)
+{
+	t_exp	*node;
+	char	*eq_sign;
+
+	node = malloc(sizeof(t_exp));
+	if (!node)
+		return (NULL);
+	eq_sign = ft_strchr(env_entry, '=');
+	if (eq_sign)
+	{
+		node->key = ft_substr(env_entry, 0, eq_sign - env_entry);
+		node->value = ft_strdup(eq_sign + 1);
+	}
+	else
+	{
+		node->key = ft_strdup(env_entry);
+		node->value = NULL;
+	}
+	node->next = NULL;
+	return (node);
+}

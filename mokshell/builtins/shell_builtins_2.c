@@ -1,119 +1,132 @@
 #include "../minishell.h"
 
-void	add_or_append_exp(char *plus_eq_pos, t_exp *existing, char **value)
+/* parse key, value and detect “+=” */
+/* parse key, val, detect += — no validation or frees here */
+static void	parse_export_arg(char *arg, char **key, char **val, int *append)
 {
-	if (plus_eq_pos)
+	char	*plus;
+	char	*eq;
+
+	*append = 0;
+	plus = ft_strnstr(arg, "+=", ft_strlen(arg));
+	if (plus)
 	{
-		char *tmp = existing->value;
-		if (existing->value)
-			existing->value = ft_strjoin(existing->value, *value);
-		else
-			existing->value = ft_strdup(*value);
-		free(tmp);
-		free(*value);
+		*append = 1;
+		*key    = ft_substr(arg, 0, plus - arg);
+		*val    = ft_strdup(plus + 2);
+	}
+	else if ((eq = ft_strchr(arg, '=')))
+	{
+		*key = ft_substr(arg, 0, eq - arg);
+		*val = ft_strdup(eq + 1);
 	}
 	else
 	{
-		if (existing->value)
-			free(existing->value);
-		existing->value = *value;
+		*key = ft_strdup(arg);
+		*val = NULL;
 	}
 }
 
-void	add_or_append_check(char *av, char **key, char **value, char *plus_eq_pos)
-{
-	char	*eq_pos;
 
-	if (plus_eq_pos)
+/* update or create in export list */
+/* update or create in export list */
+static void	apply_export_list(char *key, char *val, int append)
+{
+	t_exp	*ex;
+	char	*tmp;
+
+	ex = find_exp(*get_exp_list(), key);
+	if (ex)
 	{
-		*key = ft_substr(av, 0, plus_eq_pos - av);
-		*value = ft_strdup(plus_eq_pos + 2);
+		if (val)
+		{
+			if (append)
+			{
+				tmp = ex->value;
+				ex->value = ft_strjoin(tmp, val);
+				free(tmp);
+			}
+			else
+			{
+				free(ex->value);
+				ex->value = ft_strdup(val);
+			}
+		}
 	}
 	else
 	{
-		eq_pos = ft_strchr(av, '=');
-		if (eq_pos)
-		{
-			*key = ft_substr(av, 0, eq_pos - av);
-			*value = ft_strdup(eq_pos + 1);
-		}
-		else
-		{
-			*key = ft_strdup(av);
-			*value = NULL;
-		}
+		/* ALWAYS add a new export entry, even if val == NULL */
+		if (append && !val)
+			val = ft_strdup("");
+		add_exp_back(get_exp_list(),
+			new_exp_node(ft_strdup(key),
+				(val ? ft_strdup(val) : NULL)));
 	}
 }
 
-void	export_variable(char *av, t_exp *existing)
-{
-	char	*plus_eq_pos;
-	char	*key;
-	char	*value;
 
-	plus_eq_pos = ft_strnstr(av, "+=", ft_strlen(av));
-	add_or_append_check(av, &key, &value, plus_eq_pos);
-	if (!check_valid_key(key))
-	{
-		error_export(&key, &value);
+/* sync one variable into the env array */
+static void	sync_env_var(char *key, char *val)
+{
+	char	*entry;
+
+	if (!val)
 		return ;
-	}
-	existing = find_exp(*get_exp_list(), key);
-	if (existing)
-	{
-		add_or_append_exp(plus_eq_pos, existing, &value);
-		add_to_env(av, key, existing->value);
-	}
-	else
-	{
-		create_and_fill(plus_eq_pos, &value, key);
-		add_to_env(av, key, value);
-		if (plus_eq_pos)
-			free(value);
-	}
-	free(key);
+	entry = ft_strjoin(key, "=");
+	entry = ft_strjoin(entry, val);
+	adjust_env(entry, key);
+	free(entry);
 }
 
-t_exp	*split_env_to_exp(char *env_entry)
-{
-	t_exp	*node;
-	char	*eq_sign;
-
-	node = malloc(sizeof(t_exp));
-	if (!node)
-		return (NULL);
-	eq_sign = ft_strchr(env_entry, '=');
-	if (eq_sign)
-	{
-		node->key = ft_substr(env_entry, 0, eq_sign - env_entry);
-		node->value = ft_strdup(eq_sign + 1);
-	}
-	else
-	{
-		node->key = ft_strdup(env_entry);
-		node->value = NULL;
-	}
-	node->next = NULL;
-	return (node);
-}
-
+/* the main export builtin */
+/* the export builtin, doing validation, list‐update, env‐sync, frees */
 int	shell_export(char **av)
 {
-	int i;
-	t_exp *existing;
+	int		i;
+	int		append;
+	int		err;
+	char	*key;
+	char	*val;
+	t_exp	*ex;   /* <--- new */
 
-	i = 1;
-	existing = NULL;
+	i   = 1;
+	err = 0;
 	if (!av[1])
 	{
 		printf_export_list();
+		update_exit_status(0);
 		return (0);
 	}
 	while (av[i])
 	{
-		if (ft_strlen(av[i]) > 0)
-			export_variable(av[i], existing);
+		parse_export_arg(av[i], &key, &val, &append);
+
+		if (!check_valid_key(key))
+		{
+			error_export(&key, &val);
+			err = 1;
+		}
+		else
+		{
+			apply_export_list(key, val, append);
+
+			/* if we have a value, sync the right one: */
+			if (val)
+			{
+				if (append)
+				{
+					ex = find_exp(*get_exp_list(), key);
+					sync_env_var(key, ex->value);
+				}
+				else
+					sync_env_var(key, val);
+			}
+
+			free(key);
+			free(val);
+		}
 		i++;
 	}
-	return (0);
+	update_exit_status(err);
+	return (err);
 }

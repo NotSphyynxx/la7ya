@@ -38,7 +38,6 @@ void	read_and_exe(void)
 		gc_clear(&exec, readed, tokens, input);
 	}
 }
-
 int	main(int ac, char **av, char **envp)
 {
 

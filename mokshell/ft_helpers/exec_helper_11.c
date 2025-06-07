@@ -74,5 +74,4 @@ void	create_and_fill(char *plus_eq_pos, char **value, char *key)
 		}
 		else
 			add_exp_back(get_exp_list(), new_exp_node(ft_strdup(key), *value));
-
 }
