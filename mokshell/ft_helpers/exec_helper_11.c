@@ -40,3 +40,19 @@ int	wf_name(char *str, int flag)
 	}
 	return (0);
 }
+
+void	update_env_value(char *key, char *value)
+{
+	char	*var;
+	char	*tmp;
+
+	tmp = ft_strjoin(key, "=");
+	if (!tmp)
+		return ;
+	var = ft_strjoin(tmp, value);
+	free(tmp);
+	if (!var)
+		return ;
+	realloc_env(var);
+	free(var);
+}

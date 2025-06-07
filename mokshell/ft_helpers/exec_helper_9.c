@@ -15,8 +15,38 @@ void	add_exp_back(t_exp **lst, t_exp *new)
 	tmp->next = new;
 }
 
+int skip_spaces(t_token *file_tok)
+{
+    int i;
+    int j;
+    char *tmp;
+
+    j = 0;
+    i = 0;
+    while (file_tok->value[j] == ' ')
+        j++;
+    i = ft_strlen(file_tok->value + j);
+    tmp = file_tok->value;
+    file_tok->value = malloc(sizeof(char) * (i + 1));
+    if (!file_tok->value)
+        return (-1);
+    i = 0;
+    while(tmp[j])
+    {
+        file_tok->value[i] = tmp[j];
+        j++;
+        i++;
+    }
+    file_tok->value[i] = '\0';
+    free(tmp);
+}
+
 int check_file_token(t_token *file_tok)
 {
+    int i;
+    char *tmp;
+    int j;
+
     if (!file_tok || !file_tok->value || file_tok->value[0] == '\0')
     {
         write(STDERR_FILENO, "minishell: ambiguous redirect\n", 30);
@@ -26,6 +56,13 @@ int check_file_token(t_token *file_tok)
     {
         write(STDERR_FILENO, "minishell: ambiguous redirect\n", 30);
         return (-1);
+    }
+    i = 0;
+    j = 0;
+    if (file_tok->value[0] == ' ')
+    {
+        if(skip_spaces(file_tok) == -1)
+            return (-1);
     }
     return (0);
 }

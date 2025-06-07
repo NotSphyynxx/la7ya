@@ -43,6 +43,10 @@ int	shell_echo(char **av)
 	return (0);
 }
 
+void	handle_env_ignored(void)
+{
+	printf("Comming soon !\n");
+}
 
 int	shell_env(char **av,  char **envp)
 {
@@ -56,12 +60,7 @@ int	shell_env(char **av,  char **envp)
 	env = envp;
 	if (*env == NULL)
 	{
-		char *cd = getcwd(NULL, 0);
-		write(STDOUT_FILENO, cd, ft_strlen(cd));
-		write(STDOUT_FILENO, "\n", 1);
-		write(STDOUT_FILENO, "SHLVL=1\n", 8);
-		write(STDOUT_FILENO, "_=/usr/bin/env\n", 15);
-
+		handle_env_ignored();
 	}
 	while (*env)
 	{
@@ -79,25 +78,23 @@ int	shell_pwd(char **av)
 	return (0);
 }
 
-void	shell_cd(char **args)
+void shell_cd(char **args)
 {
-	char	*path;
+    char *path;
 
-	if (!args[1])
-		path = get_env_value("HOME");
-	else
-		path = args[1];
+    if (!args[1])
+        path = get_env_value("HOME");
+    else
+        path = args[1];
 
-	if (!path)
-	{
-		write(2, "cd: HOME not set\n", 17);
-		return ;
-	}
-	if (chdir(path) != 0)
-	{
-		perror("cd");
-		return ;
-	}
-	update_pwd_on_cd(path);
+    if (!path)
+    {
+        write(2, "cd: HOME not set\n", 17);
+        return;
+    }
+
+    if (chdir(path) == 0)
+        update_pwd_on_cd(path);
+    else
+        perror("cd");
 }
-

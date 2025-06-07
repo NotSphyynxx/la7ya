@@ -132,6 +132,7 @@ void	free_tokens_list(void);
 int	wf_name(char *str, int flag);
 
 //@------------Execution------------------@//
+void	read_and_exe(void);
 void	execute(char **input, t_token *start, t_token *end, t_exec *exec);
 void	cmnd_check(char **input, char **envp, t_token *token, t_exec *exec);
 int		builtin_check(char **input, char **envp);
@@ -186,8 +187,13 @@ void	init_pwd(void);
 void	update_pwd_on_cd(char *path);
 void	join_path(char **pwd, char *addition);
 void	update_env_value(char *key, char *value);
-int	ft_is_space(char c);
-int	ft_atoi_with_overflow(const char *str, int *overflow);
+int     ft_is_space(char c);
+int     ft_atoi_with_overflow(const char *str, int *overflow);
+void    check_path(char *path);
+void    check_double_dots(char *path);
+void    check_dot(char *path);
+void    update_pwd_stock(char *new_pwd);
+int     skip_spaces(t_token *file_tok);
 
 //~~~~~~~~~~~~Builtins~~~~~~~~~~~~~~~~~~~
 int		shell_echo(char **av);
