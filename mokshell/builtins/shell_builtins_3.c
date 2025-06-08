@@ -6,7 +6,7 @@
 /*   By: ilarhrib <ilarhrib@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/08 14:57:01 by ilarhrib          #+#    #+#             */
-/*   Updated: 2025/06/08 14:57:03 by ilarhrib         ###   ########.fr       */
+/*   Updated: 2025/06/08 16:32:17 by ilarhrib         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,7 +87,7 @@ int	shell_exit(char **av)
 	if (overflow)
 	{
 		write(STDERR_FILENO, "exit: numeric argument required\n", 33);
-		clean_exit(2);
+		clean_exit(255);
 	}
 	if (av[2])
 	{

@@ -6,7 +6,7 @@
 /*   By: ilarhrib <ilarhrib@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/08 15:00:20 by ilarhrib          #+#    #+#             */
-/*   Updated: 2025/06/08 15:00:21 by ilarhrib         ###   ########.fr       */
+/*   Updated: 2025/06/08 16:18:58 by ilarhrib         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,7 +65,7 @@ int	ft_strncmp(const char *s1, const char *s2, size_t n)
 
 void	add_exp_back(t_exp **lst, t_exp *new)
 {
-	t_exp *tmp;
+	t_exp	*tmp;
 
 	if (!*lst)
 	{
@@ -73,7 +73,7 @@ void	add_exp_back(t_exp **lst, t_exp *new)
 		return ;
 	}
 	tmp = *lst;
-	while(tmp->next)
+	while (tmp->next)
 		tmp = tmp->next;
 	tmp->next = new;
 }

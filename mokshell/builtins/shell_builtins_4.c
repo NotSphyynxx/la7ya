@@ -6,7 +6,7 @@
 /*   By: ilarhrib <ilarhrib@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/08 14:57:32 by ilarhrib          #+#    #+#             */
-/*   Updated: 2025/06/08 14:57:33 by ilarhrib         ###   ########.fr       */
+/*   Updated: 2025/06/08 15:04:20 by ilarhrib         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ void	check_path(char *path)
 		*get_pwd_storage() = ft_strdup(path);
 }
 
-void	check_double_dots()
+void	check_double_dots(void)
 {
 	char	*new_pwd;
 	int		len;

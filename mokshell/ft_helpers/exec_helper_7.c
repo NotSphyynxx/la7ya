@@ -6,7 +6,7 @@
 /*   By: ilarhrib <ilarhrib@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/08 14:58:26 by ilarhrib          #+#    #+#             */
-/*   Updated: 2025/06/08 14:58:29 by ilarhrib         ###   ########.fr       */
+/*   Updated: 2025/06/08 15:49:31 by ilarhrib         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,12 +14,14 @@
 
 void	wait_for_children(void)
 {
-	int	status;
+	int		status;
 	pid_t	pid;
 
-	while ((pid = wait(&status)) > 0)
+	pid = wait(&status);
+	while (pid > 0)
 	{
 		update_exit_status(status);
+		pid = wait(&status);
 	}
 }
 
@@ -59,8 +61,9 @@ int	is_append_export(char *av)
 	return (0);
 }
 
-t_shell *get_shell(void)
+t_shell	*get_shell(void)
 {
-    static t_shell	shell;
-    return (&shell);
+	static t_shell	shell;
+
+	return (&shell);
 }

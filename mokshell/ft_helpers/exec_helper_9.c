@@ -6,124 +6,121 @@
 /*   By: ilarhrib <ilarhrib@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/08 14:58:38 by ilarhrib          #+#    #+#             */
-/*   Updated: 2025/06/08 14:58:39 by ilarhrib         ###   ########.fr       */
+/*   Updated: 2025/06/08 16:05:24 by ilarhrib         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-int skip_spaces(t_token *file_tok)
+int	skip_spaces(t_token *file_tok)
 {
-    int i;
-    int j;
-    char *tmp;
+	int		i;
+	int		j;
+	char	*tmp;
 
-    j = 0;
-    i = 0;
-    while (file_tok->value[j] == ' ')
-        j++;
-    i = ft_strlen(file_tok->value + j);
-    tmp = file_tok->value;
-    file_tok->value = malloc(sizeof(char) * (i + 1));
-    if (!file_tok->value)
-        return (-1);
-    i = 0;
-    while(tmp[j])
-    {
-        file_tok->value[i] = tmp[j];
-        j++;
-        i++;
-    }
-    file_tok->value[i] = '\0';
-    free(tmp);
+	j = 0;
+	i = 0;
+	while (file_tok->value[j] == ' ')
+		j++;
+	i = ft_strlen(file_tok->value + j);
+	tmp = file_tok->value;
+	file_tok->value = malloc(sizeof(char) * (i + 1));
+	if (!file_tok->value)
+		return (-1);
+	i = 0;
+	while (tmp[j])
+	{
+		file_tok->value[i] = tmp[j];
+		j++;
+		i++;
+	}
+	file_tok->value[i] = '\0';
+	free(tmp);
 	return (0);
 }
 
-int check_file_token(t_token *file_tok)
+int	check_file_token(t_token *file_tok)
 {
-    int i;
-    int j;
+	int	i;
+	int	j;
 
-    if (!file_tok || !file_tok->value || file_tok->value[0] == '\0')
-    {
-        write(STDERR_FILENO, "minishell: ambiguous redirect\n", 30);
-        return (-1);
-    }
-    if (file_tok->ambigious)
-    {
-        write(STDERR_FILENO, "minishell: ambiguous redirect\n", 30);
-        return (-1);
-    }
-    i = 0;
-    j = 0;
-    if (file_tok->value[0] == ' ')
-    {
-        if(skip_spaces(file_tok) == -1)
-            return (-1);
-    }
-    return (0);
+	i = 0;
+	j = 0;
+	if (!file_tok || !file_tok->value || file_tok->value[0] == '\0')
+	{
+		write(STDERR_FILENO, "minishell: ambiguous redirect\n", 30);
+		return (-1);
+	}
+	if (file_tok->ambigious)
+	{
+		write(STDERR_FILENO, "minishell: ambiguous redirect\n", 30);
+		return (-1);
+	}
+	if (file_tok->value[0] == ' ')
+	{
+		if (skip_spaces(file_tok) == -1)
+			return (-1);
+	}
+	return (0);
 }
 
-static int word_count(char *str)
+static int	word_count(char *str)
 {
-    int count = 0;
-    int in_word = 0;
+	int	count;
+	int	in_word;
 
-    while (*str)
-    {
-        if (*str != ' ' && in_word == 0)
-        {
-            in_word = 1;
-            count++;
-        }
-        else if (*str == ' ')
-            in_word = 0;
-        str++;
-    }
-    return (count);
+	count = 0;
+	in_word = 0;
+	while (*str)
+	{
+		if (*str != ' ' && in_word == 0)
+		{
+			in_word = 1;
+			count++;
+		}
+		else if (*str == ' ')
+			in_word = 0;
+		str++;
+	}
+	return (count);
 }
 
-static char *word_dup(char *start, int len)
+char	*word_dup(char *start, int len)
 {
-    char *word;
-    int i;
+	char	*word;
+	int		i;
 
-    word = malloc(len + 1);
-    if (!word)
-        return (NULL);
-    i = 0;
-    while (i < len)
-    {
-        word[i] = start[i];
-        i++;
-    }
-    word[i] = '\0';
-    return (word);
+	word = malloc(len + 1);
+	if (!word)
+		return (NULL);
+	i = 0;
+	while (i < len)
+	{
+		word[i] = start[i];
+		i++;
+	}
+	word[i] = '\0';
+	return (word);
 }
 
-char **split_on_spaces(char *str)
+char	**split_on_spaces(char *str)
 {
-    char **result;
-    int i = 0;
-    int len = 0;
+	char	**result;
+	int		i;
+	int		words;
 
-    int words = word_count(str);
-    result = malloc(sizeof(char *) * (words + 1));
-    if (!result)
-        return (NULL);
-    while (*str)
-    {
-        if (*str != ' ')
-        {
-            len = 0;
-            while (str[len] && str[len] != ' ')
-                len++;
-            result[i++] = word_dup(str, len);
-            str += len;
-        }
-        else
-            str++;
-    }
-    result[i] = NULL;
-    return (result);
+	i = 0;
+	words = word_count(str);
+	result = malloc(sizeof(char *) * (words + 1));
+	if (!result)
+		return (NULL);
+	while (*str)
+	{
+		if (*str != ' ')
+			handle_word(&result, &str, &i);
+		else
+			str++;
+	}
+	result[i] = NULL;
+	return (result);
 }

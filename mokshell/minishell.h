@@ -6,7 +6,7 @@
 /*   By: ilarhrib <ilarhrib@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/08 15:01:54 by ilarhrib          #+#    #+#             */
-/*   Updated: 2025/06/08 15:01:55 by ilarhrib         ###   ########.fr       */
+/*   Updated: 2025/06/08 16:37:58 by ilarhrib         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -123,11 +123,11 @@ void	fill_args(t_token *start, t_token *end, char **cmd);
 void	set_quote_flags(t_token *tok);
 t_token	**get_token_list(void);
 void	free_tokens_list(void);
-int	wf_name(char *str, int flag);
+int		wf_name(char *str, int flag);
 void	handle_heredoc_child(t_token *curr, char *filename);
 char	*expand_var(char *line);
-char *get_env2_val(const char *name);
-void set_exit_status(int status);
+char	*get_env2_val(const char *name);
+void	set_exit_status(int status);
 
 //@------------Execution------------------@//
 void	read_and_exe(void);
@@ -187,7 +187,7 @@ void	update_env_value(char *key, char *value);
 int		ft_is_space(char c);
 int		ft_atoi_with_overflow(const char *str, int *overflow);
 void	check_path(char *path);
-void	check_double_dots();
+void	check_double_dots(void);
 void	check_dot(char *path);
 void	update_pwd_stock(char *new_pwd);
 int		skip_spaces(t_token *file_tok);
@@ -204,6 +204,9 @@ void	handle_valid_key(char *key, char *val, int append);
 void	append_value(t_exp *ex, char *val);
 void	update_existing_node(t_exp *ex, char *val, int append);
 char	**get_line(void);
+int		is_token_assign_or_space(t_token *t, char *clean);
+void	handle_word(char ***result, char **str, int *i);
+char	*word_dup(char *start, int len);
 
 //~~~~~~~~~~~~Builtins~~~~~~~~~~~~~~~~~~~//
 int		shell_echo(char **av);

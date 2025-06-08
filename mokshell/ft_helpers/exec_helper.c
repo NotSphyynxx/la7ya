@@ -6,7 +6,7 @@
 /*   By: ilarhrib <ilarhrib@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/08 14:59:13 by ilarhrib          #+#    #+#             */
-/*   Updated: 2025/06/08 14:59:17 by ilarhrib         ###   ########.fr       */
+/*   Updated: 2025/06/08 16:14:40 by ilarhrib         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,7 +66,7 @@ int	check_valid_key(char *key)
 {
 	if (!ft_isalpha(*key) && *key != '_')
 		return (0);
-	while(*key)
+	while (*key)
 	{
 		if (!ft_isalnum(*key) && *key != '_')
 			return (0);
