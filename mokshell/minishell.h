@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ilarhrib <ilarhrib@student.42.fr>          +#+  +:+       +#+        */
+/*   By: bael-bad <bael-bad@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/08 15:01:54 by ilarhrib          #+#    #+#             */
-/*   Updated: 2025/06/08 15:01:55 by ilarhrib         ###   ########.fr       */
+/*   Updated: 2025/06/08 16:31:05 by bael-bad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,6 +73,7 @@ typedef struct s_shell
 {
 	int	exit_status;
 }	t_shell;
+extern	int flag_signal;
 
 //@-------------utils----------------------@//
 char	**ft_split(char const *s, char c);

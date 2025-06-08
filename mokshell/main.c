@@ -3,14 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ilarhrib <ilarhrib@student.42.fr>          +#+  +:+       +#+        */
+/*   By: bael-bad <bael-bad@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/08 15:01:39 by ilarhrib          #+#    #+#             */
-/*   Updated: 2025/06/08 15:01:40 by ilarhrib         ###   ########.fr       */
+/*   Updated: 2025/06/08 16:38:08 by bael-bad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+
+flag_signal = 0;
 
 void	read_and_exe(void)
 {
@@ -22,6 +24,7 @@ void	read_and_exe(void)
 	exec.gc_head = NULL;
 	while (1)
 	{
+		flag_signal = 0;
 		readed = readline("minishell$ ");
 		read_check(readed);
 		if (*readed)
