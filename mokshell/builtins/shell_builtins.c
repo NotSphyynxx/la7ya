@@ -47,7 +47,7 @@ int	shell_env(char **av, char **envp)
 		write(STDERR_FILENO, "env: ", 5);
 		write(STDERR_FILENO, av[1], ft_strlen(av[1]));
 		write(STDERR_FILENO, ": No such file or directory\n", 28);
-		update_exit_status(127);
+		set_exit_status(127);
 		return (127);
 	}
 	env = envp;
@@ -57,7 +57,7 @@ int	shell_env(char **av, char **envp)
 		write(STDOUT_FILENO, "\n", 1);
 		env++;
 	}
-	update_exit_status(0);
+	set_exit_status(0);
 	return (0);
 }
 
@@ -72,6 +72,11 @@ int	shell_cd(char **args)
 {
 	char	*path;
 
+	if (args[1] && args[2])
+	{
+		write(2, "cd: too many arguments\n", 24);
+		return (1);
+	}
 	if (!args[1])
 		path = get_env_value("HOME");
 	else
@@ -82,13 +87,11 @@ int	shell_cd(char **args)
 		return (1);
 	}
 	if (chdir(path) == 0)
-	{
-		update_pwd_on_cd(path);
-		return (0);
-	}
+		return (update_pwd_on_cd(path), 0);
 	else
 	{
 		perror("cd");
 		return (1);
 	}
 }
+

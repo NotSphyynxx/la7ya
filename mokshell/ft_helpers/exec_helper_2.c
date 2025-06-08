@@ -53,7 +53,7 @@ t_exp	*new_exp_node(char *key, char *value)
 	node = malloc(sizeof(t_exp));
 	if (!node)
 	{
-		update_exit_status(2);
+		set_exit_status(2);
 		return (NULL);
 	}
 	node->key = key;
@@ -68,7 +68,7 @@ int	builtin_check(char **input, char **envp)
 
 	status = 0;
 	if (!input || !(*input))
-		return (update_exit_status(2), 0);
+		return (set_exit_status(2), 0);
 	else if (ft_strcmp(input[0], "echo") == 0)
 		status = shell_echo(input);
 	else if (ft_strcmp(input[0], "env") == 0)
@@ -85,7 +85,7 @@ int	builtin_check(char **input, char **envp)
 		status = shell_exit(input);
 	else
 		return (0);
-	update_exit_status(status);
+	set_exit_status(status);
 	return (1);
 }
 

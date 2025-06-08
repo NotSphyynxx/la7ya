@@ -35,7 +35,7 @@ void	handle_export_arg(char *arg, int *err)
 	if (!check_valid_key(key))
 	{
 		error_export(&key, &val);
-		*err = 1;
+		*err = 2;
 	}
 	else
 		handle_valid_key(key, val, append);

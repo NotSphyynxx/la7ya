@@ -26,25 +26,24 @@ void	read_and_exe(void)
 		read_check(readed);
 		if (*readed)
 			add_history(readed);
+		*get_line() = readed;
 		tokens = parss(readed);
 		if (!tokens)
-		{
-			write(STDERR_FILENO, "minishell: failed to parse input\n", 34);
 			continue ;
-		}
+		t_token *ptr = tokens;
 		input = tokens_to_cmd(tokens, NULL);
 		if (input || tokens)
 			cmnd_check(input, *get_env(), tokens);
-		gc_clear(&exec, readed, tokens, input);
+		gc_clear(&exec, &readed, tokens, input);
 	}
 }
 
 int	main(int ac, char **av, char **envp)
 {
-	// if (ac > 2)
-	// 	return (0);
-	// if (!isatty(1) || !isatty(0))
-	// 	return (1);
+	if (ac > 2)
+		return (0);
+	if (!isatty(1) || !isatty(0))
+		return (1);
 	(void)av;
 	printf("================ | Welcome to Sidna-shell | ================\n");
 	init_shell(envp);

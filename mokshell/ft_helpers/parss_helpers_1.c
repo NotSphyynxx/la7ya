@@ -87,3 +87,8 @@ int	check_pipe(t_token **tokens, char *line, int *i)
 	(*i)++;
 	return 1;
 }
+
+void set_exit_status(int status)
+{
+	get_shell()->exit_status = status;
+}

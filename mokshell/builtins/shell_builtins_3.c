@@ -62,7 +62,7 @@ int	shell_unset(char **av)
 		}
 		i++;
 	}
-	update_exit_status(ret);
+	set_exit_status(ret);
 	return (ret);
 }
 
@@ -80,18 +80,18 @@ int	shell_exit(char **av)
 	int			overflow;
 	long long	exit_code;
 
-	write(STDOUT_FILENO, "exit\n", 5);
+	write(STDOUT_FILENO, "exit\n", 6);
 	if (!av[1])
 		clean_exit(0);
 	exit_code = ft_atoi_with_overflow(av[1], &overflow);
 	if (overflow)
 	{
-		write(STDERR_FILENO, "exit: numeric argument required\n", 31);
-		clean_exit(255);
+		write(STDERR_FILENO, "exit: numeric argument required\n", 33);
+		clean_exit(2);
 	}
 	if (av[2])
 	{
-		write(STDERR_FILENO, "exit: too many arguments\n", 24);
+		write(STDERR_FILENO, "exit: too many arguments\n", 26);
 		return (1);
 	}
 	clean_exit((unsigned char)exit_code);

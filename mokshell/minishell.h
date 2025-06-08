@@ -127,6 +127,7 @@ int	wf_name(char *str, int flag);
 void	handle_heredoc_child(t_token *curr, char *filename);
 char	*expand_var(char *line);
 char *get_env2_val(const char *name);
+void set_exit_status(int status);
 
 //@------------Execution------------------@//
 void	read_and_exe(void);
@@ -173,7 +174,7 @@ int		has_equal_sign(char *av);
 t_shell	*get_shell(void);
 void	update_exit_status(int status);
 void	*gc_malloc(size_t size, t_exec *exec);
-void	gc_clear(t_exec *exec, char *readed, t_token *tokens, char **input);
+void	gc_clear(t_exec *exec, char **readed, t_token *tokens, char **input);
 void	free_exp(t_exp *exp);
 int		ft_countword(char *str, char c);
 int		is_assignment(char *str);
@@ -202,6 +203,7 @@ void	handle_export_arg(char *arg, int *err);
 void	handle_valid_key(char *key, char *val, int append);
 void	append_value(t_exp *ex, char *val);
 void	update_existing_node(t_exp *ex, char *val, int append);
+char	**get_line(void);
 
 //~~~~~~~~~~~~Builtins~~~~~~~~~~~~~~~~~~~//
 int		shell_echo(char **av);

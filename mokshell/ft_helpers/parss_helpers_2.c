@@ -53,6 +53,7 @@ int	last_check(t_token **tokens, char *line, int *i)
 	{
 		write(STDERR_FILENO, "minishell: syntax error: unclosed quote\n", 40);
 		free(word);
+		set_exit_status(2);
 		return 1;
 	}
 	tok = new_token(word, WORD);

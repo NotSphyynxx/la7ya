@@ -19,6 +19,7 @@ void sigint_handler(int sig)
 	write(1, "\n", 1);
 	rl_on_new_line();
 	rl_redisplay();
+	set_exit_status(130);
 }
 
 void free_tokens(t_token *tokens)

@@ -26,6 +26,11 @@ void    execute_piped_cmnd(t_token *start, t_token *end, int prev_fd, int fd[2])
 
     pipe(fd);
     child_pid = fork();
+    if (child_pid == -1)
+    {
+        perror("fork");
+        return ;
+    }
     if (child_pid == 0)
     {
         if (prev_fd != -1)

@@ -72,7 +72,7 @@ int	realloc_env(char *var)
 	if (!new_env)
 	{
 		write(STDERR_FILENO, "malloc\n", 8);
-		update_exit_status(2);
+		set_exit_status(2);
 		return (1);
 	}
 	ft_free_str_array(*get_env());

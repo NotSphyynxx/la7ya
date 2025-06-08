@@ -18,7 +18,7 @@ void	*gc_malloc(size_t size, t_exec *exec)
 	return (ptr);
 }
 
-void	gc_clear(t_exec *exec, char *readed, t_token *tokens, char **input)
+void	gc_clear(t_exec *exec, char **readed, t_token *tokens, char **input)
 {
 	t_gc_node *tmp;
 
@@ -30,8 +30,8 @@ void	gc_clear(t_exec *exec, char *readed, t_token *tokens, char **input)
 		free(exec->gc_head);
 		exec->gc_head = tmp;
 	}
-	if (readed)
-		free(readed);
+	if (*readed)
+		free(*readed);
 	if (tokens)
 		free_tokens(tokens);
 	ft_free_str_array(input);

@@ -18,7 +18,7 @@ void	error_export(char **key, char **value)
 	free(*key);
 	if (*value)
 		free(*value);
-	update_exit_status(2);
+	set_exit_status(2);
 }
 
 char	*ft_strjoin(char const *s1, char const *s2)

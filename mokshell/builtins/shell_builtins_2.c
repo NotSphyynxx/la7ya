@@ -45,10 +45,15 @@ int	shell_export(char **av)
 
 	i = 1;
 	err = 0;
+	if (ft_strncmp("export \"\"", *get_line(), 9) == 0)
+	{
+		write(STDERR_FILENO, "export: not a valid identifier\n", 32);
+		return (2);
+	}
 	if (!av[1])
 	{
 		printf_export_list();
-		update_exit_status(0);
+		set_exit_status(0);
 		return (0);
 	}
 	while (av[i])
@@ -56,6 +61,6 @@ int	shell_export(char **av)
 		handle_export_arg(av[i], &err);
 		i++;
 	}
-	update_exit_status(err);
+	set_exit_status(err);
 	return (err);
 }
