@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: ilarhrib <ilarhrib@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/05/08 17:24:48 by ilarhrib          #+#    #+#             */
-/*   Updated: 2025/05/21 16:20:17 by ilarhrib         ###   ########.fr       */
+/*   Created: 2025/06/08 15:01:33 by ilarhrib          #+#    #+#             */
+/*   Updated: 2025/06/08 15:01:34 by ilarhrib         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,7 +92,6 @@ void	executor_simple_command(t_token *tokens)
 	pid_t	pid;
 
 	status = 0;
-	(tokens);
 	pid = fork();
 	if (pid == -1)
 	{

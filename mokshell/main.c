@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: ilarhrib <ilarhrib@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/05/20 16:41:04 by ilarhrib          #+#    #+#             */
-/*   Updated: 2025/05/21 17:23:44 by ilarhrib         ###   ########.fr       */
+/*   Created: 2025/06/08 15:01:39 by ilarhrib          #+#    #+#             */
+/*   Updated: 2025/06/08 15:01:40 by ilarhrib         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,6 @@ void	read_and_exe(void)
 		tokens = parss(readed);
 		if (!tokens)
 			continue ;
-		t_token *ptr = tokens;
 		input = tokens_to_cmd(tokens, NULL);
 		if (input || tokens)
 			cmnd_check(input, *get_env(), tokens);

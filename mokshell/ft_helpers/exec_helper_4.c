@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   exec_helper_4.c                                    :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: ilarhrib <ilarhrib@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/06/08 14:58:03 by ilarhrib          #+#    #+#             */
+/*   Updated: 2025/06/08 14:58:04 by ilarhrib         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../minishell.h"
 
 int	ft_isalpha(int ch)
@@ -7,17 +19,6 @@ int	ft_isalpha(int ch)
 		return (1);
 	}
 	return (0);
-}
-
-static char	*create_env_entry(char *name, char *value)
-{
-	char	*tmp;
-	char	*new_entry;
-
-	tmp = ft_strjoin(name, "=");
-	new_entry = ft_strjoin(tmp, value);
-	free(tmp);
-	return (new_entry);
 }
 
 void	add_to_env(char *av, char *name, char *value)

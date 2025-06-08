@@ -1,6 +1,18 @@
+# **************************************************************************** #
+#                                                                              #
+#                                                         :::      ::::::::    #
+#    Makefile                                           :+:      :+:    :+:    #
+#                                                     +:+ +:+         +:+      #
+#    By: ilarhrib <ilarhrib@student.42.fr>          +#+  +:+       +#+         #
+#                                                 +#+#+#+#+#+   +#+            #
+#    Created: 2025/06/08 15:01:45 by ilarhrib          #+#    #+#              #
+#    Updated: 2025/06/08 15:01:46 by ilarhrib         ###   ########.fr        #
+#                                                                              #
+# **************************************************************************** #
+
 NAME    = minishell
 
-CC      = cc #-g -fsanitize=address
+CC      = cc -Wall -Wextra -Werror #-g -fsanitize=address
 
 CFLAGS  = -I$(HOME)/.local/include
 

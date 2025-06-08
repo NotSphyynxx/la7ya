@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   parss_helpers_2.c                                  :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: ilarhrib <ilarhrib@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/06/08 15:00:04 by ilarhrib          #+#    #+#             */
+/*   Updated: 2025/06/08 15:00:05 by ilarhrib         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../minishell.h"
 
 static char	*collect_word(char *line, int *i)
@@ -26,7 +38,6 @@ int	has_unclosed_quote(const char *str)
 {
 	int		i;
 	char	quote;
-	t_token *curr;
 
 	i = 0;
 	quote = 0;

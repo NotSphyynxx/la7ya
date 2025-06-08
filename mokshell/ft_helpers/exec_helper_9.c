@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   exec_helper_9.c                                    :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: ilarhrib <ilarhrib@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/06/08 14:58:38 by ilarhrib          #+#    #+#             */
+/*   Updated: 2025/06/08 14:58:39 by ilarhrib         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../minishell.h"
 
 int skip_spaces(t_token *file_tok)
@@ -24,12 +36,12 @@ int skip_spaces(t_token *file_tok)
     }
     file_tok->value[i] = '\0';
     free(tmp);
+	return (0);
 }
 
 int check_file_token(t_token *file_tok)
 {
     int i;
-    char *tmp;
     int j;
 
     if (!file_tok || !file_tok->value || file_tok->value[0] == '\0')

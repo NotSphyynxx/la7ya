@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: ilarhrib <ilarhrib@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/04/21 17:12:38 by ilarhrib          #+#    #+#             */
-/*   Updated: 2025/05/22 15:26:42 by ilarhrib         ###   ########.fr       */
+/*   Created: 2025/06/08 15:01:54 by ilarhrib          #+#    #+#             */
+/*   Updated: 2025/06/08 15:01:55 by ilarhrib         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -187,7 +187,7 @@ void	update_env_value(char *key, char *value);
 int		ft_is_space(char c);
 int		ft_atoi_with_overflow(const char *str, int *overflow);
 void	check_path(char *path);
-void	check_double_dots(char *path);
+void	check_double_dots();
 void	check_dot(char *path);
 void	update_pwd_stock(char *new_pwd);
 int		skip_spaces(t_token *file_tok);

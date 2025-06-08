@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   exec_helper_10.c                                   :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: ilarhrib <ilarhrib@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/06/08 14:58:49 by ilarhrib          #+#    #+#             */
+/*   Updated: 2025/06/08 14:58:50 by ilarhrib         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../minishell.h"
 
 int is_assignment(char *str)
@@ -22,7 +34,6 @@ int	adjust_env(char *var, char *name)
 {
 	char	**env;
 	int		i;
-	char	*tmp;
 
 	i = 0;
 	env = *get_env();

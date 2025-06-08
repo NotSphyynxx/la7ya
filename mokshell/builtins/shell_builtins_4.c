@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   shell_builtins_4.c                                 :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: ilarhrib <ilarhrib@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/06/08 14:57:32 by ilarhrib          #+#    #+#             */
+/*   Updated: 2025/06/08 14:57:33 by ilarhrib         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../minishell.h"
 
 void	check_path(char *path)
@@ -14,7 +26,7 @@ void	check_path(char *path)
 		*get_pwd_storage() = ft_strdup(path);
 }
 
-void	check_double_dots(char *path)
+void	check_double_dots()
 {
 	char	*new_pwd;
 	int		len;
@@ -58,7 +70,7 @@ void	update_pwd_on_cd(char *path)
 		else
 		{
 			if (ft_strcmp(path, "..") == 0)
-				check_double_dots(path);
+				check_double_dots();
 			else if (ft_strcmp(path, ".") != 0)
 				check_dot(path);
 		}
