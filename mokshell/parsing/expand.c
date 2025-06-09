@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   expand.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ilarhrib <ilarhrib@student.42.fr>          +#+  +:+       +#+        */
+/*   By: bael-bad <bael-bad@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/08 15:01:06 by ilarhrib          #+#    #+#             */
-/*   Updated: 2025/06/08 15:01:07 by ilarhrib         ###   ########.fr       */
+/*   Updated: 2025/06/09 23:21:04 by bael-bad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@ char	*get_env2_value(const char *name)
 	char	**env;
 	int		i;
 	char	*equal;
+	int		len;
 
 	env = *get_env();
 	i = 0;
@@ -25,13 +26,14 @@ char	*get_env2_value(const char *name)
 		equal = ft_strchr(env[i], '=');
 		if (equal)
 		{
-			int len = equal - env[i];
-			if (ft_strncmp(name, env[i], len) == 0 && ft_strlen(name) == (size_t)len)
-				return equal + 1;
+			len = equal - env[i];
+			if (ft_strncmp(name, env[i], len) == 0
+				&& ft_strlen(name) == (size_t)len)
+				return (equal + 1);
 		}
 		i++;
 	}
-	return "";
+	return ("");
 }
 
 void	handle_expansion(t_token *tokens, int *flag)

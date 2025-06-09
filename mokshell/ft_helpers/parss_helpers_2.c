@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parss_helpers_2.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ilarhrib <ilarhrib@student.42.fr>          +#+  +:+       +#+        */
+/*   By: bael-bad <bael-bad@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/08 15:00:04 by ilarhrib          #+#    #+#             */
-/*   Updated: 2025/06/08 17:42:19 by ilarhrib         ###   ########.fr       */
+/*   Updated: 2025/06/09 23:41:07 by bael-bad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ static char	*collect_word(char *line, int *i)
 		if (line[*i] == '\'' || line[*i] == '"')
 		{
 			quote = line[(*i)++];
-			while (line[*i] && line[*i] != quote) 
+			while (line[*i] && line[*i] != quote)
 				(*i)++;
 			if (line[*i] == quote)
 				(*i)++;
@@ -31,7 +31,7 @@ static char	*collect_word(char *line, int *i)
 		else
 			(*i)++;
 	}
-	return ft_substr(line, start, *i - start);
+	return (ft_substr(line, start, *i - start));
 }
 
 int	has_unclosed_quote(const char *str)
@@ -54,8 +54,8 @@ int	has_unclosed_quote(const char *str)
 
 int	last_check(t_token **tokens, char *line, int *i)
 {
-	char *word;
-	t_token *tok;
+	char	*word;
+	t_token	*tok;
 
 	word = collect_word(line, i);
 	if (!word)
@@ -66,19 +66,20 @@ int	last_check(t_token **tokens, char *line, int *i)
 		free(word);
 		free_tokens(*tokens);
 		set_exit_status(2);
-		return 1;
+		return (1);
 	}
 	tok = new_token(word, WORD);
 	set_quote_flags(tok);
 	add_token(tokens, tok);
 	free(word);
-	return 0;
+	return (0);
 }
 
-void    free_exp(t_exp *exp)
+void	free_exp(t_exp *exp)
 {
-	t_exp   *tmp;
-	while(exp)
+	t_exp	*tmp;
+
+	while (exp)
 	{
 		tmp = exp->next;
 		if (exp->key)
@@ -89,9 +90,3 @@ void    free_exp(t_exp *exp)
 		exp = tmp;
 	}
 }
-
-// char    *remove_backslash(char *str)
-// {
-//     int len = ft_strlen(str);
-//     char *new_str = malloc(sizeof(char), ) 
-// }

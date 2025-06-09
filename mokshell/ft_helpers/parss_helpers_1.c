@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parss_helpers_1.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ilarhrib <ilarhrib@student.42.fr>          +#+  +:+       +#+        */
+/*   By: bael-bad <bael-bad@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/08 17:07:37 by ilarhrib          #+#    #+#             */
-/*   Updated: 2025/06/08 17:07:38 by ilarhrib         ###   ########.fr       */
+/*   Updated: 2025/06/09 23:36:45 by bael-bad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,43 +14,43 @@
 
 static char	*make_heredoc_filename(void)
 {
-	int     i;
-	char    *num;
-	char    *tmp;
-	char    *path;
+	int		i;
+	char	*num;
+	char	*tmp;
+	char	*path;
 
 	i = 0;
 	while (1)
 	{
 		num = ft_itoa(i);
 		if (!num)
-			return NULL;
+			return (NULL);
 		tmp = ft_strjoin("/tmp/.heredoc_tmp_", num);
 		free(num);
 		if (!tmp)
-			return NULL;
+			return (NULL);
 		if (access(tmp, F_OK) != 0)
 		{
 			path = tmp;
-			break;
+			break ;
 		}
 		free(tmp);
 		i++;
 	}
-	return path;
+	return (path);
 }
 
 void	handle_heredocs_range(t_token *curr)
 {
-	pid_t    pid;
-	int      status;
-	char    *filename;
+	pid_t	pid;
+	int		status;
+	char	*filename;
 
 	if (curr->type == HEREDOC)
 	{
 		filename = make_heredoc_filename();
 		if (!filename)
-			return;
+			return ;
 		pid = fork();
 		if (pid == 0)
 			handle_heredoc_child(curr, filename);
@@ -62,14 +62,14 @@ void	handle_heredocs_range(t_token *curr)
 	}
 }
 
-int check_all(t_token **tokens, char *line, int *i)
+int	check_all(t_token **tokens, char *line, int *i)
 {
 	while (line[*i])
 	{
 		if (ft_isspace(line[*i]))
 		{
 			(*i)++;
-			continue;
+			continue ;
 		}
 		if (line[*i] == '|')
 		{
@@ -82,10 +82,10 @@ int check_all(t_token **tokens, char *line, int *i)
 				return (0);
 		}
 		else
-		if (last_check(tokens, line, i) == 1)
-			return 0;
+			if (last_check(tokens, line, i) == 1)
+				return (0);
 	}
-	return 1;
+	return (1);
 }
 
 int	check_pipe(t_token **tokens, char *line, int *i)
@@ -93,14 +93,14 @@ int	check_pipe(t_token **tokens, char *line, int *i)
 	if (line[*i + 1] == '|')
 	{
 		printf("Syntax error: unexpected token '||'\n");
-		return 0;
+		return (0);
 	}
 	add_token(tokens, new_token("|", PIPE));
 	(*i)++;
-	return 1;
+	return (1);
 }
 
-void set_exit_status(int status)
+void	set_exit_status(int status)
 {
 	get_shell()->exit_status = status;
 }

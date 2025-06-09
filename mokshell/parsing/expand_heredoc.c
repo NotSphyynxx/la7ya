@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   expand_heredoc.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ilarhrib <ilarhrib@student.42.fr>          +#+  +:+       +#+        */
+/*   By: bael-bad <bael-bad@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/08 15:01:02 by ilarhrib          #+#    #+#             */
-/*   Updated: 2025/06/08 15:01:03 by ilarhrib         ###   ########.fr       */
+/*   Updated: 2025/06/09 23:19:55 by bael-bad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,27 +27,29 @@ char	*get_env2_val(const char *name)
 		if (equal)
 		{
 			len = equal - env[i];
-			if (ft_strncmp(name, env[i], len) == 0 && ft_strlen(name) == (size_t)len)
-				return equal + 1;
+			if (ft_strncmp(name, env[i], len) == 0
+				&& ft_strlen(name) == (size_t)len)
+				return (equal + 1);
 		}
 		i++;
 	}
-	return "";
+	return ("");
 }
 
 void	expand_heredoc(t_token *tokens)
 {
-	t_token *curr;
-	char *expanded;
+	t_token	*curr;
+	char	*expanded;
 
 	curr = tokens;
 	expanded = expand_var(curr->value);
 	while (curr)
 	{
-		if (curr->type == REDIR_IN || curr->type == REDIR_OUT ||
-			curr->type == REDIR_APPEND || curr->type == HEREDOC)
+		if (curr->type == REDIR_IN || curr->type == REDIR_OUT
+			|| curr->type == REDIR_APPEND || curr->type == HEREDOC)
 		{
-			if (!curr->next || !curr->next->value || ft_strlen(curr->next->value) == 0)
+			if (!curr->next || !curr->next->value
+				|| ft_strlen(curr->next->value) == 0)
 			{
 				if (curr->next)
 					curr->next->ambigious = 1;

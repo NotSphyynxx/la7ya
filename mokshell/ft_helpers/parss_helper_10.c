@@ -3,25 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   parss_helper_10.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ilarhrib <ilarhrib@student.42.fr>          +#+  +:+       +#+        */
+/*   By: bael-bad <bael-bad@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/08 14:59:51 by ilarhrib          #+#    #+#             */
-/*   Updated: 2025/06/08 14:59:52 by ilarhrib         ###   ########.fr       */
+/*   Updated: 2025/06/10 00:05:29 by bael-bad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
-
-static void	handle_quotes(t_token *curr, char **tmp, char **to_free)
-{
-	if (curr->was_double == 1 || curr->was_single == 1)
-	{
-		*tmp = ft_strip_quotes(curr->value);
-		*to_free = *tmp;
-		if (*tmp[0] == '$')
-			(*tmp)++;
-	}
-}
 
 static int	is_delimiter(t_token *curr, char *line, char *tmp)
 {
@@ -72,7 +61,7 @@ static void	heredoc_loop(t_token *curr, int fd, char *tmp)
 		if (is_delimiter(curr, line, tmp))
 		{
 			free(line);
-			break;
+			break ;
 		}
 		process_line(curr, fd, line);
 	}

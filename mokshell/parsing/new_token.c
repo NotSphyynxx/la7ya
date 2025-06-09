@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   new_token.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ilarhrib <ilarhrib@student.42.fr>          +#+  +:+       +#+        */
+/*   By: bael-bad <bael-bad@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/08 15:01:15 by ilarhrib          #+#    #+#             */
-/*   Updated: 2025/06/08 15:01:16 by ilarhrib         ###   ########.fr       */
+/*   Updated: 2025/06/09 23:21:30 by bael-bad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ t_token	*new_token(char *value, t_type type)
 
 	token = malloc(sizeof(t_token));
 	if (!token)
-		return NULL;
+		return (NULL);
 	token->value = ft_strdup(value);
 	token->type = type;
 	token->next = NULL;
@@ -31,7 +31,7 @@ t_token	*new_token(char *value, t_type type)
 
 void	add_token(t_token **tokens, t_token *new_tok)
 {
-	t_token *temp;
+	t_token	*temp;
 
 	if (!*tokens)
 	{

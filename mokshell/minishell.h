@@ -3,13 +3,12 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ilarhrib <ilarhrib@student.42.fr>          +#+  +:+       +#+        */
+/*   By: bael-bad <bael-bad@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/09 17:07:11 by ilarhrib          #+#    #+#             */
-/*   Updated: 2025/06/09 19:50:19 by ilarhrib         ###   ########.fr       */
+/*   Updated: 2025/06/10 00:12:33 by bael-bad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-
 
 #ifndef MINISHELL_H
 # define MINISHELL_H
@@ -42,7 +41,7 @@ typedef enum e_type
 
 typedef struct s_exec
 {
-	char		*cmnd_path;
+	char	*cmnd_path;
 }	t_exec;
 
 typedef struct s_token
@@ -77,7 +76,7 @@ typedef struct s_pipe_data
 	int	error_reported;
 }	t_pipe_data;
 
-extern	int g_flag_signal;
+extern int	g_flag_signal;
 
 //@-------------utils----------------------@//
 char	**ft_split(char const *s, char c);
@@ -131,19 +130,19 @@ t_token	**get_token_list(void);
 void	free_tokens_list(void);
 int		wf_name(char *str, int flag);
 void	handle_heredoc_child(t_token *curr, char *filename);
-char	*expand_var(char *line);
 char	*get_env2_val(const char *name);
 void	set_exit_status(int status);
+void	handle_quotes(t_token *curr, char **tmp, char **to_free);
 
 //@------------Execution------------------@//
-void		read_and_exe(void);
-void		execute(char **input, t_token *start, t_token *end);
-void		cmnd_check(char **input, char **envp, t_token *token);
-int			builtin_check(char **input, char **envp);
-void		execute_pipe_commands(t_token *tokens);
-void		executor_simple_command(t_token *tokens);
-void		executor_child_process(t_token *tokens);
-t_pipe_data *get_pipe_data(void);
+void	read_and_exe(void);
+void	execute(char **input, t_token *start, t_token *end);
+void	cmnd_check(char **input, char **envp, t_token *token);
+int		builtin_check(char **input, char **envp);
+void	execute_pipe_commands(t_token *tokens);
+void	executor_simple_command(t_token *tokens);
+void	executor_child_process(t_token *tokens);
+t_pipe_data	*get_pipe_data(void);
 
 //~~~~~~~~~~~~Exec_helpers~~~~~~~~~~~~~~~//
 int		apply_redirections(t_token *start, t_token *end);
@@ -217,8 +216,8 @@ void	kill_all_pids(int idx);
 void	cleanup_pipes(void);
 void	handle_fork_error(int idx);
 void	final_pipe_exec(t_token *start, int idx);
-int	handle_pipe_segment(t_pipe_data *data, t_token **start,
-		t_token *curr, int idx);
+int		handle_pipe_segment(t_pipe_data *data, t_token **start,
+			t_token *curr, int idx);
 void	final_exe(t_token *start, t_pipe_data *data, int idx);
 
 //~~~~~~~~~~~~Builtins~~~~~~~~~~~~~~~~~~~//

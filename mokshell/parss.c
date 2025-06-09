@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parss.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ilarhrib <ilarhrib@student.42.fr>          +#+  +:+       +#+        */
+/*   By: bael-bad <bael-bad@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/09 17:07:20 by ilarhrib          #+#    #+#             */
-/*   Updated: 2025/06/09 17:32:41 by ilarhrib         ###   ########.fr       */
+/*   Updated: 2025/06/10 00:06:45 by bael-bad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,6 +58,7 @@ int	check_heredoc(t_token **tokens, char *line, int *i)
 		return (handle_single_redirection(tokens, line, i));
 	return (1);
 }
+
 static void	remove_quotes_tokens(t_token *tokens)
 {
 	char	*stripped;
@@ -74,10 +75,10 @@ static void	remove_quotes_tokens(t_token *tokens)
 	}
 }
 
-t_token *parss(char *line)
+t_token	*parss(char *line)
 {
 	t_token	*tokens;
-	int	i;
+	int		i;
 
 	tokens = NULL;
 	i = 0;

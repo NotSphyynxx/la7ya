@@ -6,13 +6,13 @@
 /*   By: bael-bad <bael-bad@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/08 14:59:36 by ilarhrib          #+#    #+#             */
-/*   Updated: 2025/06/09 16:33:37 by bael-bad         ###   ########.fr       */
+/*   Updated: 2025/06/09 23:38:13 by bael-bad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-void sigint_handler(int sig)
+void	sigint_handler(int sig)
 {
 	(void)sig;
 	if (g_flag_signal == 1)
@@ -24,9 +24,9 @@ void sigint_handler(int sig)
 	set_exit_status(1);
 }
 
-void free_tokens(t_token *tokens)
+void	free_tokens(t_token *tokens)
 {
-	t_token *tmp;
+	t_token	*tmp;
 
 	while (tokens)
 	{
@@ -44,9 +44,9 @@ int	ft_isspace(char c)
 		|| c == '\v' || c == '\f' || c == '\r');
 }
 
-char    *ft_strcpy(char *dest, const char *src)
+char	*ft_strcpy(char *dest, const char *src)
 {
-	int i;
+	int	i;
 
 	i = 0;
 	while (src[i])
@@ -57,6 +57,7 @@ char    *ft_strcpy(char *dest, const char *src)
 	dest[i] = '\0';
 	return (dest);
 }
+
 void	set_quote_flags(t_token *tok)
 {
 	int		i;
@@ -65,7 +66,7 @@ void	set_quote_flags(t_token *tok)
 	i = 0;
 	quote = 0;
 	if (!tok || !tok->value)
-		return;
+		return ;
 	while (tok->value[i])
 	{
 		if ((tok->value[i] == '\'' || tok->value[i] == '"') && quote == 0)
