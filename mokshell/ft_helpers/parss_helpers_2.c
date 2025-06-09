@@ -6,7 +6,7 @@
 /*   By: ilarhrib <ilarhrib@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/08 15:00:04 by ilarhrib          #+#    #+#             */
-/*   Updated: 2025/06/08 15:00:05 by ilarhrib         ###   ########.fr       */
+/*   Updated: 2025/06/08 17:42:19 by ilarhrib         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,6 +64,7 @@ int	last_check(t_token **tokens, char *line, int *i)
 	{
 		write(STDERR_FILENO, "minishell: syntax error: unclosed quote\n", 40);
 		free(word);
+		free_tokens(*tokens);
 		set_exit_status(2);
 		return 1;
 	}

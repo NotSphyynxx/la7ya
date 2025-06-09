@@ -6,74 +6,51 @@
 /*   By: ilarhrib <ilarhrib@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/08 14:57:32 by ilarhrib          #+#    #+#             */
-/*   Updated: 2025/06/08 15:04:20 by ilarhrib         ###   ########.fr       */
+/*   Updated: 2025/06/09 16:11:20 by ilarhrib         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-void	check_path(char *path)
+static void	pop_last_dir(void)
 {
-	int	i;
-
-	i = 0;
-	free(*get_pwd_storage());
-	while (path[i] && path[i] == '/')
-		i++;
-	if (i == (int)ft_strlen(path))
-		*get_pwd_storage() = ft_strdup("/");
-	else
-		*get_pwd_storage() = ft_strdup(path);
-}
-
-void	check_double_dots(void)
-{
-	char	*new_pwd;
+	char	*pwd;
+	char	*new;
 	int		len;
 
-	len = ft_strlen(*get_pwd_storage());
-	if (len > 1 && (*get_pwd_storage())[len - 1] == '/')
+	pwd = *get_pwd_storage();
+	len = ft_strlen(pwd);
+	if (len > 1 && pwd[len - 1] == '/')
 		len--;
-	while (len > 0 && (*get_pwd_storage())[len - 1] != '/')
+	while (len > 0 && pwd[len - 1] != '/')
 		len--;
 	if (len == 0)
 		len = 1;
-	new_pwd = ft_substr(*get_pwd_storage(), 0, len);
-	update_pwd_stock(new_pwd);
-}
-
-void	check_dot(char *path)
-{
-	char		*tmp;
-	char		*new_pwd;
-
-	if ((*get_pwd_storage())[ft_strlen(*get_pwd_storage()) - 1] == '/')
-		tmp = ft_strdup(*get_pwd_storage());
-	else
-		tmp = ft_strjoin(*get_pwd_storage(), "/");
-	new_pwd = ft_strjoin(tmp, path);
-	free(tmp);
-	update_pwd_stock(new_pwd);
+	new = ft_substr(pwd, 0, len);
+	free(pwd);
+	*get_pwd_storage() = new;
 }
 
 void	update_pwd_on_cd(char *path)
 {
 	char	*cwd;
+	char	*tmp;
 
-	if (path[0] == '/')
-		check_path(path);
-	else
+	cwd = getcwd(NULL, 0);
+	if (cwd)
 	{
-		cwd = getcwd(NULL, 0);
-		if (cwd)
-			update_pwd_stock(cwd);
-		else
-		{
-			if (ft_strcmp(path, "..") == 0)
-				check_double_dots();
-			else if (ft_strcmp(path, ".") != 0)
-				check_dot(path);
-		}
+		free(*get_pwd_storage());
+		*get_pwd_storage() = cwd;
+	}
+	else if (ft_strcmp(path, "..") == 0)
+		pop_last_dir();
+	else if (ft_strcmp(path, ".") != 0)
+	{
+		tmp = ft_strjoin(*get_pwd_storage(), "/");
+		cwd = ft_strjoin(tmp, path);
+		free(tmp);
+		free(*get_pwd_storage());
+		*get_pwd_storage() = cwd;
 	}
 	update_env_value("PWD", *get_pwd_storage());
 }
@@ -82,4 +59,25 @@ void	update_pwd_stock(char *new_pwd)
 {
 	free(*get_pwd_storage());
 	*get_pwd_storage() = new_pwd;
+}
+
+char	*cd_check_args_and_get_path(char **args)
+{
+	char	*path;
+
+	if (args[1] && args[2])
+	{
+		write(2, "cd: too many arguments\n", 24);
+		return (NULL);
+	}
+	if (!args[1])
+		path = get_env_value("HOME");
+	else
+		path = args[1];
+	if (!path)
+	{
+		write(2, "cd: HOME not set\n", 17);
+		return (NULL);
+	}
+	return (path);
 }

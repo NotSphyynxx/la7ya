@@ -6,7 +6,7 @@
 /*   By: ilarhrib <ilarhrib@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/08 15:01:54 by ilarhrib          #+#    #+#             */
-/*   Updated: 2025/06/08 16:37:58 by ilarhrib         ###   ########.fr       */
+/*   Updated: 2025/06/09 16:11:31 by ilarhrib         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,15 +39,8 @@ typedef enum e_type
 	DOUBLE_QUOTE2
 }	t_type;
 
-typedef struct s_gc_node
-{
-	void				*ptr;
-	struct s_gc_node	*next;
-}	t_gc_node;
-
 typedef struct s_exec
 {
-	t_gc_node	*gc_head;
 	char		*cmnd_path;
 }	t_exec;
 
@@ -99,6 +92,7 @@ char	*ft_strcpy(char *dest, const char *src);
 char	*ft_strcat(char *dest, const char *src);
 char	*ft_strndup(const char *s, size_t n);
 char	*ft_itoa(int n);
+void	free_line(char **line);
 
 //@------------Parsing--------------------@//
 void	sigint_handler(int sig);
@@ -173,8 +167,7 @@ int		is_append_export(char *av);
 int		has_equal_sign(char *av);
 t_shell	*get_shell(void);
 void	update_exit_status(int status);
-void	*gc_malloc(size_t size, t_exec *exec);
-void	gc_clear(t_exec *exec, char **readed, t_token *tokens, char **input);
+void	gc_clear(char **readed, t_token *tokens, char **input);
 void	free_exp(t_exp *exp);
 int		ft_countword(char *str, char c);
 int		is_assignment(char *str);
@@ -186,9 +179,6 @@ void	update_pwd_on_cd(char *path);
 void	update_env_value(char *key, char *value);
 int		ft_is_space(char c);
 int		ft_atoi_with_overflow(const char *str, int *overflow);
-void	check_path(char *path);
-void	check_double_dots(void);
-void	check_dot(char *path);
 void	update_pwd_stock(char *new_pwd);
 int		skip_spaces(t_token *file_tok);
 void	create_and_fill(char *plus_eq_pos, char **value, char *key);
@@ -207,6 +197,8 @@ char	**get_line(void);
 int		is_token_assign_or_space(t_token *t, char *clean);
 void	handle_word(char ***result, char **str, int *i);
 char	*word_dup(char *start, int len);
+void	free_all_fd(void);
+char	*cd_check_args_and_get_path(char **args);
 
 //~~~~~~~~~~~~Builtins~~~~~~~~~~~~~~~~~~~//
 int		shell_echo(char **av);

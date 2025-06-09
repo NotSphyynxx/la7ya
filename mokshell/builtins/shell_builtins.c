@@ -6,7 +6,7 @@
 /*   By: ilarhrib <ilarhrib@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/08 14:57:37 by ilarhrib          #+#    #+#             */
-/*   Updated: 2025/06/08 15:04:07 by ilarhrib         ###   ########.fr       */
+/*   Updated: 2025/06/09 16:11:11 by ilarhrib         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,25 +84,19 @@ int	shell_cd(char **args)
 {
 	char	*path;
 
-	if (args[1] && args[2])
-	{
-		write(2, "cd: too many arguments\n", 24);
-		return (1);
-	}
-	if (!args[1])
-		path = get_env_value("HOME");
-	else
-		path = args[1];
+	path = cd_check_args_and_get_path(args);
 	if (!path)
-	{
-		write(2, "cd: HOME not set\n", 17);
 		return (1);
-	}
 	if (chdir(path) == 0)
-		return (update_pwd_on_cd(path), 0);
-	else
 	{
-		perror("cd");
-		return (1);
+		update_pwd_on_cd(path);
+		return (0);
 	}
+	if (ft_strcmp(path, "..") == 0)
+	{
+		update_pwd_on_cd(path);
+		return (0);
+	}
+	perror("cd");
+	return (1);
 }

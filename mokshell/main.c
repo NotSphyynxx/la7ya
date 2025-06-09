@@ -6,20 +6,26 @@
 /*   By: ilarhrib <ilarhrib@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/08 15:01:39 by ilarhrib          #+#    #+#             */
-/*   Updated: 2025/06/08 15:01:40 by ilarhrib         ###   ########.fr       */
+/*   Updated: 2025/06/08 19:53:32 by ilarhrib         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+
+void	free_line(char **line)
+{
+	if (*line)
+	{
+		free(*line);
+	}
+}
 
 void	read_and_exe(void)
 {
 	char	*readed;
 	t_token	*tokens;
 	char	**input;
-	t_exec	exec;
 
-	exec.gc_head = NULL;
 	while (1)
 	{
 		readed = readline("minishell$ ");
@@ -29,17 +35,20 @@ void	read_and_exe(void)
 		*get_line() = readed;
 		tokens = parss(readed);
 		if (!tokens)
+		{
+			free_line(&readed);
 			continue ;
+		}
 		input = tokens_to_cmd(tokens, NULL);
 		if (input || tokens)
 			cmnd_check(input, *get_env(), tokens);
-		gc_clear(&exec, &readed, tokens, input);
+		gc_clear(&readed, tokens, input);
 	}
 }
 
 int	main(int ac, char **av, char **envp)
 {
-	if (ac > 2)
+	if (ac > 1)
 		return (0);
 	if (!isatty(1) || !isatty(0))
 		return (1);
