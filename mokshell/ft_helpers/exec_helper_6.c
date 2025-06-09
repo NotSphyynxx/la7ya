@@ -6,68 +6,11 @@
 /*   By: ilarhrib <ilarhrib@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/08 14:58:16 by ilarhrib          #+#    #+#             */
-/*   Updated: 2025/06/08 15:40:21 by ilarhrib         ###   ########.fr       */
+/*   Updated: 2025/06/09 19:44:53 by ilarhrib         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
-
-void	leaks_handle(char *readed, t_token *tokens)
-{
-	if (readed)
-		free(readed);
-	if (tokens)
-		free_tokens(tokens);
-}
-
-void	execute_piped_cmnd(t_token *start, t_token *end, int prev_fd, int fd[2])
-{
-	pid_t	child_pid;
-	char	**cmd;
-
-	pipe(fd);
-	child_pid = fork();
-	if (child_pid == -1)
-	{
-		perror("fork");
-		return ;
-	}
-	if (child_pid == 0)
-	{
-		if (prev_fd != -1)
-			dup2(prev_fd, STDIN_FILENO);
-		dup2(fd[1], STDOUT_FILENO);
-		close(fd[0]);
-		close(fd[1]);
-		if (prev_fd != -1)
-			close(prev_fd);
-		cmd = tokens_to_cmd(start, end);
-		execute(cmd, start, end);
-		ft_free_str_array(cmd);
-		exit(0);
-	}
-}
-
-void	execute_final_command(t_token *start, int prev_fd)
-{
-	pid_t	child_pid;
-	char	**cmd;
-
-	child_pid = fork();
-	if (child_pid == 0)
-	{
-		if (prev_fd != -1)
-			dup2(prev_fd, STDIN_FILENO);
-		if (prev_fd != -1)
-			close(prev_fd);
-		cmd = tokens_to_cmd(start, NULL);
-		if (!cmd)
-			exit(0);
-		execute(cmd, start, NULL);
-		ft_free_str_array(cmd);
-		exit(0);
-	}
-}
 
 void	executor_child_process(t_token *tokens)
 {
@@ -107,4 +50,25 @@ void	ft_free_str_array(char **arr)
 		free(arr[i++]);
 	}
 	free(arr);
+}
+
+int	handle_pipe_segment(t_pipe_data *data, t_token **start,
+		t_token *curr, int idx)
+{
+	pipe(data->fd);
+	data->pids[idx] = fork();
+	if (data->pids[idx] < 0)
+	{
+		set_exit_status(1);
+		handle_fork_error(idx);
+		return (-1);
+	}
+	if (data->pids[idx] == 0)
+		exec_pipe_segment(*start, curr);
+	close(data->fd[1]);
+	if (data->prev_fd != -1)
+		close(data->prev_fd);
+	data->prev_fd = data->fd[0];
+	*start = curr->next;
+	return (0);
 }

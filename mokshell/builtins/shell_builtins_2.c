@@ -6,7 +6,7 @@
 /*   By: ilarhrib <ilarhrib@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/08 14:56:37 by ilarhrib          #+#    #+#             */
-/*   Updated: 2025/06/08 14:56:38 by ilarhrib         ###   ########.fr       */
+/*   Updated: 2025/06/09 17:20:55 by ilarhrib         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,11 +57,6 @@ int	shell_export(char **av)
 
 	i = 1;
 	err = 0;
-	if (ft_strncmp("export \"\"", *get_line(), 9) == 0)
-	{
-		write(STDERR_FILENO, "export: not a valid identifier\n", 32);
-		return (2);
-	}
 	if (!av[1])
 	{
 		printf_export_list();

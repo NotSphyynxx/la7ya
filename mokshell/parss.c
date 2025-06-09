@@ -6,7 +6,7 @@
 /*   By: ilarhrib <ilarhrib@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/09 17:07:20 by ilarhrib          #+#    #+#             */
-/*   Updated: 2025/06/09 17:07:23 by ilarhrib         ###   ########.fr       */
+/*   Updated: 2025/06/09 17:32:41 by ilarhrib         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,7 +88,7 @@ t_token *parss(char *line)
 		free_tokens(tokens);
 		tokens = NULL;
 		printf("Invalid syntax.\n");
-		set_exit_status(2);
+		set_exit_status(1);
 		return (NULL);
 	}
 	expand(tokens);

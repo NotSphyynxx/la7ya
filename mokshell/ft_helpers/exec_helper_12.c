@@ -6,7 +6,7 @@
 /*   By: ilarhrib <ilarhrib@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/08 14:58:59 by ilarhrib          #+#    #+#             */
-/*   Updated: 2025/06/08 16:02:51 by ilarhrib         ###   ########.fr       */
+/*   Updated: 2025/06/09 17:27:29 by ilarhrib         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,7 @@ void	handle_export_arg(char *arg, int *err)
 	if (!check_valid_key(key))
 	{
 		error_export(&key, &val);
-		*err = 2;
+		*err = 1;
 	}
 	else
 		handle_valid_key(key, val, append);

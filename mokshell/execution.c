@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execution.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bael-bad <bael-bad@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ilarhrib <ilarhrib@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/08 15:01:33 by ilarhrib          #+#    #+#             */
-/*   Updated: 2025/06/09 16:23:26 by bael-bad         ###   ########.fr       */
+/*   Updated: 2025/06/09 19:45:15 by ilarhrib         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 void	cmnd_check(char **input, char **envp, t_token *tokens)
 {
 	g_flag_signal = 1;
-	if (tokens)
+	if (tokens && !handle_check())
 	{
 		if (contains_pipe_in_tokens(tokens))
 			execute_pipe_commands(tokens);
@@ -61,30 +61,33 @@ void	execute(char **input, t_token *start, t_token *end)
 
 void	execute_pipe_commands(t_token *tokens)
 {
-	t_token	*curr;
-	t_token	*start;
-	int		fd[2];
-	int		prev_fd;
+	t_pipe_data	*data;
+	t_token		*curr;
+	t_token		*start;
+	int			idx;
 
+	data = get_pipe_data();
+	init_pipe_data(count_commands(tokens));
 	curr = tokens;
 	start = tokens;
-	prev_fd = -1;
+	idx = 0;
 	while (curr)
 	{
 		if (curr->type == PIPE)
 		{
-			execute_piped_cmnd(start, curr, prev_fd, fd);
-			close(fd[1]);
-			if (prev_fd != -1)
-				close(prev_fd);
-			prev_fd = fd[0];
-			start = curr->next;
+			if (handle_pipe_segment(data, &start, curr, idx) == -1)
+			{
+				free(data->pids);
+				data->pids = NULL;
+				return;
+			}
+			idx++;
 		}
 		curr = curr->next;
 	}
-	execute_final_command(start, prev_fd);
-	if (prev_fd != -1)
-		close(prev_fd);
+	final_pipe_exec(start, idx);
+	free(data->pids);
+	data->pids = NULL;
 	wait_for_children();
 }
 
@@ -98,6 +101,7 @@ void	executor_simple_command(t_token *tokens)
 	if (pid == -1)
 	{
 		perror("fork error");
+		set_exit_status(1);
 		return ;
 	}
 	if (pid == 0)

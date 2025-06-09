@@ -6,7 +6,7 @@
 /*   By: ilarhrib <ilarhrib@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/08 14:59:30 by ilarhrib          #+#    #+#             */
-/*   Updated: 2025/06/08 21:32:54 by ilarhrib         ###   ########.fr       */
+/*   Updated: 2025/06/09 17:57:23 by ilarhrib         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,17 +45,24 @@ t_exp	*split_env_to_exp(char *env_entry)
 	return (node);
 }
 
-void	sync_env_var(char *key, char *val)
+void sync_env_var(char *key, char *val)
 {
-	char	*entry;
+    char *prefix;
+    char *entry;
 
-	if (!val)
-		return ;
-	entry = ft_strjoin(key, "=");
-	entry = ft_strjoin(entry, val);
-	adjust_env(entry, key);
-	free(entry);
+    if (!val)
+        return ;
+    prefix = ft_strjoin(key, "=");
+    if (!prefix)
+        return ;
+    entry = ft_strjoin(prefix, val);
+    free(prefix);
+    if (!entry)
+        return ;
+    adjust_env(entry, key);
+    free(entry);
 }
+
 
 void	parse_export_arg(char *arg, char **key, char **val, int *append)
 {

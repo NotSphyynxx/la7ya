@@ -6,26 +6,37 @@
 /*   By: ilarhrib <ilarhrib@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/08 14:58:33 by ilarhrib          #+#    #+#             */
-/*   Updated: 2025/06/08 15:57:21 by ilarhrib         ###   ########.fr       */
+/*   Updated: 2025/06/09 17:41:43 by ilarhrib         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-int	should_count_token(t_token *t)
+int should_count_token(t_token *t)
 {
-	char	*clean;
+    char *clean;
 
-	if (t->type != WORD && t->type != ENV_VAR)
-		return (0);
-	clean = t->value;
-	if (!t->was_single && !t->was_double)
-		while (*clean == ' ')
-			clean++;
-	if (*clean == '\0')
-		return (0);
-	return (1);
+    if (t->type != WORD && t->type != ENV_VAR)
+        return (0);
+
+    clean = t->value;
+
+    /* unquoted only: skip leading spaces */
+    if (!t->was_single && !t->was_double)
+        while (*clean == ' ')
+            clean++;
+
+    /* quoted tokens—even empty—always count */
+    if ((t->was_single || t->was_double))
+        return (1);
+
+    /* unquoted: skip pure-blank or empty */
+    if (*clean == '\0')
+        return (0);
+
+    return (1);
 }
+
 
 int	count_args(t_token *start, t_token *end)
 {

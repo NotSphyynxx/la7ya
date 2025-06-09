@@ -6,7 +6,7 @@
 #    By: ilarhrib <ilarhrib@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/06/08 15:01:45 by ilarhrib          #+#    #+#              #
-#    Updated: 2025/06/08 21:37:50 by ilarhrib         ###   ########.fr        #
+#    Updated: 2025/06/09 18:58:18 by ilarhrib         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -27,6 +27,7 @@ SRCS    = main.c ft_helpers/utils_1.c ft_helpers/utils_2.c ft_helpers/ft_split.c
 		parsing/expand_heredoc.c ft_helpers/exec_helper_11.c ft_helpers/parss_hlp.c \
 		ft_helpers/parss_checksyn.c parsing/expand_help.c ft_helpers/parss_helper_10.c parsing/expand_helper2.c \
 		builtins/shell_builtins_4.c ft_helpers/exec_helper_12.c ft_helpers/exec_helper_13.c ft_helpers/exec_helper_14.c \
+		ft_helpers/exec_helper_15.c
 
 OBJS    = $(SRCS:.c=.o)
 

@@ -6,7 +6,7 @@
 /*   By: ilarhrib <ilarhrib@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/09 17:07:11 by ilarhrib          #+#    #+#             */
-/*   Updated: 2025/06/09 17:07:12 by ilarhrib         ###   ########.fr       */
+/*   Updated: 2025/06/09 19:45:26 by ilarhrib         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,6 +67,16 @@ typedef struct s_shell
 {
 	int	exit_status;
 }	t_shell;
+
+typedef struct s_pipe_data
+{
+	int	*pids;
+	int	n_cmds;
+	int	prev_fd;
+	int	fd[2];
+	int	error_reported;
+}	t_pipe_data;
+
 extern	int g_flag_signal;
 
 //@-------------utils----------------------@//
@@ -126,13 +136,14 @@ char	*get_env2_val(const char *name);
 void	set_exit_status(int status);
 
 //@------------Execution------------------@//
-void	read_and_exe(void);
-void	execute(char **input, t_token *start, t_token *end);
-void	cmnd_check(char **input, char **envp, t_token *token);
-int		builtin_check(char **input, char **envp);
-void	execute_pipe_commands(t_token *tokens);
-void	executor_simple_command(t_token *tokens);
-void	executor_child_process(t_token *tokens);
+void		read_and_exe(void);
+void		execute(char **input, t_token *start, t_token *end);
+void		cmnd_check(char **input, char **envp, t_token *token);
+int			builtin_check(char **input, char **envp);
+void		execute_pipe_commands(t_token *tokens);
+void		executor_simple_command(t_token *tokens);
+void		executor_child_process(t_token *tokens);
+t_pipe_data *get_pipe_data(void);
 
 //~~~~~~~~~~~~Exec_helpers~~~~~~~~~~~~~~~//
 int		apply_redirections(t_token *start, t_token *end);
@@ -161,9 +172,6 @@ void	init_shell(char **envp);
 void	read_check(char *readed);
 void	built_with_red_check(char **input, char **envp, t_token *tokens);
 int		there_is_red(t_token *tokens);
-void	execute_piped_cmnd(t_token *start, t_token *end,
-			int prev_fd, int fd[2]);
-void	execute_final_command(t_token *start, int prev_fd);
 void	wait_for_children(void);
 int		is_append_export(char *av);
 int		has_equal_sign(char *av);
@@ -201,6 +209,16 @@ void	handle_word(char ***result, char **str, int *i);
 char	*word_dup(char *start, int len);
 void	free_all_fd(void);
 char	*cd_check_args_and_get_path(char **args);
+int		handle_check(void);
+int		count_commands(t_token *tokens);
+void	init_pipe_data(int n_cmds);
+void	exec_pipe_segment(t_token *start, t_token *end);
+void	kill_all_pids(int idx);
+void	cleanup_pipes(void);
+void	handle_fork_error(int idx);
+void	final_pipe_exec(t_token *start, int idx);
+int	handle_pipe_segment(t_pipe_data *data, t_token **start,
+		t_token *curr, int idx);
 
 //~~~~~~~~~~~~Builtins~~~~~~~~~~~~~~~~~~~//
 int		shell_echo(char **av);
