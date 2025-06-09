@@ -6,7 +6,7 @@
 /*   By: ilarhrib <ilarhrib@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/08 21:33:19 by ilarhrib          #+#    #+#             */
-/*   Updated: 2025/06/09 20:33:18 by ilarhrib         ###   ########.fr       */
+/*   Updated: 2025/06/09 20:37:36 by ilarhrib         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,12 +33,14 @@ int	handle_check(void)
 	if (!line || ft_strlen(line) == 0)
 	{
 		printf("command not found\n");
+		set_exit_status(127);
 		return (1);
 	}
 	tokens = *get_token_list();
 	if (tokens && tokens->value && ft_strlen(tokens->value) == 0)
 	{
 		printf("command not found\n");
+		set_exit_status(127);
 		return (1);
 	}
 	return (0);
