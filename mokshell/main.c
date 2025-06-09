@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: ilarhrib <ilarhrib@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/06/08 15:01:39 by ilarhrib          #+#    #+#             */
-/*   Updated: 2025/06/08 19:53:32 by ilarhrib         ###   ########.fr       */
+/*   Created: 2025/06/09 17:06:56 by ilarhrib          #+#    #+#             */
+/*   Updated: 2025/06/09 17:07:02 by ilarhrib         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,7 @@ void	free_line(char **line)
 		free(*line);
 	}
 }
+int g_flag_signal;
 
 void	read_and_exe(void)
 {
@@ -28,6 +29,7 @@ void	read_and_exe(void)
 
 	while (1)
 	{
+		g_flag_signal = 0;
 		readed = readline("minishell$ ");
 		read_check(readed);
 		if (*readed)

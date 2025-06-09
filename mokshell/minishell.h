@@ -5,10 +5,11 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: ilarhrib <ilarhrib@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/06/08 15:01:54 by ilarhrib          #+#    #+#             */
-/*   Updated: 2025/06/09 16:11:31 by ilarhrib         ###   ########.fr       */
+/*   Created: 2025/06/09 17:07:11 by ilarhrib          #+#    #+#             */
+/*   Updated: 2025/06/09 17:07:12 by ilarhrib         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
 
 #ifndef MINISHELL_H
 # define MINISHELL_H
@@ -66,6 +67,7 @@ typedef struct s_shell
 {
 	int	exit_status;
 }	t_shell;
+extern	int g_flag_signal;
 
 //@-------------utils----------------------@//
 char	**ft_split(char const *s, char c);

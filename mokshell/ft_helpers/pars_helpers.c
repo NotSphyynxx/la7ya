@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pars_helpers.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ilarhrib <ilarhrib@student.42.fr>          +#+  +:+       +#+        */
+/*   By: bael-bad <bael-bad@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/08 14:59:36 by ilarhrib          #+#    #+#             */
-/*   Updated: 2025/06/08 14:59:39 by ilarhrib         ###   ########.fr       */
+/*   Updated: 2025/06/09 16:33:37 by bael-bad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,11 +15,13 @@
 void sigint_handler(int sig)
 {
 	(void)sig;
-	rl_replace_line("", 0);
+	if (g_flag_signal == 1)
+		return ;
 	write(1, "\n", 1);
+	rl_replace_line("", 0);
 	rl_on_new_line();
 	rl_redisplay();
-	set_exit_status(130);
+	set_exit_status(1);
 }
 
 void free_tokens(t_token *tokens)
