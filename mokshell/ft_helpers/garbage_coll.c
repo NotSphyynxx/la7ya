@@ -6,7 +6,7 @@
 /*   By: ilarhrib <ilarhrib@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/08 14:59:30 by ilarhrib          #+#    #+#             */
-/*   Updated: 2025/06/08 14:59:31 by ilarhrib         ###   ########.fr       */
+/*   Updated: 2025/06/08 16:37:02 by ilarhrib         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,6 @@ void	*gc_malloc(size_t size, t_exec *exec)
 	void		*ptr;
 	t_gc_node	*new_node;
 
-	
 	ptr = malloc(size);
 	if (!ptr)
 		return (NULL);
@@ -32,7 +31,7 @@ void	*gc_malloc(size_t size, t_exec *exec)
 
 void	gc_clear(t_exec *exec, char **readed, t_token *tokens, char **input)
 {
-	t_gc_node *tmp;
+	t_gc_node	*tmp;
 
 	while (exec->gc_head)
 	{
@@ -71,6 +70,7 @@ t_exp	*split_env_to_exp(char *env_entry)
 	node->next = NULL;
 	return (node);
 }
+
 void	sync_env_var(char *key, char *val)
 {
 	char	*entry;
@@ -93,17 +93,21 @@ void	parse_export_arg(char *arg, char **key, char **val, int *append)
 	if (plus)
 	{
 		*append = 1;
-		*key    = ft_substr(arg, 0, plus - arg);
-		*val    = ft_strdup(plus + 2);
-	}
-	else if ((eq = ft_strchr(arg, '=')))
-	{
-		*key = ft_substr(arg, 0, eq - arg);
-		*val = ft_strdup(eq + 1);
+		*key = ft_substr(arg, 0, plus - arg);
+		*val = ft_strdup(plus + 2);
 	}
 	else
 	{
-		*key = ft_strdup(arg);
-		*val = NULL;
+		eq = ft_strchr(arg, '=');
+		if (eq)
+		{
+			*key = ft_substr(arg, 0, eq - arg);
+			*val = ft_strdup(eq + 1);
+		}
+		else
+		{
+			*key = ft_strdup(arg);
+			*val = NULL;
+		}
 	}
 }

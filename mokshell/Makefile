@@ -6,13 +6,13 @@
 #    By: ilarhrib <ilarhrib@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/06/08 15:01:45 by ilarhrib          #+#    #+#              #
-#    Updated: 2025/06/08 15:01:46 by ilarhrib         ###   ########.fr        #
+#    Updated: 2025/06/08 16:39:33 by ilarhrib         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME    = minishell
 
-CC      = cc -Wall -Wextra -Werror #-g -fsanitize=address
+CC      = cc -Wall -Wextra -Werror -g -fsanitize=address
 
 CFLAGS  = -I$(HOME)/.local/include
 
@@ -36,8 +36,7 @@ READLINE_COMPILE = -I$(shell brew --prefix readline)/include
 
 READLINE_LINK = -lreadline -L$(shell brew --prefix readline)/lib
 
-all: $(NAME) stock
-
+all: $(NAME)
 
 $(NAME): $(OBJS)
 	$(CC) $(CFLAGS) $(OBJS) $(READLINE_LINK) -o $(NAME)
@@ -45,12 +44,10 @@ $(NAME): $(OBJS)
 %.o: %.c $(HEADER)
 	$(CC) $(CFLAGS) $(READLINE_COMPILE) -c $< -o $@ 
 
-stock : $(OBJS)
-	mv *.o obj && mv ft_helpers/*.o obj && mv parsing/*.o obj && mv builtins/*.o obj
 clean:
 	rm -f $(OBJS)
 
 fclean: clean
-	rm -f $(NAME) obj/*.o
+	rm -f $(NAME)
 
 re: fclean all

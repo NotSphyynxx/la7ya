@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execution.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ilarhrib <ilarhrib@student.42.fr>          +#+  +:+       +#+        */
+/*   By: bael-bad <bael-bad@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/08 15:01:33 by ilarhrib          #+#    #+#             */
-/*   Updated: 2025/06/08 15:01:34 by ilarhrib         ###   ########.fr       */
+/*   Updated: 2025/06/09 16:23:26 by bael-bad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 
 void	cmnd_check(char **input, char **envp, t_token *tokens)
 {
+	g_flag_signal = 1;
 	if (tokens)
 	{
 		if (contains_pipe_in_tokens(tokens))
@@ -31,6 +32,7 @@ void	cmnd_check(char **input, char **envp, t_token *tokens)
 				executor_simple_command(tokens);
 		}
 	}
+	g_flag_signal = 0;
 }
 
 void	execute(char **input, t_token *start, t_token *end)

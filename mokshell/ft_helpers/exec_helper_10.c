@@ -6,28 +6,28 @@
 /*   By: ilarhrib <ilarhrib@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/08 14:58:49 by ilarhrib          #+#    #+#             */
-/*   Updated: 2025/06/08 14:58:50 by ilarhrib         ###   ########.fr       */
+/*   Updated: 2025/06/08 16:06:54 by ilarhrib         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-int is_assignment(char *str)
+int	is_assignment(char *str)
 {
-    int i;
+	int	i;
 
-    if (!str || !*str)
-        return (0);
-    i = 0;
-    while (str[i] && str[i] != '=')
-    {
-        if (str[i] == ' ' || str[i] == '\t')
-            return (0);
-        i++;
-    }
-    if (str[i] == '=')
-        return (1);
-    return (0);
+	if (!str || !*str)
+		return (0);
+	i = 0;
+	while (str[i] && str[i] != '=')
+	{
+		if (str[i] == ' ' || str[i] == '\t')
+			return (0);
+		i++;
+	}
+	if (str[i] == '=')
+		return (1);
+	return (0);
 }
 
 int	adjust_env(char *var, char *name)
@@ -41,7 +41,7 @@ int	adjust_env(char *var, char *name)
 	{
 		if (exist_check(env[i], name))
 		{
-            printf("   [adjust_env] replacing “%s” with “%s”\n", env[i], var);
+			printf("   [adjust_env] replacing “%s” with “%s”\n", env[i], var);
 			free(env[i]);
 			env[i] = ft_strdup(var);
 			return (1);
@@ -66,9 +66,11 @@ int	exist_check(char *env_entry, char *name)
 		return (1);
 	return (0);
 }
+
 char	**get_pwd_storage(void)
 {
-	static char *pwd = NULL;
+	static char	*pwd;
+
 	return (&pwd);
 }
 

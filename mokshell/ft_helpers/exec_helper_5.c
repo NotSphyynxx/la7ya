@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec_helper_5.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ilarhrib <ilarhrib@student.42.fr>          +#+  +:+       +#+        */
+/*   By: bael-bad <bael-bad@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/08 14:58:07 by ilarhrib          #+#    #+#             */
-/*   Updated: 2025/06/08 14:58:08 by ilarhrib         ###   ########.fr       */
+/*   Updated: 2025/06/09 16:27:39 by bael-bad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,22 +45,24 @@ void	init_shell(char **envp)
 void	read_check(char *readed)
 {
 	if (!readed)
-		{
-			printf("exit\n");
-			free_exp(*get_exp_list());
-			ft_free_str_array(*get_env());
-			exit(0);
-		}
+	{
+		printf("exit\n");
+		free_exp(*get_exp_list());
+		ft_free_str_array(*get_env());
+		exit(0);
+	}
 }
 
-int there_is_red(t_token *tokens)
+int	there_is_red(t_token *tokens)
 {
-	t_token *temp = tokens;
+	t_token	*temp;
+
+	temp = tokens;
 	while (temp)
 	{
 		if (temp->type == REDIR_OUT || temp->type == REDIR_APPEND
 			|| temp->type == REDIR_IN || temp->type == HEREDOC)
-			return(1);
+			return (1);
 		temp = temp->next;
 	}
 	return (0);
@@ -85,6 +87,6 @@ void	built_with_red_check(char **input, char **envp, t_token *tokens)
 		builtin_check(input, envp);
 		exit(0);
 	}
-	waitpid(pid,&status, 0);
+	waitpid(pid, &status, 0);
 	update_exit_status(status);
 }

@@ -6,7 +6,7 @@
 /*   By: ilarhrib <ilarhrib@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/08 14:58:54 by ilarhrib          #+#    #+#             */
-/*   Updated: 2025/06/08 14:58:55 by ilarhrib         ###   ########.fr       */
+/*   Updated: 2025/06/08 16:13:58 by ilarhrib         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@ t_token	**get_token_list(void)
 
 	return (&tokens);
 }
+
 void	free_tokens_list(void)
 {
 	t_token	*current;
@@ -37,14 +38,14 @@ void	free_tokens_list(void)
 
 int	wf_name(char *str, int flag)
 {
-	int i;
+	int	i;
 
 	i = 0;
 	if (!flag)
 		return (0);
 	while (str[i] == ' ')
 		i++;
-	while(str[i])
+	while (str[i])
 	{
 		if (str[i] == ' ')
 			return (1);
@@ -71,19 +72,22 @@ void	update_env_value(char *key, char *value)
 
 void	create_and_fill(char *plus_eq_pos, char **value, char *key)
 {
-		if (plus_eq_pos)
+	t_exp	*new_node;
+	char	*tmp;
+
+	if (plus_eq_pos)
+	{
+		add_exp_back(get_exp_list(),
+			new_exp_node(ft_strdup(key), ft_strdup("")));
+		new_node = find_exp(*get_exp_list(), key);
+		if (new_node)
 		{
-			// When key doesn't exist and += is used, initialize with empty string first,
-			// then append the new value to avoid creating invalid entries.
-			add_exp_back(get_exp_list(), new_exp_node(ft_strdup(key), ft_strdup("")));
-			t_exp *new_node = find_exp(*get_exp_list(), key);
-			if (new_node)
-			{
-				char *tmp = new_node->value;
-				new_node->value = ft_strjoin(new_node->value, *value);
-				free(tmp);
-			}
+			tmp = new_node->value;
+			new_node->value = ft_strjoin(new_node->value, *value);
+			free(tmp);
 		}
-		else
-			add_exp_back(get_exp_list(), new_exp_node(ft_strdup(key), *value));
+	}
+	else
+		add_exp_back(get_exp_list(),
+			new_exp_node(ft_strdup(key), *value));
 }
