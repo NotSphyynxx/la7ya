@@ -6,7 +6,7 @@
 /*   By: ilarhrib <ilarhrib@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/08 14:58:49 by ilarhrib          #+#    #+#             */
-/*   Updated: 2025/06/08 16:06:54 by ilarhrib         ###   ########.fr       */
+/*   Updated: 2025/06/09 22:39:26 by ilarhrib         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,6 @@ int	adjust_env(char *var, char *name)
 	{
 		if (exist_check(env[i], name))
 		{
-			printf("   [adjust_env] replacing “%s” with “%s”\n", env[i], var);
 			free(env[i]);
 			env[i] = ft_strdup(var);
 			return (1);

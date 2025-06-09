@@ -6,7 +6,7 @@
 /*   By: ilarhrib <ilarhrib@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/09 17:06:56 by ilarhrib          #+#    #+#             */
-/*   Updated: 2025/06/09 20:29:40 by ilarhrib         ###   ########.fr       */
+/*   Updated: 2025/06/09 22:39:00 by ilarhrib         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,6 @@ void	read_and_exe(void)
 		tokens = parss(readed);
 		if (!tokens)
 		{
-			printf("1\n");
 			free_line(&readed);
 			continue ;
 		}
