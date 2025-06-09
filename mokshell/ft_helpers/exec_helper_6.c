@@ -6,7 +6,7 @@
 /*   By: ilarhrib <ilarhrib@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/08 14:58:16 by ilarhrib          #+#    #+#             */
-/*   Updated: 2025/06/09 19:50:06 by ilarhrib         ###   ########.fr       */
+/*   Updated: 2025/06/09 20:30:22 by ilarhrib         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,4 +79,12 @@ void	final_exe(t_token *start, t_pipe_data *data, int idx)
 	free(data->pids);
 	data->pids = NULL;
 	wait_for_children();
+}
+
+void	free_line(char **line)
+{
+	if (*line)
+	{
+		free(*line);
+	}
 }

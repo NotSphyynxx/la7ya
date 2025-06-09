@@ -6,7 +6,7 @@
 /*   By: ilarhrib <ilarhrib@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/08 21:33:19 by ilarhrib          #+#    #+#             */
-/*   Updated: 2025/06/09 19:17:04 by ilarhrib         ###   ########.fr       */
+/*   Updated: 2025/06/09 20:33:18 by ilarhrib         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,30 +26,29 @@ void	free_all_fd(void)
 
 int	handle_check(void)
 {
-	if (ft_strncmp("ls \"\"", *get_line(), 5) == 0 || ft_strncmp("ls \'\'", *get_line(), 5) == 0)
+	t_token	*tokens;
+	char	*line;
+
+	line = *get_line();
+	if (!line || ft_strlen(line) == 0)
 	{
-		write(STDERR_FILENO, "ls: : No such file or directory\n", 33);
-		set_exit_status(1);
+		printf("command not found\n");
 		return (1);
 	}
-	else if (ft_strncmp("cd \"\"", *get_line(), 5) == 0)
+	tokens = *get_token_list();
+	if (tokens && tokens->value && ft_strlen(tokens->value) == 0)
 	{
-		set_exit_status(0);
-		return (1);
-	}
-	else if (ft_strncmp("export \"\"", *get_line(), 9) == 0 || ft_strncmp("export \'\'", *get_line(), 9) == 0)
-	{
-		write(STDERR_FILENO, "export: not a valid identifier\n", 32);
-		set_exit_status(1);
+		printf("command not found\n");
 		return (1);
 	}
 	return (0);
 }
 
-t_pipe_data *get_pipe_data(void)
+t_pipe_data	*get_pipe_data(void)
 {
-    static t_pipe_data data;
-    return (&data);
+	static t_pipe_data	data;
+
+	return (&data);
 }
 
 int	count_commands(t_token *tokens)
@@ -76,4 +75,3 @@ void	init_pipe_data(int n_cmds)
 	data->prev_fd = -1;
 	data->error_reported = 0;
 }
-
