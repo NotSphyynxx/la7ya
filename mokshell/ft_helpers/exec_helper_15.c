@@ -6,7 +6,7 @@
 /*   By: ilarhrib <ilarhrib@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/09 18:55:17 by ilarhrib          #+#    #+#             */
-/*   Updated: 2025/06/09 19:24:45 by ilarhrib         ###   ########.fr       */
+/*   Updated: 2025/06/09 19:49:20 by ilarhrib         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,8 +31,6 @@ void	exec_pipe_segment(t_token *start, t_token *end)
 	exit(0);
 }
 
-#include <sys/wait.h>
-
 void kill_all_pids(int idx)
 {
     t_pipe_data *data = get_pipe_data();
@@ -46,7 +44,6 @@ void kill_all_pids(int idx)
         i++;
     }
 }
-
 
 void	cleanup_pipes(void)
 {

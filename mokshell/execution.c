@@ -6,7 +6,7 @@
 /*   By: ilarhrib <ilarhrib@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/08 15:01:33 by ilarhrib          #+#    #+#             */
-/*   Updated: 2025/06/09 19:45:15 by ilarhrib         ###   ########.fr       */
+/*   Updated: 2025/06/09 19:50:54 by ilarhrib         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,10 +85,7 @@ void	execute_pipe_commands(t_token *tokens)
 		}
 		curr = curr->next;
 	}
-	final_pipe_exec(start, idx);
-	free(data->pids);
-	data->pids = NULL;
-	wait_for_children();
+	final_exe(start, data, idx);
 }
 
 void	executor_simple_command(t_token *tokens)

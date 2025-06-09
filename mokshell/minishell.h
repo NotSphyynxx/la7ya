@@ -6,7 +6,7 @@
 /*   By: ilarhrib <ilarhrib@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/09 17:07:11 by ilarhrib          #+#    #+#             */
-/*   Updated: 2025/06/09 19:45:26 by ilarhrib         ###   ########.fr       */
+/*   Updated: 2025/06/09 19:50:19 by ilarhrib         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -219,6 +219,7 @@ void	handle_fork_error(int idx);
 void	final_pipe_exec(t_token *start, int idx);
 int	handle_pipe_segment(t_pipe_data *data, t_token **start,
 		t_token *curr, int idx);
+void	final_exe(t_token *start, t_pipe_data *data, int idx);
 
 //~~~~~~~~~~~~Builtins~~~~~~~~~~~~~~~~~~~//
 int		shell_echo(char **av);
