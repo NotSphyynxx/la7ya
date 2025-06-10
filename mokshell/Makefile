@@ -12,7 +12,7 @@
 
 NAME    = minishell
 
-CC      = cc -Wall -Wextra -Werror #-g -fsanitize=address
+CC      = cc #-Wall -Wextra -Werror #-g -fsanitize=address
 
 CFLAGS  = -I$(HOME)/.local/include
 

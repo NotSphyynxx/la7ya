@@ -31,6 +31,7 @@ void	read_and_exe(void)
 		tokens = parss(readed);
 		if (!tokens)
 		{
+			free_all_fd();
 			free_line(&readed);
 			continue ;
 		}

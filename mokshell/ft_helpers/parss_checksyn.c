@@ -50,18 +50,6 @@ static int	check_redirection_errors(t_token *current)
 	return (0);
 }
 
-static int	check_double_pipe_after_word(t_token *current)
-{
-	if (current->type == WORD && current->next
-		&& current->next->type == PIPE
-		&& current->next->next && current->next->next->type == PIPE)
-	{
-		printf("Syntax error: missing file after redirection\n");
-		return (1);
-	}
-	return (0);
-}
-
 int	check_syntax(t_token *tokens)
 {
 	t_token	*current;
@@ -78,8 +66,7 @@ int	check_syntax(t_token *tokens)
 		if (i == 7)
 			return (7);
 		if (check_pipe_errors(current)
-			|| check_redirection_errors(current)
-			|| check_double_pipe_after_word(current))
+			|| check_redirection_errors(current))
 			return (1);
 		current = current->next;
 	}
