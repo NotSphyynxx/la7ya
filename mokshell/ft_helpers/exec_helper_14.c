@@ -6,23 +6,11 @@
 /*   By: ilarhrib <ilarhrib@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/08 21:33:19 by ilarhrib          #+#    #+#             */
-/*   Updated: 2025/06/09 20:37:36 by ilarhrib         ###   ########.fr       */
+/*   Updated: 2025/06/10 15:35:04 by ilarhrib         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
-
-void	free_all_fd(void)
-{
-	int	i;
-
-	i = 3;
-	while (i <= 100)
-	{
-		close(i);
-		i++;
-	}
-}
 
 int	handle_check(void)
 {
@@ -46,11 +34,28 @@ int	handle_check(void)
 	return (0);
 }
 
-t_pipe_data	*get_pipe_data(void)
+void	execute(char **input, t_token *start, t_token *end)
 {
-	static t_pipe_data	data;
+	char	*path;
 
-	return (&data);
+	if (apply_redirections(start, end) == -1)
+		exit(1);
+	if (builtin_check(input, *get_env()))
+		exit(0);
+	path = find_command_path(input[0]);
+	if (!path)
+	{
+		write(STDERR_FILENO, "minishell: command not found\n", 29);
+		exit(127);
+	}
+	if (access(path, X_OK) != 0)
+	{
+		perror("minishell");
+		exit(126);
+	}
+	execve(path, input, *get_env());
+	perror("execve failed");
+	exit(126);
 }
 
 int	count_commands(t_token *tokens)
@@ -69,7 +74,7 @@ int	count_commands(t_token *tokens)
 
 void	init_pipe_data(int n_cmds)
 {
-	t_pipe_data	*data;
+	t_pipe	*data;
 
 	data = get_pipe_data();
 	data->n_cmds = n_cmds;

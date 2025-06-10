@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   expand.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bael-bad <bael-bad@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ilarhrib <ilarhrib@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/08 15:01:06 by ilarhrib          #+#    #+#             */
-/*   Updated: 2025/06/09 23:21:04 by bael-bad         ###   ########.fr       */
+/*   Updated: 2025/06/10 15:11:41 by ilarhrib         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,8 @@ void	handle_expansion(t_token *tokens, int *flag)
 		if (curr->type == WORD && !curr->was_single
 			&& ft_strchr(curr->value, '$'))
 		{
-			expanded = expand_variable(curr->value, flag);
+			*get_line_to_expand() = curr->value;
+			expanded = expand_variable(*get_line_to_expand(), flag);
 			free(curr->value);
 			curr->value = expanded;
 		}

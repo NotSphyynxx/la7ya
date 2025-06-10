@@ -6,7 +6,7 @@
 /*   By: ilarhrib <ilarhrib@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/08 15:00:51 by ilarhrib          #+#    #+#             */
-/*   Updated: 2025/06/08 15:00:52 by ilarhrib         ###   ########.fr       */
+/*   Updated: 2025/06/10 15:11:53 by ilarhrib         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,11 +45,13 @@ static void	append_env_variable(char **result, char *line, int *i, int *flag)
 	*flag = 1;
 }
 
-static void	handle_dollar(char *line, int *i, int *start, char **result, int *flag)
+static void	handle_dollar(int *i, int *start, char **result, int *flag)
 {
+	char	*line;
 	char	*before;
 	char	*tmp;
 
+	line = *get_line_to_expand();
 	before = ft_substr(line, *start, *i - *start);
 	tmp = *result;
 	*result = ft_strjoin(tmp, before);
@@ -83,7 +85,7 @@ char	*expand_variable(char *line, int *flag)
 	while (line[i])
 	{
 		if (line[i] == '$')
-			handle_dollar(line, &i, &start, &result, flag);
+			handle_dollar(&i, &start, &result, flag);
 		else
 			i++;
 	}

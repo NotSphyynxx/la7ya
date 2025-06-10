@@ -6,7 +6,7 @@
 /*   By: ilarhrib <ilarhrib@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/08 14:58:16 by ilarhrib          #+#    #+#             */
-/*   Updated: 2025/06/09 20:30:22 by ilarhrib         ###   ########.fr       */
+/*   Updated: 2025/06/10 15:37:18 by ilarhrib         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,7 @@ void	ft_free_str_array(char **arr)
 	free(arr);
 }
 
-int	handle_pipe_segment(t_pipe_data *data, t_token **start,
+int	handle_pipe_segment(t_pipe *data, t_token **start,
 		t_token *curr, int idx)
 {
 	pipe(data->fd);
@@ -73,7 +73,7 @@ int	handle_pipe_segment(t_pipe_data *data, t_token **start,
 	return (0);
 }
 
-void	final_exe(t_token *start, t_pipe_data *data, int idx)
+void	final_exe(t_token *start, t_pipe *data, int idx)
 {
 	final_pipe_exec(start, idx);
 	free(data->pids);

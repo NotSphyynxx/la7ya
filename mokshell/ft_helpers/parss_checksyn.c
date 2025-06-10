@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parss_checksyn.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bael-bad <bael-bad@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ilarhrib <ilarhrib@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/08 14:59:44 by ilarhrib          #+#    #+#             */
-/*   Updated: 2025/06/10 01:21:41 by bael-bad         ###   ########.fr       */
+/*   Updated: 2025/06/10 15:20:43 by ilarhrib         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,7 +65,7 @@ static int	check_double_pipe_after_word(t_token *current)
 int	check_syntax(t_token *tokens)
 {
 	t_token	*current;
-	int i;
+	int		i;
 
 	if (is_first_token_pipe(tokens))
 		return (1);
@@ -75,8 +75,8 @@ int	check_syntax(t_token *tokens)
 		if (current->type == HEREDOC && current->next
 			&& current->next->type == WORD)
 			i = handle_heredocs_range(current);
-			if (i == 7)
-				return (7);
+		if (i == 7)
+			return (7);
 		if (check_pipe_errors(current)
 			|| check_redirection_errors(current)
 			|| check_double_pipe_after_word(current))
@@ -84,4 +84,4 @@ int	check_syntax(t_token *tokens)
 		current = current->next;
 	}
 	return (0);
-}  
+}

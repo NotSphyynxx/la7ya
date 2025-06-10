@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parss_helpers_1.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bael-bad <bael-bad@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ilarhrib <ilarhrib@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/08 17:07:37 by ilarhrib          #+#    #+#             */
-/*   Updated: 2025/06/10 01:25:18 by bael-bad         ###   ########.fr       */
+/*   Updated: 2025/06/10 15:18:48 by ilarhrib         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,8 @@ static char	*make_heredoc_filename(void)
 	}
 	return (path);
 }
-void sigint_heredoc(int sig)
+
+void	sigint_heredoc(int sig)
 {
 	(void)sig;
 	signal(SIGINT, SIG_DFL);
@@ -48,11 +49,12 @@ void sigint_heredoc(int sig)
 	exit(1);
 }
 
-void signals_heredoc(void)
+void	signals_heredoc(void)
 {
 	signal(SIGINT, sigint_heredoc);
 	signal(SIGQUIT, SIG_IGN);
 }
+
 int	handle_heredocs_range(t_token *curr)
 {
 	pid_t	pid;
@@ -73,53 +75,13 @@ int	handle_heredocs_range(t_token *curr)
 			handle_heredoc_child(curr, filename);
 		}
 		waitpid(pid, &status, 0);
-		status = WEXITSTATUS(status);
-		if (status == 1)
+		if (check_status(status) == 7)
 			return (7);
-		update_exit_status(status);
 		free(curr->next->value);
 		curr->next->value = filename;
 		curr->type = REDIR_IN;
 	}
 	return (0);
-}
-
-int	check_all(t_token **tokens, char *line, int *i)
-{
-	while (line[*i])
-	{
-		if (ft_isspace(line[*i]))
-		{
-			(*i)++;
-			continue ;
-		}
-		if (line[*i] == '|')
-		{
-			if (!check_pipe(tokens, line, i))
-				return (0);
-		}
-		else if (line[*i] == '>' || line[*i] == '<')
-		{
-			if (!check_heredoc(tokens, line, i))
-				return (0);
-		}
-		else
-			if (last_check(tokens, line, i) == 1)
-				return (0);
-	}
-	return (1);
-}
-
-int	check_pipe(t_token **tokens, char *line, int *i)
-{
-	if (line[*i + 1] == '|')
-	{
-		printf("Syntax error: unexpected token '||'\n");
-		return (0);
-	}
-	add_token(tokens, new_token("|", PIPE));
-	(*i)++;
-	return (1);
 }
 
 void	set_exit_status(int status)

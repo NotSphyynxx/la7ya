@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   type.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bael-bad <bael-bad@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ilarhrib <ilarhrib@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/08 15:01:23 by ilarhrib          #+#    #+#             */
-/*   Updated: 2025/06/09 23:43:46 by bael-bad         ###   ########.fr       */
+/*   Updated: 2025/06/10 15:32:42 by ilarhrib         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,4 +48,16 @@ char	*type_to_string(t_type type)
 	if (type == DOUBLE_QUOTE2)
 		return ("DOUBLE_QUOTE2");
 	return ("UNKNOWN");
+}
+
+void	free_all_fd(void)
+{
+	int	i;
+
+	i = 3;
+	while (i <= 100)
+	{
+		close(i);
+		i++;
+	}
 }

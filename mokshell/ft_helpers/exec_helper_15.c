@@ -6,7 +6,7 @@
 /*   By: ilarhrib <ilarhrib@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/09 18:55:17 by ilarhrib          #+#    #+#             */
-/*   Updated: 2025/06/09 20:27:22 by ilarhrib         ###   ########.fr       */
+/*   Updated: 2025/06/10 15:41:30 by ilarhrib         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,8 @@
 
 void	exec_pipe_segment(t_token *start, t_token *end)
 {
-	t_pipe_data	*data;
-	char		**cmd;
+	t_pipe	*data;
+	char	**cmd;
 
 	data = get_pipe_data();
 	if (data->prev_fd != -1)
@@ -33,8 +33,8 @@ void	exec_pipe_segment(t_token *start, t_token *end)
 
 void	kill_all_pids(int idx)
 {
-	t_pipe_data	*data;
-	int			i;
+	t_pipe	*data;
+	int		i;
 
 	data = get_pipe_data();
 	i = 0;
@@ -48,7 +48,7 @@ void	kill_all_pids(int idx)
 
 void	cleanup_pipes(void)
 {
-	t_pipe_data	*data;
+	t_pipe	*data;
 
 	data = get_pipe_data();
 	if (data->pids)
@@ -61,7 +61,7 @@ void	cleanup_pipes(void)
 
 void	handle_fork_error(int idx)
 {
-	t_pipe_data	*d;
+	t_pipe	*d;
 
 	d = get_pipe_data();
 	if (!d->error_reported)
@@ -82,7 +82,7 @@ void	handle_fork_error(int idx)
 
 void	final_pipe_exec(t_token *start, int idx)
 {
-	t_pipe_data	*data;
+	t_pipe		*data;
 	char		**cmd;
 
 	data = get_pipe_data();

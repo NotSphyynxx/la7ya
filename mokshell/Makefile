@@ -6,7 +6,7 @@
 #    By: ilarhrib <ilarhrib@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/06/08 15:01:45 by ilarhrib          #+#    #+#              #
-#    Updated: 2025/06/09 18:58:18 by ilarhrib         ###   ########.fr        #
+#    Updated: 2025/06/10 14:57:02 by ilarhrib         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -25,9 +25,9 @@ SRCS    = main.c ft_helpers/utils_1.c ft_helpers/utils_2.c ft_helpers/ft_split.c
 		ft_helpers/parss_helpers_1.c ft_helpers/parss_helpers_2.c ft_helpers/garbage_coll.c \
 		ft_helpers/exec_helper_8.c ft_helpers/exec_helper_9.c ft_helpers/exec_helper_10.c \
 		parsing/expand_heredoc.c ft_helpers/exec_helper_11.c ft_helpers/parss_hlp.c \
-		ft_helpers/parss_checksyn.c parsing/expand_help.c ft_helpers/parss_helper_10.c parsing/expand_helper2.c \
+		ft_helpers/parss_checksyn.c parsing/expand_help.c ft_helpers/parss_helper_3.c parsing/expand_helper2.c \
 		builtins/shell_builtins_4.c ft_helpers/exec_helper_12.c ft_helpers/exec_helper_13.c ft_helpers/exec_helper_14.c \
-		ft_helpers/exec_helper_15.c
+		ft_helpers/exec_helper_15.c ft_helpers/parss_helper_4.c
 
 OBJS    = $(SRCS:.c=.o)
 

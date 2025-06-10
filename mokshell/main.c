@@ -6,7 +6,7 @@
 /*   By: ilarhrib <ilarhrib@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/09 17:06:56 by ilarhrib          #+#    #+#             */
-/*   Updated: 2025/06/09 22:39:00 by ilarhrib         ###   ########.fr       */
+/*   Updated: 2025/06/10 15:13:45 by ilarhrib         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,6 @@ int	main(int ac, char **av, char **envp)
 	if (!isatty(1) || !isatty(0))
 		return (1);
 	(void)av;
-	printf("================ | Welcome to Sidna-shell | ================\n");
 	init_shell(envp);
 	read_and_exe();
 	free_exp(*get_exp_list());
