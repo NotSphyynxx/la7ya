@@ -6,7 +6,7 @@
 /*   By: bael-bad <bael-bad@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/09 17:07:11 by ilarhrib          #+#    #+#             */
-/*   Updated: 2025/06/10 00:12:33 by bael-bad         ###   ########.fr       */
+/*   Updated: 2025/06/10 01:22:20 by bael-bad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -151,7 +151,7 @@ void	ft_free_str_array(char **array);
 char	*find_command_path(char *cmd);
 int		contains_pipe_in_tokens(t_token *tokens);
 char	**tokens_to_cmd(t_token *start, t_token *end);
-void	handle_heredocs_range(t_token *start);
+int	handle_heredocs_range(t_token *start);
 t_exp	*split_env_to_exp(char *env_entry);
 void	printf_export_list(void);
 t_exp	**get_exp_list(void);

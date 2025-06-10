@@ -6,7 +6,7 @@
 /*   By: bael-bad <bael-bad@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/09 17:07:20 by ilarhrib          #+#    #+#             */
-/*   Updated: 2025/06/10 00:06:45 by bael-bad         ###   ########.fr       */
+/*   Updated: 2025/06/10 01:26:21 by bael-bad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,19 +79,28 @@ t_token	*parss(char *line)
 {
 	t_token	*tokens;
 	int		i;
+	int flag;
 
 	tokens = NULL;
 	i = 0;
 	if (!check_all(&tokens, line, &i))
 		return (NULL);
-	if (check_syntax(tokens))
+	flag = check_syntax(tokens);
+	if (flag == 7)
+	{
+		free_tokens(tokens);
+		tokens = NULL;
+		set_exit_status(1);
+		return (NULL);
+	}
+	else if (flag == 1)
 	{
 		free_tokens(tokens);
 		tokens = NULL;
 		printf("Invalid syntax.\n");
 		set_exit_status(1);
 		return (NULL);
-	}
+	}  
 	expand(tokens);
 	remove_quotes_tokens(tokens);
 	*get_token_list() = tokens;

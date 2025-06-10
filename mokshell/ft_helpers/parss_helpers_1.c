@@ -6,7 +6,7 @@
 /*   By: bael-bad <bael-bad@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/08 17:07:37 by ilarhrib          #+#    #+#             */
-/*   Updated: 2025/06/09 23:36:45 by bael-bad         ###   ########.fr       */
+/*   Updated: 2025/06/10 01:25:18 by bael-bad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,8 +39,21 @@ static char	*make_heredoc_filename(void)
 	}
 	return (path);
 }
+void sigint_heredoc(int sig)
+{
+	(void)sig;
+	signal(SIGINT, SIG_DFL);
+	write(1, "\n", 1);
+	set_exit_status(1);
+	exit(1);
+}
 
-void	handle_heredocs_range(t_token *curr)
+void signals_heredoc(void)
+{
+	signal(SIGINT, sigint_heredoc);
+	signal(SIGQUIT, SIG_IGN);
+}
+int	handle_heredocs_range(t_token *curr)
 {
 	pid_t	pid;
 	int		status;
@@ -50,16 +63,25 @@ void	handle_heredocs_range(t_token *curr)
 	{
 		filename = make_heredoc_filename();
 		if (!filename)
-			return ;
+			return (1);
+		g_flag_signal = 1;
 		pid = fork();
 		if (pid == 0)
+		{
+			g_flag_signal = 0;
+			signals_heredoc();
 			handle_heredoc_child(curr, filename);
+		}
 		waitpid(pid, &status, 0);
+		status = WEXITSTATUS(status);
+		if (status == 1)
+			return (7);
 		update_exit_status(status);
 		free(curr->next->value);
 		curr->next->value = filename;
 		curr->type = REDIR_IN;
 	}
+	return (0);
 }
 
 int	check_all(t_token **tokens, char *line, int *i)
