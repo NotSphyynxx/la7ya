@@ -26,6 +26,7 @@ void	exec_pipe_segment(t_token *start, t_token *end)
 	if (data->prev_fd != -1)
 		close(data->prev_fd);
 	cmd = tokens_to_cmd(start, end);
+	signal(SIGQUIT, SIG_DFL);
 	execute(cmd, start, end);
 	ft_free_str_array(cmd);
 	exit(0);
@@ -35,6 +36,7 @@ void	kill_all_pids(int idx)
 {
 	t_pipe	*data;
 	int		i;
+	int		sig;
 
 	data = get_pipe_data();
 	i = 0;
@@ -97,7 +99,10 @@ void	final_pipe_exec(t_token *start, int idx)
 			close(data->prev_fd);
 		cmd = tokens_to_cmd(start, NULL);
 		if (cmd)
+		{
+			signal(SIGQUIT, SIG_DFL);
 			execute(cmd, start, NULL);
+		}
 		ft_free_str_array(cmd);
 		exit(0);
 	}

@@ -55,6 +55,7 @@ int	check_syntax(t_token *tokens)
 	t_token	*current;
 	int		i;
 
+	i = 0;
 	if (is_first_token_pipe(tokens))
 		return (1);
 	current = tokens;

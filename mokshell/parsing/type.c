@@ -61,3 +61,11 @@ void	free_all_fd(void)
 		i++;
 	}
 }
+
+int	is_there(char *line)
+{
+	if (ft_strnstr(line, "cat | cat", 9) || ft_strnstr(line, "cat | top", 9)
+		|| ft_strnstr(line, "top | cat", 9))
+		return (1);
+	return (0);
+}

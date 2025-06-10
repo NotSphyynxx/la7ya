@@ -103,6 +103,7 @@ char	*ft_strcat(char *dest, const char *src);
 char	*ft_strndup(const char *s, size_t n);
 char	*ft_itoa(int n);
 void	free_line(char **line);
+int		is_there(char *line);
 
 //@------------Parsing--------------------@//
 void	sigint_handler(int sig);

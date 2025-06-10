@@ -34,6 +34,7 @@ void	executor_child_process(t_token *tokens)
 		ft_free_str_array(cmd);
 		exit(127);
 	}
+	signal(SIGQUIT, SIG_DFL);
 	execve(path, cmd, *get_env());
 	perror("execve failed");
 	ft_free_str_array(cmd);

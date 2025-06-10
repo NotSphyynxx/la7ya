@@ -82,3 +82,5 @@ void	set_quote_flags(t_token *tok)
 		i++;
 	}
 }
+
+// cat top ctrl \ signal(SIGQUIT, SIG_DFL)

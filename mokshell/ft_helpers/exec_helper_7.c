@@ -14,16 +14,29 @@
 
 void	wait_for_children(void)
 {
-	int		status;
-	pid_t	pid;
+	int			status;
+	pid_t		pid;
+	int			sig;
+	static int	printed;
 
+	printed = 0;
 	pid = wait(&status);
 	while (pid > 0)
 	{
+		if (WIFSIGNALED(status))
+		{
+			sig = WTERMSIG(status);
+			if (sig == SIGQUIT && printed == 0 && is_there(*get_line()))
+			{
+				ft_putstr_fd("Quit (core dumped)\n", STDERR_FILENO);
+				printed = 1;
+			}
+		}
 		update_exit_status(status);
 		pid = wait(&status);
 	}
 }
+
 
 void	update_exit_status(int status)
 {

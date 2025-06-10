@@ -72,6 +72,8 @@ void	clean_exit(int code)
 	ft_free_str_array(*get_env());
 	free(*get_pwd_storage());
 	free_exp(*get_exp_list());
+	free_all_fd();
+	free(*get_line());
 	exit(code);
 }
 

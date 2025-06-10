@@ -53,6 +53,7 @@ void	execute(char **input, t_token *start, t_token *end)
 		perror("minishell");
 		exit(126);
 	}
+	signal(SIGQUIT, SIG_DFL);
 	execve(path, input, *get_env());
 	perror("execve failed");
 	exit(126);

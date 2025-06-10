@@ -57,6 +57,7 @@ int	last_check(t_token **tokens, char *line, int *i)
 	char	*word;
 	t_token	*tok;
 
+	tok = NULL;
 	word = collect_word(line, i);
 	if (!word)
 		return (1);
@@ -66,6 +67,7 @@ int	last_check(t_token **tokens, char *line, int *i)
 		free(word);
 		free_tokens(*tokens);
 		set_exit_status(2);
+		free_tokens(tok);
 		return (1);
 	}
 	tok = new_token(word, WORD);
