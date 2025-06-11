@@ -37,7 +37,6 @@ void	wait_for_children(void)
 	}
 }
 
-
 void	update_exit_status(int status)
 {
 	if (WIFEXITED(status))

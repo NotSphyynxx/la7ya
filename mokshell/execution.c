@@ -18,9 +18,7 @@ void	cmnd_check(char **input, char **envp, t_token *tokens)
 	if (tokens && !handle_check())
 	{
 		if (contains_pipe_in_tokens(tokens))
-		{
 			execute_pipe_commands(tokens);
-		}
 		else
 		{
 			if (is_builtin(input))
@@ -77,7 +75,7 @@ void	executor_simple_command(t_token *tokens)
 {
 	int		status;
 	pid_t	pid;
-	int sig;
+	int		sig;
 
 	status = 0;
 	pid = fork();
