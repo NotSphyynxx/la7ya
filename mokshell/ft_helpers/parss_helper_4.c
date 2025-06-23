@@ -6,7 +6,7 @@
 /*   By: ilarhrib <ilarhrib@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/10 14:52:21 by ilarhrib          #+#    #+#             */
-/*   Updated: 2025/06/10 15:19:25 by ilarhrib         ###   ########.fr       */
+/*   Updated: 2025/06/11 09:37:52 by ilarhrib         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,6 @@ void	handle_error(t_token *tokens)
 	free_tokens(tokens);
 	tokens = NULL;
 	printf("Invalid syntax.\n");
-	set_exit_status(1);
 }
 
 char	**get_line_to_expand(void)
@@ -67,6 +66,8 @@ int	check_pipe(t_token **tokens, char *line, int *i)
 	if (line[*i + 1] == '|')
 	{
 		printf("Syntax error: unexpected token '||'\n");
+		free_tokens(*tokens);
+		set_exit_status(258);
 		return (0);
 	}
 	add_token(tokens, new_token("|", PIPE));

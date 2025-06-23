@@ -6,7 +6,7 @@
 /*   By: ilarhrib <ilarhrib@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/08 21:33:19 by ilarhrib          #+#    #+#             */
-/*   Updated: 2025/06/10 15:35:04 by ilarhrib         ###   ########.fr       */
+/*   Updated: 2025/06/11 10:22:52 by ilarhrib         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,19 +15,26 @@
 int	handle_check(void)
 {
 	t_token	*tokens;
-	char	*line;
 
-	line = *get_line();
-	if (!line || ft_strlen(line) == 0)
+	if (ft_strcmp(*get_line(), "cd \"\"") == 0
+		|| ft_strcmp(*get_line(), "cd \'\'") == 0)
 	{
-		printf("command not found\n");
+		set_exit_status(0);
+		return (1);
+	}
+	if (!*get_line() || ft_strlen(*get_line()) == 0)
+	{
+		printf("Minishell : command not found\n");
 		set_exit_status(127);
 		return (1);
 	}
 	tokens = *get_token_list();
-	if (tokens && tokens->value && ft_strlen(tokens->value) == 0)
+	if ((tokens && tokens->value && ft_strlen(tokens->value) == 0
+			&& tokens->next)
+		|| ft_strcmp("\"\"", *get_line()) == 0
+		|| ft_strcmp("\'\'", *get_line()) == 0)
 	{
-		printf("command not found\n");
+		printf("Minishell : command not found\n");
 		set_exit_status(127);
 		return (1);
 	}
@@ -82,4 +89,18 @@ void	init_pipe_data(int n_cmds)
 	data->pids = malloc(sizeof(int) * n_cmds);
 	data->prev_fd = -1;
 	data->error_reported = 0;
+}
+
+int	no_number(char *line)
+{
+	int	i;
+
+	i = 0;
+	while (line[i])
+	{
+		if (ft_isalnum(line[i]))
+			return (0);
+		i++;
+	}
+	return (1);
 }

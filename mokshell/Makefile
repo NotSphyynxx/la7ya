@@ -6,13 +6,13 @@
 #    By: ilarhrib <ilarhrib@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/06/08 15:01:45 by ilarhrib          #+#    #+#              #
-#    Updated: 2025/06/10 14:57:02 by ilarhrib         ###   ########.fr        #
+#    Updated: 2025/06/11 09:15:00 by ilarhrib         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME    = minishell
 
-CC      = cc #-Wall -Wextra -Werror #-g -fsanitize=address
+CC      = cc -Wall -Wextra -Werror
 
 CFLAGS  = -I$(HOME)/.local/include
 

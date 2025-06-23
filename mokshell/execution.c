@@ -6,7 +6,7 @@
 /*   By: ilarhrib <ilarhrib@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/08 15:01:33 by ilarhrib          #+#    #+#             */
-/*   Updated: 2025/06/10 15:34:17 by ilarhrib         ###   ########.fr       */
+/*   Updated: 2025/06/11 06:01:20 by ilarhrib         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,7 +94,7 @@ void	executor_simple_command(t_token *tokens)
 	{
 		sig = WTERMSIG(status);
 		if (sig == SIGQUIT)
-			ft_putstr_fd("Quit (core dumped)\n", STDERR_FILENO);
+			ft_putstr_fd("Quit 3\n", STDERR_FILENO);
 	}
 	update_exit_status(status);
 }

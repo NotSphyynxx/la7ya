@@ -6,7 +6,7 @@
 /*   By: ilarhrib <ilarhrib@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/08 14:57:01 by ilarhrib          #+#    #+#             */
-/*   Updated: 2025/06/09 20:44:20 by ilarhrib         ###   ########.fr       */
+/*   Updated: 2025/06/11 10:22:26 by ilarhrib         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,6 +85,11 @@ int	shell_exit(char **av)
 	write(STDOUT_FILENO, "exit\n", 6);
 	if (!av[1])
 		clean_exit(0);
+	if (!av[1][0] || no_number(av[1]))
+	{
+		write(STDERR_FILENO, "exit: numeric argument required\n", 33);
+		clean_exit(255);
+	}
 	exit_code = ft_atoi_with_overflow(av[1], &overflow);
 	if (overflow)
 	{
@@ -104,7 +109,7 @@ char	**create_minimal_env(void)
 {
 	char	**env;
 
-	env = malloc(sizeof(char *) * 4);
+	env = malloc(sizeof(char *) * 5);
 	if (!env)
 	{
 		write(2, "malloc error\n", 14);
@@ -113,8 +118,9 @@ char	**create_minimal_env(void)
 	env[0] = get_current_pwd();
 	env[1] = ft_strdup("SHLVL=1");
 	env[2] = ft_strdup("_=./minishell");
-	env[3] = NULL;
-	if (!env[0] || !env[1] || !env[2])
+	env[3] = ft_strdup("PATH=/usr/gnu/bin:/usr/local/bin:/bin:/usr/bin:.");
+	env[4] = NULL;
+	if (!env[0] || !env[1] || !env[2] || !env[3])
 	{
 		ft_free_str_array(env);
 		return (NULL);

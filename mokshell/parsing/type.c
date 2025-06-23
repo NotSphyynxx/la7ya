@@ -6,7 +6,7 @@
 /*   By: ilarhrib <ilarhrib@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/08 15:01:23 by ilarhrib          #+#    #+#             */
-/*   Updated: 2025/06/10 15:32:42 by ilarhrib         ###   ########.fr       */
+/*   Updated: 2025/06/11 08:54:32 by ilarhrib         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,4 +68,10 @@ int	is_there(char *line)
 		|| ft_strnstr(line, "top | cat", 9))
 		return (1);
 	return (0);
+}
+
+int	ft_isspace(char c)
+{
+	return (c == ' ' || c == '\t' || c == '\n'
+		|| c == '\v' || c == '\f' || c == '\r');
 }

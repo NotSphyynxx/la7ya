@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parss_helpers_2.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bael-bad <bael-bad@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ilarhrib <ilarhrib@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/08 15:00:04 by ilarhrib          #+#    #+#             */
-/*   Updated: 2025/06/09 23:41:07 by bael-bad         ###   ########.fr       */
+/*   Updated: 2025/06/11 05:15:18 by ilarhrib         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,7 +66,7 @@ int	last_check(t_token **tokens, char *line, int *i)
 		write(STDERR_FILENO, "minishell: syntax error: unclosed quote\n", 40);
 		free(word);
 		free_tokens(*tokens);
-		set_exit_status(2);
+		set_exit_status(1);
 		free_tokens(tok);
 		return (1);
 	}

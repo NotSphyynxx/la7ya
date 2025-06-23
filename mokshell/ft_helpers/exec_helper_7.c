@@ -6,7 +6,7 @@
 /*   By: ilarhrib <ilarhrib@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/08 14:58:26 by ilarhrib          #+#    #+#             */
-/*   Updated: 2025/06/08 15:49:31 by ilarhrib         ###   ########.fr       */
+/*   Updated: 2025/06/11 06:01:33 by ilarhrib         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ void	wait_for_children(void)
 			sig = WTERMSIG(status);
 			if (sig == SIGQUIT && printed == 0 && is_there(*get_line()))
 			{
-				ft_putstr_fd("Quit (core dumped)\n", STDERR_FILENO);
+				ft_putstr_fd("Quit 3\n", STDERR_FILENO);
 				printed = 1;
 			}
 		}

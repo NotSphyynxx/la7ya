@@ -6,7 +6,7 @@
 /*   By: ilarhrib <ilarhrib@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/09 18:55:17 by ilarhrib          #+#    #+#             */
-/*   Updated: 2025/06/10 15:41:30 by ilarhrib         ###   ########.fr       */
+/*   Updated: 2025/06/11 06:30:47 by ilarhrib         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,6 @@ void	kill_all_pids(int idx)
 {
 	t_pipe	*data;
 	int		i;
-	int		sig;
 
 	data = get_pipe_data();
 	i = 0;
