@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec_helper_8.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ilarhrib <ilarhrib@student.42.fr>          +#+  +:+       +#+        */
+/*   By: bael-bad <bael-bad@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/08 14:58:33 by ilarhrib          #+#    #+#             */
-/*   Updated: 2025/06/09 20:15:52 by ilarhrib         ###   ########.fr       */
+/*   Updated: 2025/07/08 11:54:38 by bael-bad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,7 +101,7 @@ char	**tokens_to_cmd(t_token *start, t_token *end)
 {
 	int		count;
 	char	**cmd;
-
+	
 	count = count_args(start, end);
 	if (count == 0)
 		return (NULL);

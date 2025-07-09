@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ilarhrib <ilarhrib@student.42.fr>          +#+  +:+       +#+        */
+/*   By: bael-bad <bael-bad@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/09 17:07:11 by ilarhrib          #+#    #+#             */
-/*   Updated: 2025/06/11 10:13:12 by ilarhrib         ###   ########.fr       */
+/*   Updated: 2025/07/09 10:36:24 by bael-bad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,6 +36,7 @@ typedef enum e_type
 	SINGLE_QUOTE1,
 	SINGLE_QUOTE2,
 	DOUBLE_QUOTE1,
+	T_SPACE,
 	DOUBLE_QUOTE2
 }	t_type;
 
@@ -136,6 +137,7 @@ void	handle_quotes(t_token *curr, char **tmp, char **to_free);
 void	handle_error(t_token *tokens);
 int		check_status(int status);
 char	**get_line_to_expand(void);
+void	token_space(t_token **tokens, char *line, int *i);
 
 //@------------Execution------------------@//
 void	read_and_exe(void);

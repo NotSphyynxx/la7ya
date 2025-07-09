@@ -1,0 +1,68 @@
+minishell$ echo "    "$USER '" $USER  "'
+ilarhrib " $USER  "
+-------------------------------------------
+minishell$ echo "          $USER            "'$USER'"  "'" $USER  "'
+ilarhrib ilarhrib " ilarhrib "
+minishell$ 
+-------------------------------------------
+$
+minishell$ echo $$""
+$$
+minishell$ echo $$$$""
+$$$$
+minishell$ echo $""
+$
+minishell$ echo $""
+--------------------------------------------
+minishell$ echo $USER$$USER
+ilarhrib$ilarhrib
+minishell$ 
+---------------------------------------------
+minishell$ echo $"          p "
+$ p
+minishell$ 
+---------------------------------------------
+minishell$ cat > "|" |   >""
+dgdh
+h
+df
+minishell$ 
+---------------------------------------------
+minishell$ cat  > $USER   | "" 
+execve failed: Permission denied
+rgdg
+dht
+dh
+d
+minishell$ echo $?
+0
+minishell$ 
+---------------------------------------------
+minishell$ ./minishell
+minishell$ dfghf
+minishell: command not found
+minishell$ 
+exit
+minishell$ echo $?
+0
+minishell$ 
+---------------------------------------------
+minishell$ unset k+
+minishell$ echo $?
+0
+minishell$ 
+--------------------------------
+minishell$ << ""p 
+> 
+> p
+> << ""p
+> p     
+> minishell$ << ""p
+> ""p
+minishell$ 
+------------------------------------
+minishell$ << '$USER'
+> $USER
+> '$USER'   
+minishell$ 
+-------------------------------------------
