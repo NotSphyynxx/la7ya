@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   type.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ilarhrib <ilarhrib@student.42.fr>          +#+  +:+       +#+        */
+/*   By: bael-bad <bael-bad@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/08 15:01:23 by ilarhrib          #+#    #+#             */
-/*   Updated: 2025/06/11 08:54:32 by ilarhrib         ###   ########.fr       */
+/*   Updated: 2025/07/09 13:17:48 by bael-bad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,13 +14,23 @@
 
 void	handle_quotes(t_token *curr, char **tmp, char **to_free)
 {
-	if (curr->was_double == 1 || curr->was_single == 1)
-	{
+	printf("%i\n", curr->was_double);
+	printf("%i\n", curr->was_single);
+	// char *tnt = *tmp;
+	// while (*tnt)
+	// {
+	// 	if (*tnt == '"')
+	// 		curr->was_double = 1;
+	// 	else if (*tnt == '\'')
+	// 		curr->was_single = 1;
+	// 	tnt++;
+	// }
+	// if (curr->was_double == 1 || curr->was_single == 1)
+	// {
+		printf("dfgdfg\n");
 		*tmp = ft_strip_quotes(curr->value);
 		*to_free = *tmp;
-		if (*tmp[0] == '$')
-			(*tmp)++;
-	}
+	// }
 }
 
 char	*type_to_string(t_type type)

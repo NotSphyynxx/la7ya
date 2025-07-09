@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ilarhrib <ilarhrib@student.42.fr>          +#+  +:+       +#+        */
+/*   By: bael-bad <bael-bad@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/09 17:06:56 by ilarhrib          #+#    #+#             */
-/*   Updated: 2025/06/11 08:07:11 by ilarhrib         ###   ########.fr       */
+/*   Updated: 2025/07/09 13:09:45 by bael-bad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,11 @@ void	read_and_exe(void)
 			add_history(readed);
 		*get_line() = readed;
 		tokens = parss(readed);
+		// while (tokens)
+		// {
+		// 	printf("tokens: %s\n", tokens->value);
+		// 	tokens = tokens->next;
+		// }
 		if (!tokens)
 		{
 			free_all_fd();

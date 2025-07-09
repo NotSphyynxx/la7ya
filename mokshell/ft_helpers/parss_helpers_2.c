@@ -6,7 +6,7 @@
 /*   By: bael-bad <bael-bad@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/08 15:00:04 by ilarhrib          #+#    #+#             */
-/*   Updated: 2025/07/08 10:22:25 by bael-bad         ###   ########.fr       */
+/*   Updated: 2025/07/09 13:27:48 by bael-bad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,6 +59,7 @@ int	last_check(t_token **tokens, char *line, int *i)
 
 	tok = NULL;
 	word = collect_word(line, i);
+	printf("?????%s\n", word);
 	if (!word)
 		return (1);
 	if (has_unclosed_quote(word))

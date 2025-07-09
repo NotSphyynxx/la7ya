@@ -6,7 +6,7 @@
 /*   By: bael-bad <bael-bad@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/10 14:52:21 by ilarhrib          #+#    #+#             */
-/*   Updated: 2025/07/09 10:55:33 by bael-bad         ###   ########.fr       */
+/*   Updated: 2025/07/09 13:08:43 by bael-bad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,11 +54,14 @@ int	check_all(t_token **tokens, char *line, int *i)
 			if (!check_heredoc(tokens, line, i))
 				return (0);
 		}
-		else if (line[*i] == '"' || line[*i] == '\'')
-			token_space(tokens, line, i);
 		else
+		{
 			if (last_check(tokens, line, i) == 1)
 				return (0);
+				t_token *token = *tokens;
+			
+				printf("tokdgdden: %s\n", token->value);
+		}
 	}
 	return (1);
 }

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parss_hlp.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ilarhrib <ilarhrib@student.42.fr>          +#+  +:+       +#+        */
+/*   By: bael-bad <bael-bad@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/08 15:00:08 by ilarhrib          #+#    #+#             */
-/*   Updated: 2025/06/11 08:15:53 by ilarhrib         ###   ########.fr       */
+/*   Updated: 2025/07/09 12:14:37 by bael-bad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,7 +61,7 @@ char	*ft_strip_quotes(char *str)
 	j = 0;
 	while (str[i])
 	{
-		if (str[i] == '\'' || str[i] == '"')
+		if (str[i] == '"' || str[i] == '\'')
 			copy_quoted_content(str, result, &i, &j);
 		else
 		{

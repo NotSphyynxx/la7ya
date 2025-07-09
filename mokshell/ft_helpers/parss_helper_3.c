@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parss_helper_3.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ilarhrib <ilarhrib@student.42.fr>          +#+  +:+       +#+        */
+/*   By: bael-bad <bael-bad@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/08 14:59:51 by ilarhrib          #+#    #+#             */
-/*   Updated: 2025/06/11 10:58:56 by ilarhrib         ###   ########.fr       */
+/*   Updated: 2025/07/09 12:34:59 by bael-bad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,8 @@
 
 static int	is_delimiter(t_token *curr, char *line, char *tmp)
 {
+			printf(">>>>%s\n", curr->value);
+
 	if (!line)
 		return (1);
 	if (!ft_strcmp(line, curr->value))
